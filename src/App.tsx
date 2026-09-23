@@ -1,0 +1,114 @@
+import React, { useState, useEffect } from 'react';
+import { BlogPost, EventItem, Language, PageType } from './types';
+import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
+import { HomePage } from './pages/HomePage';
+import { AboutPage } from './pages/AboutPage';
+import { ProgramsPage } from './pages/ProgramsPage';
+import { TeamPage } from './pages/TeamPage';
+import { MediaPage } from './pages/MediaPage';
+import { MembershipPage } from './pages/MembershipPage';
+import { ContactPage } from './pages/ContactPage';
+import { ArticleReaderModal } from './components/ArticleReaderModal';
+import { EventRegistrationModal } from './components/EventRegistrationModal';
+import { GlobalSearchModal } from './components/GlobalSearchModal';
+
+export default function App() {
+  const [currentPage, setCurrentPage] = useState<PageType>('home');
+  const [language, setLanguage] = useState<Language>('en');
+
+  // Modal states
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [searchOpen, setSearchOpen] = useState<boolean>(false);
+
+  // Keyboard shortcut for search (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleNavigate = (page: PageType) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-[#fcfdfa] text-[#1a2805] font-sans antialiased">
+      {/* Strict Top Bar Navigation */}
+      <Navbar
+        currentPage={currentPage}
+        onNavigate={handleNavigate}
+        language={language}
+        onLanguageChange={setLanguage}
+        onOpenSearch={() => setSearchOpen(true)}
+      />
+
+      {/* Main Page Canvas */}
+      <main className="flex-1">
+        {currentPage === 'home' && (
+          <HomePage
+            onNavigate={handleNavigate}
+            language={language}
+            onSelectPost={setSelectedPost}
+            onRegisterEvent={setSelectedEvent}
+          />
+        )}
+
+        {currentPage === 'about' && (
+          <AboutPage onNavigate={handleNavigate} />
+        )}
+
+        {currentPage === 'programs' && (
+          <ProgramsPage
+            onNavigate={handleNavigate}
+            onRegisterEvent={setSelectedEvent}
+          />
+        )}
+
+        {currentPage === 'team' && (
+          <TeamPage onNavigate={handleNavigate} />
+        )}
+
+        {currentPage === 'media' && (
+          <MediaPage onSelectPost={setSelectedPost} />
+        )}
+
+        {currentPage === 'membership' && (
+          <MembershipPage onNavigate={handleNavigate} />
+        )}
+
+        {currentPage === 'contact' && (
+          <ContactPage />
+        )}
+      </main>
+
+      {/* Footer */}
+      <Footer onNavigate={handleNavigate} />
+
+      {/* Global Modals */}
+      <ArticleReaderModal
+        post={selectedPost}
+        onClose={() => setSelectedPost(null)}
+      />
+
+      <EventRegistrationModal
+        event={selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+      />
+
+      <GlobalSearchModal
+        isOpen={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        onSelectPost={setSelectedPost}
+        onNavigate={handleNavigate}
+      />
+    </div>
+  );
+}
