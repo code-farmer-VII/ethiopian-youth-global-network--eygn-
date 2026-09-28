@@ -119,6 +119,8 @@ export interface EventRegistrationResult {
 export interface NewsletterSubscriptionResult {
   email: string;
   subscribedAt: string;
+  /** Null until the subscriber clicks the confirmation link emailed to them (double opt-in, B6). */
+  confirmedAt: string | null;
   /** Signed token (B11) required to unsubscribe this email — keep it if you want to offer an unsubscribe action. */
   unsubscribeToken: string;
 }

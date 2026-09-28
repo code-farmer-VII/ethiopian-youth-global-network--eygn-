@@ -204,7 +204,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               {subscribed && (
                 <div className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-950/40 p-2 rounded border border-emerald-800/50 animate-in fade-in">
                   <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                  <span>Subscribed! Welcome to EYGN communications.</span>
+                  <span>Almost there — check your email to confirm your subscription.</span>
                 </div>
               )}
 
