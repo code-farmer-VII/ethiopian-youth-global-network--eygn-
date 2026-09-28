@@ -119,6 +119,8 @@ export interface EventRegistrationResult {
 export interface NewsletterSubscriptionResult {
   email: string;
   subscribedAt: string;
+  /** Signed token (B11) required to unsubscribe this email — keep it if you want to offer an unsubscribe action. */
+  unsubscribeToken: string;
 }
 
 export interface PostSummary {
@@ -264,8 +266,8 @@ export function subscribeToNewsletter(email: string): Promise<NewsletterSubscrip
   return post('/newsletter/subscribers', { email });
 }
 
-export function unsubscribeFromNewsletter(email: string): Promise<void> {
-  return del(`/newsletter/subscribers/${encodeURIComponent(email)}`);
+export function unsubscribeFromNewsletter(email: string, unsubscribeToken: string): Promise<void> {
+  return del(`/newsletter/subscribers/${encodeURIComponent(email)}?token=${encodeURIComponent(unsubscribeToken)}`);
 }
 
 // ---------------------------------------------------------------------------
