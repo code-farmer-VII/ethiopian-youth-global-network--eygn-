@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { EventItem } from '../types';
 import { ApiRequestError, registerForEvent } from '../lib/api';
 import { X, Calendar, Clock, MapPin, CheckCircle2, Ticket, ShieldCheck, Download, Share2 } from 'lucide-react';
+import { useModalA11y } from '../hooks/useModalA11y';
 
 interface EventRegistrationModalProps {
   event: EventItem | null;
@@ -20,6 +21,8 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
   const [passId, setPassId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const panelRef = useModalA11y<HTMLDivElement>(!!event, onClose);
 
   if (!event) return null;
 
@@ -57,7 +60,12 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-200 relative"
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Register for ${event.title}`}
+        tabIndex={-1}
+        className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-200 relative focus:outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -66,6 +74,7 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close modal"
             className="absolute top-4 right-4 p-1 text-white/70 hover:text-white rounded-full bg-black/20 hover:bg-black/40 transition-colors"
           >
             <X className="w-5 h-5" />

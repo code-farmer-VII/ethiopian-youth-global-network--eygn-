@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getPost, PostDetail } from '../lib/api';
 import { X, Calendar, MapPin, Clock, Share2, Check, ArrowLeft } from 'lucide-react';
+import { useModalA11y } from '../hooks/useModalA11y';
 
 interface ArticleReaderModalProps {
   slug: string | null;
@@ -32,6 +33,8 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({ slug, on
       .finally(() => setIsLoading(false));
   }, [slug]);
 
+  const panelRef = useModalA11y<HTMLDivElement>(!!slug, onClose);
+
   if (!slug) return null;
 
   const handleShare = () => {
@@ -46,7 +49,12 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({ slug, on
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-200 relative flex flex-col"
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={post?.title ?? 'Article'}
+        tabIndex={-1}
+        className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-200 relative flex flex-col focus:outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Sticky top bar */}

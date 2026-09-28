@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { CHAPTER_HUBS } from '../data/eygnData';
 import { listPosts, listPrograms, listTeamMembers, PostSummary, ProgramDto, TeamMemberDto } from '../lib/api';
 import { Search, X, BookOpen, Users, FolderGit2, MapPin, ArrowRight } from 'lucide-react';
+import { useModalA11y } from '../hooks/useModalA11y';
 
 interface GlobalSearchModalProps {
   isOpen: boolean;
@@ -59,6 +60,8 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     return { posts, programs, team, chapters };
   }, [query, apiPosts, apiPrograms, apiTeam]);
 
+  const panelRef = useModalA11y<HTMLDivElement>(isOpen, onClose);
+
   if (!isOpen) return null;
 
   const totalResults = results.posts.length + results.programs.length + results.team.length + results.chapters.length;
@@ -69,7 +72,12 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] shadow-2xl border border-stone-200 overflow-hidden flex flex-col"
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Search the site"
+        tabIndex={-1}
+        className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] shadow-2xl border border-stone-200 overflow-hidden flex flex-col focus:outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
@@ -77,7 +85,6 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           <Search className="w-5 h-5 text-stone-400 mr-3" />
           <input
             type="text"
-            autoFocus
             aria-label="Search the site"
             placeholder="Search programs (DEAIP, Green Legacy), leadership, posts, chapters..."
             value={query}
@@ -88,6 +95,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             <button
               type="button"
               onClick={() => setQuery('')}
+              aria-label="Clear search"
               className="p-1 text-stone-400 hover:text-stone-600 rounded"
             >
               <X className="w-4 h-4" />
@@ -96,6 +104,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close search"
             className="ml-2 text-xs font-medium text-stone-500 hover:text-stone-900 px-2 py-1 bg-stone-100 rounded"
           >
             ESC
