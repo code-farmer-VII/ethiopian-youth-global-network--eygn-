@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
-import { BLOG_POSTS, GALLERY_ITEMS } from '../data/eygnData';
-import { BlogPost, MediaItem } from '../types';
+import React, { useEffect, useState } from 'react';
+import { GALLERY_ITEMS } from '../data/eygnData';
+import { MediaItem } from '../types';
+import { listCategories, listPosts, PostSummary } from '../lib/api';
 import { Image as ImageIcon, Download, Play, Search, Eye, ArrowRight, Check } from 'lucide-react';
 
 interface MediaPageProps {
-  onSelectPost: (post: BlogPost) => void;
+  onSelectPost: (slug: string) => void;
+}
+
+function formatDate(iso: string): string {
+  const [year, month, day] = iso.split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
 export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
@@ -14,14 +20,26 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
   const [searchFilter, setSearchFilter] = useState('');
   const [downloadedItem, setDownloadedItem] = useState<string | null>(null);
 
-  const categories = ['All', 'Partnerships', 'Events', 'Leadership', 'Education', 'Diplomacy'];
+  const [categories, setCategories] = useState<string[]>(['All']);
+  const [posts, setPosts] = useState<PostSummary[]>([]);
 
-  const filteredPosts = BLOG_POSTS.filter(post => {
-    const matchesCategory = selectedCategory === 'All' || post.category.toLowerCase().includes(selectedCategory.toLowerCase());
-    const matchesSearch = !searchFilter.trim() || 
-      post.title.toLowerCase().includes(searchFilter.toLowerCase()) || 
-      post.summary.toLowerCase().includes(searchFilter.toLowerCase());
-    return matchesCategory && matchesSearch;
+  useEffect(() => {
+    listCategories()
+      .then(setCategories)
+      .catch(() => setCategories(['All']));
+  }, []);
+
+  useEffect(() => {
+    listPosts({ category: selectedCategory === 'All' ? undefined : selectedCategory, size: 100 })
+      .then((res) => setPosts(res.content))
+      .catch(() => setPosts([]));
+  }, [selectedCategory]);
+
+  const filteredPosts = posts.filter(post => {
+    const matchesSearch = !searchFilter.trim() ||
+      post.title.toLowerCase().includes(searchFilter.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchFilter.toLowerCase());
+    return matchesSearch;
   });
 
   const handleDownload = (title: string) => {
@@ -67,7 +85,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            Official dispatches ({BLOG_POSTS.length})
+            Official dispatches ({posts.length})
           </button>
           <button
             type="button"
@@ -134,17 +152,21 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.map((post) => (
               <article
-                key={post.id}
+                key={post.slug}
                 className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between group"
               >
                 <div className="space-y-4">
                   {/* Clean unboxed metadata row */}
                   <div className="flex items-center gap-2 text-xs text-stone-500">
-                    <span className="font-semibold text-[#06592b]">{post.category}</span>
+                    <span className="font-semibold text-[#06592b]">{post.categories.join(', ')}</span>
                     <span aria-hidden="true">·</span>
-                    <span>{post.date}</span>
-                    <span aria-hidden="true">·</span>
-                    <span>{post.readingTime}</span>
+                    <span>{formatDate(post.publishedAt)}</span>
+                    {post.readingTime && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <span>{post.readingTime}</span>
+                      </>
+                    )}
                   </div>
 
                   <h3 className="text-[19px] font-bold text-[#1a2805] group-hover:text-[#06592b] transition-colors leading-snug">
@@ -152,16 +174,8 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                   </h3>
 
                   <p className="text-[14px] text-stone-600 leading-relaxed line-clamp-4">
-                    {post.summary}
+                    {post.excerpt}
                   </p>
-
-                  {post.featuredQuote && (
-                    <div className="p-3 bg-stone-50 border-l-2 border-[#f3a310] rounded-r-lg">
-                      <p className="text-[13px] italic text-[#1a2805]">
-                        "{post.featuredQuote}"
-                      </p>
-                    </div>
-                  )}
                 </div>
 
                 <div className="pt-6 mt-6 border-t border-stone-100 flex items-center justify-between text-xs">
@@ -169,7 +183,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                   {/* Buttons: 16px, Medium, sentence case */}
                   <button
                     type="button"
-                    onClick={() => onSelectPost(post)}
+                    onClick={() => onSelectPost(post.slug)}
                     className="font-medium text-[15px] text-[#06592b] group-hover:text-[#1a2805] flex items-center gap-1.5 cursor-pointer"
                   >
                     <span>Read full dispatch</span>

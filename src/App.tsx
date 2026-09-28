@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BlogPost, EventItem, Language, PageType } from './types';
+import { EventItem, Language, PageType } from './types';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { HomePage } from './pages/HomePage';
@@ -18,7 +18,7 @@ export default function App() {
   const [language, setLanguage] = useState<Language>('en');
 
   // Modal states
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [selectedPostSlug, setSelectedPostSlug] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
 
@@ -56,7 +56,7 @@ export default function App() {
           <HomePage
             onNavigate={handleNavigate}
             language={language}
-            onSelectPost={setSelectedPost}
+            onSelectPost={setSelectedPostSlug}
             onRegisterEvent={setSelectedEvent}
           />
         )}
@@ -77,7 +77,7 @@ export default function App() {
         )}
 
         {currentPage === 'media' && (
-          <MediaPage onSelectPost={setSelectedPost} />
+          <MediaPage onSelectPost={setSelectedPostSlug} />
         )}
 
         {currentPage === 'membership' && (
@@ -94,8 +94,8 @@ export default function App() {
 
       {/* Global Modals */}
       <ArticleReaderModal
-        post={selectedPost}
-        onClose={() => setSelectedPost(null)}
+        slug={selectedPostSlug}
+        onClose={() => setSelectedPostSlug(null)}
       />
 
       <EventRegistrationModal
@@ -106,7 +106,7 @@ export default function App() {
       <GlobalSearchModal
         isOpen={searchOpen}
         onClose={() => setSearchOpen(false)}
-        onSelectPost={setSelectedPost}
+        onSelectPost={setSelectedPostSlug}
         onNavigate={handleNavigate}
       />
     </div>

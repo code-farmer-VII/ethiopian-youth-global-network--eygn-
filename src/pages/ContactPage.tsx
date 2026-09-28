@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 import { EYGN_INFO } from '../data/eygnData';
+import { ApiRequestError, ContactDepartment, submitContactMessage } from '../lib/api';
 import { Mail, MapPin, Send, CheckCircle2, Clock } from 'lucide-react';
+
+// Frontend display labels -> eygn-api's ContactDepartment enum slugs (see api.ts).
+const DEPARTMENT_TO_API: Record<string, ContactDepartment> = {
+  'General Inquiries (Executive Secretariat)': 'general',
+  'Media & Communication (Mr. Amanuel Lemma)': 'media_communication',
+  'Partnerships & Outreach (Mr. Yonas Anbiko)': 'partnerships_outreach',
+  'Operations & Coordination (Ms. Fenet Yohannes)': 'operations_coordination',
+  'Research & Policy (Ms. Meseret Kiros)': 'research_policy',
+  'Youth Mobilization & Chapters (Ms. Rebecca Nebiu)': 'youth_mobilization_chapters',
+  'Events & Program Coordination (Ms. Heldana Teklit)': 'events_program_coordination',
+};
 
 export const ContactPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,9 +27,32 @@ export const ContactPage: React.FC = () => {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitError(null);
+    setFieldErrors(null);
+    setIsSubmitting(true);
+    try {
+      await submitContactMessage({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject || undefined,
+        department: DEPARTMENT_TO_API[formData.department] ?? 'general',
+        message: formData.message,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.fieldErrors) {
+        setFieldErrors(err.fieldErrors);
+        setSubmitError('Please fix the highlighted fields and try again.');
+      } else if (err instanceof ApiRequestError) {
+        setSubmitError(err.message);
+      } else {
+        setSubmitError('Something went wrong sending your message. Please try again.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -197,13 +235,27 @@ export const ContactPage: React.FC = () => {
                   />
                 </div>
 
+                {submitError && (
+                  <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-[13px] text-red-700 space-y-1">
+                    <p>{submitError}</p>
+                    {fieldErrors && (
+                      <ul className="list-disc pl-4 space-y-0.5">
+                        {Object.entries(fieldErrors).map(([field, messages]) => (
+                          <li key={field}>{messages[0]}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+
                 {/* Buttons: 16px, Medium, sentence case */}
                 <button
                   type="submit"
-                  className="w-full py-3.5 px-6 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 px-6 bg-[#1a2805] hover:bg-[#06592b] disabled:opacity-60 disabled:cursor-not-allowed text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Transmit official dispatch</span>
+                  <span>{isSubmitting ? 'Transmitting dispatch…' : 'Transmit official dispatch'}</span>
                 </button>
               </form>
             ) : (

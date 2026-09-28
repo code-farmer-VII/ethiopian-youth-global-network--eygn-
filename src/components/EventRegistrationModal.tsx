@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { EventItem } from '../types';
+import { ApiRequestError, registerForEvent } from '../lib/api';
 import { X, Calendar, Clock, MapPin, CheckCircle2, Ticket, ShieldCheck, Download, Share2 } from 'lucide-react';
 
 interface EventRegistrationModalProps {
@@ -17,14 +18,37 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
     specialRequirements: '',
   });
   const [passId, setPassId] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   if (!event) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // The API's event id is a slug (see eygn-api's X2); event.id is populated with that slug by
+  // eventFormat.ts's toEventItem (F10), so this is a real registration call end to end.
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const generatedId = `EYGN-EVT-${Math.floor(100000 + Math.random() * 900000)}`;
-    setPassId(generatedId);
-    setStep('confirmed');
+    setSubmitError(null);
+    setIsSubmitting(true);
+    try {
+      const registration = await registerForEvent(event.id, {
+        fullName: formData.fullName,
+        email: formData.email,
+      });
+      setPassId(`EYGN-EVT-${String(registration.id).padStart(6, '0')}`);
+      setStep('confirmed');
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.status === 409) {
+        setSubmitError('This email is already registered for this event.');
+      } else if (err instanceof ApiRequestError && err.status === 404) {
+        setSubmitError('This event could not be found. Please refresh and try again.');
+      } else if (err instanceof ApiRequestError) {
+        setSubmitError(err.message);
+      } else {
+        setSubmitError('Something went wrong submitting your registration. Please try again.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -151,13 +175,20 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
                 />
               </div>
 
+              {submitError && (
+                <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-[12px] text-red-700">
+                  {submitError}
+                </div>
+              )}
+
               <div className="pt-3">
                 <button
                   type="submit"
-                  className="w-full py-3 px-4 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[15px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="w-full py-3 px-4 bg-[#1a2805] hover:bg-[#06592b] disabled:opacity-60 disabled:cursor-not-allowed text-[#f3a310] font-medium text-[15px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Ticket className="w-4 h-4" />
-                  <span>Confirm registration & issue pass</span>
+                  <span>{isSubmitting ? 'Submitting registration…' : 'Confirm registration & issue pass'}</span>
                 </button>
               </div>
             </form>

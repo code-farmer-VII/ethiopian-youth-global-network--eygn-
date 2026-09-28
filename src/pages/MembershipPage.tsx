@@ -2,16 +2,32 @@ import React, { useState } from 'react';
 import { FAQS, MEMBERSHIP_BENEFITS } from '../data/eygnData';
 import { MembershipFormData, PageType } from '../types';
 import { DigitalMembershipCard } from '../components/DigitalMembershipCard';
+import { ApiRequestError, InterestArea, submitMembershipApplication, submitPartnershipInquiry } from '../lib/api';
 import { CheckCircle2, ShieldCheck, Award, Sparkles, Send, HelpCircle, ChevronDown, ChevronUp, UserCheck } from 'lucide-react';
 
 interface MembershipPageProps {
   onNavigate: (page: PageType) => void;
 }
 
+// Frontend display labels -> eygn-api's InterestArea enum slugs (see api.ts). The two lists don't
+// read identically, so submissions map through this table rather than sending the label as-is.
+const INTEREST_AREA_TO_API: Record<string, InterestArea> = {
+  'Tech & Innovation': 'tech_innovation',
+  'Climate Action (Green Legacy)': 'climate_action',
+  'Higher Education (DEAIP)': 'higher_education',
+  'Public Policy & Diplomacy': 'public_policy_diplomacy',
+  'Healthcare Repatriation': 'healthcare_repatriation',
+  'FinTech & Business Incubation': 'fintech_business_incubation',
+  'Pan-African Cultural Heritage': 'pan_african_heritage',
+};
+
 export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) => {
   const [activeTab, setActiveTab] = useState<'individual' | 'partner'>('individual');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPartnerSubmitted, setIsPartnerSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]> | null>(null);
   const [formData, setFormData] = useState<MembershipFormData>({
     fullName: '',
     email: '',
@@ -27,6 +43,24 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
   });
 
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
+  const collaborationDomainOptions = [
+    'DEAIP Academic & Research Co-design',
+    'Green Legacy Reforestation & COP Climate',
+    'Youth Leadership Academy Masterclasses',
+    'FinTech & Innovation Sandbox Incubation',
+  ];
+
+  const [partnerFormData, setPartnerFormData] = useState({
+    organizationName: '',
+    representativeName: '',
+    email: '',
+    collaborationDomain: collaborationDomainOptions[0],
+    message: '',
+  });
+  const [isPartnerSubmitting, setIsPartnerSubmitting] = useState(false);
+  const [partnerSubmitError, setPartnerSubmitError] = useState<string | null>(null);
+  const [partnerFieldErrors, setPartnerFieldErrors] = useState<Record<string, string[]> | null>(null);
 
   const interestOptions = [
     'Tech & Innovation',
@@ -52,15 +86,79 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    window.scrollTo({ top: 300, behavior: 'smooth' });
+    setSubmitError(null);
+    setFieldErrors(null);
+
+    const interestAreas = formData.interestAreas
+      .map((label) => INTEREST_AREA_TO_API[label])
+      .filter((value): value is InterestArea => Boolean(value));
+
+    if (interestAreas.length === 0) {
+      setSubmitError('Select at least one area of national service interest.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await submitMembershipApplication({
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        country: formData.country,
+        city: formData.city || undefined,
+        profession: formData.profession,
+        applicantCategory: formData.status,
+        organizationOrUni: formData.organizationOrUni || undefined,
+        interestAreas,
+        statementOfPurpose: formData.statementOfPurpose || undefined,
+        newsletterOptIn: formData.newsletterOptIn,
+      });
+      setIsSubmitted(true);
+      window.scrollTo({ top: 300, behavior: 'smooth' });
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.status === 409) {
+        setSubmitError('This email has already applied for membership.');
+      } else if (err instanceof ApiRequestError && err.fieldErrors) {
+        setFieldErrors(err.fieldErrors);
+        setSubmitError('Please fix the highlighted fields and try again.');
+      } else if (err instanceof ApiRequestError) {
+        setSubmitError(err.message);
+      } else {
+        setSubmitError('Something went wrong submitting your application. Please try again.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handlePartnerSubmit = (e: React.FormEvent) => {
+  const handlePartnerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsPartnerSubmitted(true);
+    setPartnerSubmitError(null);
+    setPartnerFieldErrors(null);
+    setIsPartnerSubmitting(true);
+    try {
+      await submitPartnershipInquiry({
+        organizationName: partnerFormData.organizationName,
+        representativeName: partnerFormData.representativeName,
+        email: partnerFormData.email,
+        collaborationDomain: partnerFormData.collaborationDomain || undefined,
+        message: partnerFormData.message,
+      });
+      setIsPartnerSubmitted(true);
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.fieldErrors) {
+        setPartnerFieldErrors(err.fieldErrors);
+        setPartnerSubmitError('Please fix the highlighted fields and try again.');
+      } else if (err instanceof ApiRequestError) {
+        setPartnerSubmitError(err.message);
+      } else {
+        setPartnerSubmitError('Something went wrong submitting your inquiry. Please try again.');
+      }
+    } finally {
+      setIsPartnerSubmitting(false);
+    }
   };
 
   return (
@@ -336,13 +434,28 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                     />
                   </div>
 
+                  {/* Server-side error banner */}
+                  {submitError && (
+                    <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-[13px] text-red-700 space-y-1">
+                      <p>{submitError}</p>
+                      {fieldErrors && (
+                        <ul className="list-disc pl-4 space-y-0.5">
+                          {Object.entries(fieldErrors).map(([field, messages]) => (
+                            <li key={field}>{messages[0]}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+
                   {/* Submit button: Buttons: 16px, Medium, sentence case */}
                   <button
                     type="submit"
-                    className="w-full py-3.5 px-6 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    disabled={isSubmitting}
+                    className="w-full py-3.5 px-6 bg-[#1a2805] hover:bg-[#06592b] disabled:opacity-60 disabled:cursor-not-allowed text-[#f3a310] font-medium text-[16px] rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <UserCheck className="w-5 h-5" />
-                    <span>Submit application & generate credential</span>
+                    <span>{isSubmitting ? 'Submitting application…' : 'Submit application & generate credential'}</span>
                   </button>
                 </form>
               ) : (
@@ -453,42 +566,88 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-stone-700 mb-1">Organization / Institution Name *</label>
-                    <input type="text" required placeholder="e.g. Ministry of Innovation, AAU, UNEP" className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b]" />
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Ministry of Innovation, AAU, UNEP"
+                      value={partnerFormData.organizationName}
+                      onChange={(e) => setPartnerFormData({ ...partnerFormData, organizationName: e.target.value })}
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b]"
+                    />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-stone-700 mb-1">Representative Name & Title *</label>
-                    <input type="text" required placeholder="e.g. Dr. Kassahun Taye, Director" className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b]" />
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Dr. Kassahun Taye, Director"
+                      value={partnerFormData.representativeName}
+                      onChange={(e) => setPartnerFormData({ ...partnerFormData, representativeName: e.target.value })}
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b]"
+                    />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-stone-700 mb-1">Official Institutional Email *</label>
-                    <input type="email" required placeholder="partner@institution.gov.et" className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b]" />
+                    <input
+                      type="email"
+                      required
+                      placeholder="partner@institution.gov.et"
+                      value={partnerFormData.email}
+                      onChange={(e) => setPartnerFormData({ ...partnerFormData, email: e.target.value })}
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b]"
+                    />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-stone-700 mb-1">Collaboration Domain</label>
-                    <select className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b] bg-white">
-                      <option>DEAIP Academic & Research Co-design</option>
-                      <option>Green Legacy Reforestation & COP Climate</option>
-                      <option>Youth Leadership Academy Masterclasses</option>
-                      <option>FinTech & Innovation Sandbox Incubation</option>
+                    <select
+                      value={partnerFormData.collaborationDomain}
+                      onChange={(e) => setPartnerFormData({ ...partnerFormData, collaborationDomain: e.target.value })}
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b] bg-white"
+                    >
+                      {collaborationDomainOptions.map((option) => (
+                        <option key={option}>{option}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-stone-700 mb-1">Partnership Intent & Scope *</label>
-                  <textarea rows={4} required placeholder="Describe proposed areas of joint collaboration..." className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b]" />
+                  <textarea
+                    rows={4}
+                    required
+                    placeholder="Describe proposed areas of joint collaboration..."
+                    value={partnerFormData.message}
+                    onChange={(e) => setPartnerFormData({ ...partnerFormData, message: e.target.value })}
+                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b]"
+                  />
                 </div>
+
+                {/* Server-side error banner */}
+                {partnerSubmitError && (
+                  <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-[13px] text-red-700 space-y-1">
+                    <p>{partnerSubmitError}</p>
+                    {partnerFieldErrors && (
+                      <ul className="list-disc pl-4 space-y-0.5">
+                        {Object.entries(partnerFieldErrors).map(([field, messages]) => (
+                          <li key={field}>{messages[0]}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
 
                 {/* Buttons: 16px, Medium, sentence case */}
                 <button
                   type="submit"
-                  className="w-full py-3.5 px-4 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={isPartnerSubmitting}
+                  className="w-full py-3.5 px-4 bg-[#1a2805] hover:bg-[#06592b] disabled:opacity-60 disabled:cursor-not-allowed text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Submit institutional partnership inquiry</span>
+                  <span>{isPartnerSubmitting ? 'Submitting inquiry…' : 'Submit institutional partnership inquiry'}</span>
                 </button>
               </form>
             )}
