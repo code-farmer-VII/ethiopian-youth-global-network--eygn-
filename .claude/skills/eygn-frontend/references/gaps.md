@@ -1,18 +1,20 @@
-# Frontend vs. brief — gaps (snapshot 2026-09-26)
+# Frontend vs. brief — gaps (snapshot 2026-09-26, updated 2026-09-28)
+
+**2026-09-28: F1 and F2 done.** `src/lib/api.ts` (+ `src/lib/api-error.ts`) is a typed client for every current `eygn-api` endpoint, reading `VITE_API_BASE_URL` (new `.env.example` entry, falls back to `http://localhost:8080/api/v1`). `MembershipPage.tsx`'s individual application form now calls `submitMembershipApplication`, maps its free-text interest labels to the API's `InterestArea` enum, and shows server-side errors (duplicate email, field validation) inline. Both driven end-to-end through the real browser UI against a live backend (temp Postgres + temp `eygn-api`) — success, duplicate-email 409, and validation-error paths all confirmed. F3–F6 (remaining forms) and F7–F10 (data) still open.
 
 Legend: ✅ done · 🟡 UI only / partial · ❌ missing. Re-verify in code before relying on a row; update when a gap closes.
 
 ## Form ↔ API mismatches
-The frontend never calls the backend; every form is a local-state mock and all content comes from `src/data/eygnData.ts`.
+Forms are still local-state mocks and content still comes from `src/data/eygnData.ts` — the client exists (F1) but nothing is wired to it yet.
 
 | Frontend flow | File | Backend endpoint | Mismatch |
 |---|---|---|---|
-| Membership application | `pages/MembershipPage.tsx` | `POST /members` | Form collects phone, city, status, organizationOrUni, `interestAreas[]`, statementOfPurpose, newsletterOptIn; API takes only fullName, email, country, profession, single `interest` enum. Brief requires only name/email/country/profession/interest. |
-| Partnership inquiry | `pages/MembershipPage.tsx` (`handlePartnerSubmit`) | **none** | Backend needs an endpoint. |
-| Event registration | `components/EventRegistrationModal.tsx` | `POST /events/:id/registrations` | Frontend event ids are strings (`event-1`), API ids numeric. Modal fakes a pass id. |
-| Events / past archive | `UPCOMING_EVENTS`, `PAST_EVENTS` | `GET /events` | API returns only future events as `{id,title,startsAt}`; UI needs location, type, category, description, speakers, capacity, registeredCount, status. |
-| Contact form | `pages/ContactPage.tsx` | `POST /contact-messages` | Form has department `<select>` + subject; API takes name/email/message only. |
-| Newsletter | `components/Footer.tsx` | `POST /newsletter/subscribers` | OK. |
+| Membership application | `pages/MembershipPage.tsx` | `POST /members` (client: `submitMembershipApplication`) | Done (F2). `handleSubmit` calls the API, maps interest labels through `INTEREST_AREA_TO_API`, and shows duplicate-email/validation errors. Note: the form's default `interestAreas` state includes `'Climate Action'`, which doesn't match any option in `interestOptions` (`'Climate Action (Green Legacy)'`) — a pre-existing bug, not introduced by F2 — so that default toggle never renders as selected and is silently dropped from the submission if the user doesn't reselect it. `newsletterOptIn` and `phone` are collected but not yet exposed in the visible form fields (state defaults only). |
+| Partnership inquiry | `pages/MembershipPage.tsx` (`handlePartnerSubmit`) | `POST /partnership-inquiries` (client: `submitPartnershipInquiry`) | Endpoint now exists (B2, done). F3: wire `handlePartnerSubmit`; the form's `Collaboration Domain` select maps to `collaborationDomain` (free text, not an enum). |
+| Event registration | `components/EventRegistrationModal.tsx` | `POST /events/:slug/registrations` (client: `registerForEvent`) | API now keys events by `slug`, not numeric id (X2, done) — frontend event ids (`event-1`) need to become real slugs once F10 replaces the static event data. Modal still fakes a pass id; F4 wires the real call. |
+| Events / past archive | `UPCOMING_EVENTS`, `PAST_EVENTS` | `GET /events?when=upcoming\|past`, `GET /events/:slug` (client: `listEvents`, `getEvent`) | API now returns the full shape the UI needs — location, type, category, featuredSpeakers, capacity, registeredCount, status (B3, done). F10: replace the static arrays. |
+| Contact form | `pages/ContactPage.tsx` | `POST /contact-messages` (client: `submitContactMessage`) | Backend now accepts subject + a `department` enum matching the form's 7 desks (X1, done) — frontend sends the enum key (e.g. `partnerships_outreach`), not the select's display label. F5 wires `handleSubmit`. |
+| Newsletter | `components/Footer.tsx` | `POST /newsletter/subscribers`, `DELETE /newsletter/subscribers/:email` (client: `subscribeToNewsletter`, `unsubscribeFromNewsletter`) | OK — F6 wires it. |
 | Blog/news | `BLOG_POSTS`, `ArticleReaderModal` | `GET /posts`, `/posts/:slug` | UI post has single `category` + author, location, featuredQuote, readingTime; API has `categories[]` (brief posts have 2 each) and none of the extras. |
 | Programs | `PROGRAMS` | `GET /programs` | UI needs acronym, subtitle, activities[], targetAudience, howToJoin, stats, status, pillar; API has slug/title/description/isActive. |
 | Team | `LEADERSHIP_TEAM` | `GET /team-members` | API lacks photo, department, highlights, email, linkedin. |
