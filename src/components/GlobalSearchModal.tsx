@@ -1,13 +1,18 @@
-import React, { useState, useMemo } from 'react';
-import { BLOG_POSTS, CHAPTER_HUBS, LEADERSHIP_TEAM, PROGRAMS } from '../data/eygnData';
+import React, { useState, useMemo, useEffect } from 'react';
+import { CHAPTER_HUBS, LEADERSHIP_TEAM, PROGRAMS } from '../data/eygnData';
+import { listPosts, PostSummary } from '../lib/api';
 import { Search, X, BookOpen, Users, FolderGit2, MapPin, ArrowRight } from 'lucide-react';
-import { BlogPost, Chapter, Program, TeamMember } from '../types';
 
 interface GlobalSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectPost: (post: BlogPost) => void;
+  onSelectPost: (slug: string) => void;
   onNavigate: (page: any) => void;
+}
+
+function formatDate(iso: string): string {
+  const [year, month, day] = iso.split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
 export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
@@ -17,13 +22,21 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   onNavigate,
 }) => {
   const [query, setQuery] = useState('');
+  const [apiPosts, setApiPosts] = useState<PostSummary[]>([]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    listPosts({ size: 100 })
+      .then((res) => setApiPosts(res.content))
+      .catch(() => setApiPosts([]));
+  }, [isOpen]);
 
   const results = useMemo(() => {
     if (!query.trim()) return { posts: [], programs: [], team: [], chapters: [] };
     const q = query.toLowerCase();
 
-    const posts = BLOG_POSTS.filter(
-      p => p.title.toLowerCase().includes(q) || p.summary.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
+    const posts = apiPosts.filter(
+      p => p.title.toLowerCase().includes(q) || p.excerpt.toLowerCase().includes(q) || p.categories.some(c => c.toLowerCase().includes(q))
     );
     const programs = PROGRAMS.filter(
       p => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) || (p.acronym && p.acronym.toLowerCase().includes(q))
@@ -36,7 +49,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     );
 
     return { posts, programs, team, chapters };
-  }, [query]);
+  }, [query, apiPosts]);
 
   if (!isOpen) return null;
 
@@ -146,10 +159,10 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                   <div className="space-y-1.5">
                     {results.posts.map(post => (
                       <button
-                        key={post.id}
+                        key={post.slug}
                         type="button"
                         onClick={() => {
-                          onSelectPost(post);
+                          onSelectPost(post.slug);
                           onClose();
                         }}
                         className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group"
@@ -160,7 +173,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                             {post.title}
                           </span>
                           <span className="text-[11px] text-stone-500 line-clamp-1">
-                            {post.date} · {post.summary}
+                            {formatDate(post.publishedAt)} · {post.excerpt}
                           </span>
                         </div>
                         <ArrowRight className="w-3.5 h-3.5 text-stone-300 group-hover:text-[#1a2805] mt-1 shrink-0" />

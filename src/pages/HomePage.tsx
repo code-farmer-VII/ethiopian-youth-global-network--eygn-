@@ -1,14 +1,20 @@
-import React from 'react';
-import { BlogPost, EventItem, Language, PageType, Program } from '../types';
-import { BLOG_POSTS, EYGN_INFO, PROGRAMS, STATISTICS, UPCOMING_EVENTS, TRANSLATIONS } from '../data/eygnData';
+import React, { useEffect, useState } from 'react';
+import { EventItem, Language, PageType } from '../types';
+import { EYGN_INFO, PROGRAMS, STATISTICS, UPCOMING_EVENTS, TRANSLATIONS } from '../data/eygnData';
+import { listPosts, PostSummary } from '../lib/api';
 import { ChapterMap } from '../components/ChapterMap';
 import { ArrowRight, Calendar, Sparkles, MapPin, ChevronRight, Globe, Shield, Ticket } from 'lucide-react';
 
 interface HomePageProps {
   onNavigate: (page: PageType) => void;
   language: Language;
-  onSelectPost: (post: BlogPost) => void;
+  onSelectPost: (slug: string) => void;
   onRegisterEvent: (event: EventItem) => void;
+}
+
+function formatDate(iso: string): string {
+  const [year, month, day] = iso.split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
@@ -19,8 +25,15 @@ export const HomePage: React.FC<HomePageProps> = ({
 }) => {
   const t = TRANSLATIONS[language];
   const featuredPrograms = PROGRAMS.slice(0, 3);
-  const latestPosts = BLOG_POSTS.slice(0, 3);
   const featuredEvents = UPCOMING_EVENTS.slice(0, 3);
+
+  const [latestPosts, setLatestPosts] = useState<PostSummary[]>([]);
+
+  useEffect(() => {
+    listPosts({ size: 3 })
+      .then((res) => setLatestPosts(res.content))
+      .catch(() => setLatestPosts([]));
+  }, []);
 
   return (
     <div className="space-y-16 lg:space-y-24">
@@ -389,14 +402,14 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {latestPosts.map((post) => (
             <div
-              key={post.id}
+              key={post.slug}
               className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between hover:shadow-sm transition-all group"
             >
               <div>
                 <div className="flex items-center gap-2 text-xs text-stone-500 mb-2">
-                  <span className="font-semibold text-[#06592b]">{post.category}</span>
+                  <span className="font-semibold text-[#06592b]">{post.categories.join(', ')}</span>
                   <span>·</span>
-                  <span>{post.date}</span>
+                  <span>{formatDate(post.publishedAt)}</span>
                 </div>
 
                 <h3 className="text-[18px] font-bold text-[#1a2805] group-hover:text-[#06592b] transition-colors leading-snug mb-2">
@@ -404,7 +417,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </h3>
 
                 <p className="text-[14px] text-stone-600 leading-relaxed line-clamp-3">
-                  {post.summary}
+                  {post.excerpt}
                 </p>
               </div>
 
@@ -412,7 +425,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <span className="text-[12px] text-stone-400">{post.readingTime}</span>
                 <button
                   type="button"
-                  onClick={() => onSelectPost(post)}
+                  onClick={() => onSelectPost(post.slug)}
                   className="text-[15px] font-medium text-[#06592b] group-hover:text-[#1a2805] flex items-center gap-1 cursor-pointer"
                 >
                   <span>{t.readMore}</span>

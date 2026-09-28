@@ -127,6 +127,8 @@ export interface PostSummary {
   publishedAt: string;
   categories: string[];
   excerpt: string;
+  author: string | null;
+  readingTime: string | null;
 }
 
 export interface PostList {
@@ -142,6 +144,10 @@ export interface PostDetail {
   publishedAt: string;
   categories: string[];
   body: string[];
+  author: string | null;
+  location: string | null;
+  featuredQuote: string | null;
+  readingTime: string | null;
 }
 
 export interface ProgramDto {
