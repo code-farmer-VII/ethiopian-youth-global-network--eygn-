@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { CHAPTER_HUBS, LEADERSHIP_TEAM, PROGRAMS } from '../data/eygnData';
-import { listPosts, PostSummary } from '../lib/api';
+import { CHAPTER_HUBS, LEADERSHIP_TEAM } from '../data/eygnData';
+import { listPosts, listPrograms, PostSummary, ProgramDto } from '../lib/api';
 import { Search, X, BookOpen, Users, FolderGit2, MapPin, ArrowRight } from 'lucide-react';
 
 interface GlobalSearchModalProps {
@@ -23,12 +23,16 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 }) => {
   const [query, setQuery] = useState('');
   const [apiPosts, setApiPosts] = useState<PostSummary[]>([]);
+  const [apiPrograms, setApiPrograms] = useState<ProgramDto[]>([]);
 
   useEffect(() => {
     if (!isOpen) return;
     listPosts({ size: 100 })
       .then((res) => setApiPosts(res.content))
       .catch(() => setApiPosts([]));
+    listPrograms()
+      .then(setApiPrograms)
+      .catch(() => setApiPrograms([]));
   }, [isOpen]);
 
   const results = useMemo(() => {
@@ -38,7 +42,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     const posts = apiPosts.filter(
       p => p.title.toLowerCase().includes(q) || p.excerpt.toLowerCase().includes(q) || p.categories.some(c => c.toLowerCase().includes(q))
     );
-    const programs = PROGRAMS.filter(
+    const programs = apiPrograms.filter(
       p => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) || (p.acronym && p.acronym.toLowerCase().includes(q))
     );
     const team = LEADERSHIP_TEAM.filter(
@@ -49,7 +53,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     );
 
     return { posts, programs, team, chapters };
-  }, [query, apiPosts]);
+  }, [query, apiPosts, apiPrograms]);
 
   if (!isOpen) return null;
 
@@ -126,7 +130,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                   <div className="space-y-1.5">
                     {results.programs.map(p => (
                       <button
-                        key={p.id}
+                        key={p.slug}
                         type="button"
                         onClick={() => {
                           onNavigate('programs');

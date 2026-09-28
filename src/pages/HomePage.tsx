@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { EventItem, Language, PageType } from '../types';
-import { EYGN_INFO, PROGRAMS, STATISTICS, UPCOMING_EVENTS, TRANSLATIONS } from '../data/eygnData';
-import { listPosts, PostSummary } from '../lib/api';
+import { EYGN_INFO, STATISTICS, UPCOMING_EVENTS, TRANSLATIONS } from '../data/eygnData';
+import { listPosts, listPrograms, PostSummary, ProgramDto } from '../lib/api';
 import { ChapterMap } from '../components/ChapterMap';
 import { ArrowRight, Calendar, Sparkles, MapPin, ChevronRight, Globe, Shield, Ticket } from 'lucide-react';
 
@@ -24,15 +24,18 @@ export const HomePage: React.FC<HomePageProps> = ({
   onRegisterEvent,
 }) => {
   const t = TRANSLATIONS[language];
-  const featuredPrograms = PROGRAMS.slice(0, 3);
   const featuredEvents = UPCOMING_EVENTS.slice(0, 3);
 
   const [latestPosts, setLatestPosts] = useState<PostSummary[]>([]);
+  const [featuredPrograms, setFeaturedPrograms] = useState<ProgramDto[]>([]);
 
   useEffect(() => {
     listPosts({ size: 3 })
       .then((res) => setLatestPosts(res.content))
       .catch(() => setLatestPosts([]));
+    listPrograms()
+      .then((res) => setFeaturedPrograms(res.slice(0, 3)))
+      .catch(() => setFeaturedPrograms([]));
   }, []);
 
   return (
@@ -256,7 +259,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredPrograms.map((program) => (
             <div
-              key={program.id}
+              key={program.slug}
               className="bg-white rounded-2xl p-6 border border-stone-200 hover:border-[#06592b] shadow-xs hover:shadow-sm transition-all flex flex-col justify-between"
             >
               <div>

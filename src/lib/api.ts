@@ -150,10 +150,25 @@ export interface PostDetail {
   readingTime: string | null;
 }
 
+export interface ProgramStat {
+  label: string;
+  value: string;
+}
+
+export type ProgramStatus = 'Active' | 'Upcoming' | 'Flagship';
+
 export interface ProgramDto {
   slug: string;
+  acronym: string | null;
   title: string;
+  subtitle: string | null;
   description: string;
+  activities: string[];
+  targetAudience: string | null;
+  howToJoin: string | null;
+  stats: ProgramStat[] | null;
+  status: ProgramStatus;
+  pillar: string | null;
   isActive: boolean;
 }
 
