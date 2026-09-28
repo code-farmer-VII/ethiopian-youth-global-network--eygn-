@@ -105,10 +105,11 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
               </p>
 
               <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1">
+                <label htmlFor="event-reg-fullName" className="block text-xs font-semibold text-stone-700 mb-1">
                   Full Name *
                 </label>
                 <input
+                  id="event-reg-fullName"
                   type="text"
                   required
                   placeholder="e.g., Bethlehem Haile"
@@ -119,10 +120,11 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1">
+                <label htmlFor="event-reg-email" className="block text-xs font-semibold text-stone-700 mb-1">
                   Official Email *
                 </label>
                 <input
+                  id="event-reg-email"
                   type="email"
                   required
                   placeholder="name@organization.org"
@@ -134,10 +136,11 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
+                  <label htmlFor="event-reg-location" className="block text-xs font-semibold text-stone-700 mb-1">
                     Your Current City / Country *
                   </label>
                   <input
+                    id="event-reg-location"
                     type="text"
                     required
                     placeholder="e.g. Addis Ababa / London"
@@ -148,10 +151,11 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
+                  <label htmlFor="event-reg-attendanceMode" className="block text-xs font-semibold text-stone-700 mb-1">
                     Attendance Mode
                   </label>
                   <select
+                    id="event-reg-attendanceMode"
                     value={formData.attendanceMode}
                     onChange={(e) => setFormData({ ...formData, attendanceMode: e.target.value })}
                     className="w-full px-3 py-2 text-sm rounded-lg border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b] focus:border-transparent bg-white"
@@ -163,10 +167,11 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1">
+                <label htmlFor="event-reg-notes" className="block text-xs font-semibold text-stone-700 mb-1">
                   Institutional Affiliation / Notes (Optional)
                 </label>
                 <input
+                  id="event-reg-notes"
                   type="text"
                   placeholder="University, NGO, Company, or Diaspora Hub"
                   value={formData.specialRequirements}

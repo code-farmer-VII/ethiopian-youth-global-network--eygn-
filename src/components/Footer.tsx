@@ -184,7 +184,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
             <form onSubmit={handleSubscribe} className="space-y-2">
               <div className="relative">
+                <label htmlFor="footer-newsletter-email" className="sr-only">
+                  Email address
+                </label>
                 <input
+                  id="footer-newsletter-email"
                   type="email"
                   required
                   placeholder="Enter your email..."

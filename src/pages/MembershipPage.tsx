@@ -266,10 +266,11 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                   {/* Full Name & Email */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-stone-700 mb-1">
+                      <label htmlFor="member-fullName" className="block text-xs font-semibold text-stone-700 mb-1">
                         Full Name *
                       </label>
                       <input
+                        id="member-fullName"
                         type="text"
                         required
                         placeholder="e.g. Bethlehem Haile"
@@ -280,10 +281,11 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-stone-700 mb-1">
+                      <label htmlFor="member-email" className="block text-xs font-semibold text-stone-700 mb-1">
                         Email Address *
                       </label>
                       <input
+                        id="member-email"
                         type="email"
                         required
                         placeholder="name@university.edu"
@@ -296,10 +298,10 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
 
                   {/* Status: Diaspora vs Homeland */}
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-2">
+                    <span id="member-status-label" className="block text-xs font-semibold text-stone-700 mb-2">
                       Membership Category *
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
+                    </span>
+                    <div role="group" aria-labelledby="member-status-label" className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
                         onClick={() => setFormData({ ...formData, status: 'diaspora' })}
@@ -335,10 +337,11 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                   {/* Country & City */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-stone-700 mb-1">
+                      <label htmlFor="member-country" className="block text-xs font-semibold text-stone-700 mb-1">
                         Current Country of Residence *
                       </label>
                       <input
+                        id="member-country"
                         type="text"
                         required
                         placeholder="e.g. United States, Germany, Ethiopia"
@@ -349,10 +352,11 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-stone-700 mb-1">
+                      <label htmlFor="member-city" className="block text-xs font-semibold text-stone-700 mb-1">
                         City / Metro Area *
                       </label>
                       <input
+                        id="member-city"
                         type="text"
                         required
                         placeholder="e.g. Washington, D.C., Berlin, Addis Ababa"
@@ -366,10 +370,11 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                   {/* Profession & University */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-stone-700 mb-1">
+                      <label htmlFor="member-profession" className="block text-xs font-semibold text-stone-700 mb-1">
                         Profession / Field of Study *
                       </label>
                       <input
+                        id="member-profession"
                         type="text"
                         required
                         placeholder="e.g. Software Engineer / Public Health"
@@ -380,10 +385,11 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-stone-700 mb-1">
+                      <label htmlFor="member-organizationOrUni" className="block text-xs font-semibold text-stone-700 mb-1">
                         University or Organization
                       </label>
                       <input
+                        id="member-organizationOrUni"
                         type="text"
                         placeholder="e.g. AAU / Stanford / Google"
                         value={formData.organizationOrUni}
@@ -395,10 +401,10 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
 
                   {/* Areas of Interest Multi-Selector */}
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-2">
+                    <span id="member-interests-label" className="block text-xs font-semibold text-stone-700 mb-2">
                       Areas of National Service Interest (Select all that apply)
-                    </label>
-                    <div className="flex flex-wrap gap-2">
+                    </span>
+                    <div role="group" aria-labelledby="member-interests-label" className="flex flex-wrap gap-2">
                       {interestOptions.map((interest) => {
                         const isSelected = formData.interestAreas.includes(interest);
                         return (
@@ -421,10 +427,11 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
 
                   {/* Statement of Purpose */}
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    <label htmlFor="member-statementOfPurpose" className="block text-xs font-semibold text-stone-700 mb-1">
                       Brief Statement of Purpose / Desired Contribution *
                     </label>
                     <textarea
+                      id="member-statementOfPurpose"
                       rows={3}
                       required
                       placeholder="How would you like to contribute your skills or network to Ethiopia's development?"
@@ -565,8 +572,9 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
               <form onSubmit={handlePartnerSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">Organization / Institution Name *</label>
+                    <label htmlFor="partner-organizationName" className="block text-xs font-semibold text-stone-700 mb-1">Organization / Institution Name *</label>
                     <input
+                      id="partner-organizationName"
                       type="text"
                       required
                       placeholder="e.g. Ministry of Innovation, AAU, UNEP"
@@ -576,8 +584,9 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">Representative Name & Title *</label>
+                    <label htmlFor="partner-representativeName" className="block text-xs font-semibold text-stone-700 mb-1">Representative Name & Title *</label>
                     <input
+                      id="partner-representativeName"
                       type="text"
                       required
                       placeholder="e.g. Dr. Kassahun Taye, Director"
@@ -590,8 +599,9 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">Official Institutional Email *</label>
+                    <label htmlFor="partner-email" className="block text-xs font-semibold text-stone-700 mb-1">Official Institutional Email *</label>
                     <input
+                      id="partner-email"
                       type="email"
                       required
                       placeholder="partner@institution.gov.et"
@@ -601,8 +611,9 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">Collaboration Domain</label>
+                    <label htmlFor="partner-collaborationDomain" className="block text-xs font-semibold text-stone-700 mb-1">Collaboration Domain</label>
                     <select
+                      id="partner-collaborationDomain"
                       value={partnerFormData.collaborationDomain}
                       onChange={(e) => setPartnerFormData({ ...partnerFormData, collaborationDomain: e.target.value })}
                       className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b] bg-white"
@@ -615,8 +626,9 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">Partnership Intent & Scope *</label>
+                  <label htmlFor="partner-message" className="block text-xs font-semibold text-stone-700 mb-1">Partnership Intent & Scope *</label>
                   <textarea
+                    id="partner-message"
                     rows={4}
                     required
                     placeholder="Describe proposed areas of joint collaboration..."

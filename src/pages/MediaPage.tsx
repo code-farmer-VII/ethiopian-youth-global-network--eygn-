@@ -140,6 +140,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
               <Search className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
               <input
                 type="text"
+                aria-label="Search articles and communiqués"
                 placeholder="Search articles & communiqués..."
                 value={searchFilter}
                 onChange={(e) => setSearchFilter(e.target.value)}

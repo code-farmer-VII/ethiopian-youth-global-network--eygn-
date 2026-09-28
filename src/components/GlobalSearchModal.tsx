@@ -78,6 +78,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           <input
             type="text"
             autoFocus
+            aria-label="Search the site"
             placeholder="Search programs (DEAIP, Green Legacy), leadership, posts, chapters..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}

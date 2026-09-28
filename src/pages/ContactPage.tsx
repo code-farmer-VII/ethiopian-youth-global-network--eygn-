@@ -158,10 +158,11 @@ export const ContactPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    <label htmlFor="contact-name" className="block text-xs font-semibold text-stone-700 mb-1">
                       Your Full Name *
                     </label>
                     <input
+                      id="contact-name"
                       type="text"
                       required
                       placeholder="e.g. Dawit Wolde"
@@ -172,10 +173,11 @@ export const ContactPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    <label htmlFor="contact-email" className="block text-xs font-semibold text-stone-700 mb-1">
                       Email Address *
                     </label>
                     <input
+                      id="contact-email"
                       type="email"
                       required
                       placeholder="dawit@example.com"
@@ -188,10 +190,11 @@ export const ContactPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    <label htmlFor="contact-department" className="block text-xs font-semibold text-stone-700 mb-1">
                       Target Department Desk
                     </label>
                     <select
+                      id="contact-department"
                       value={formData.department}
                       onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                       className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b] bg-white"
@@ -207,10 +210,11 @@ export const ContactPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    <label htmlFor="contact-subject" className="block text-xs font-semibold text-stone-700 mb-1">
                       Subject Line *
                     </label>
                     <input
+                      id="contact-subject"
                       type="text"
                       required
                       placeholder="e.g. Chapter Proposal / DEAIP Inquiry"
@@ -222,10 +226,11 @@ export const ContactPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
+                  <label htmlFor="contact-message" className="block text-xs font-semibold text-stone-700 mb-1">
                     Your Message / Proposal *
                   </label>
                   <textarea
+                    id="contact-message"
                     rows={5}
                     required
                     placeholder="Provide detailed background regarding your organization, inquiry, or partnership intention..."
