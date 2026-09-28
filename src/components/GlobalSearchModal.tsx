@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { CHAPTER_HUBS, LEADERSHIP_TEAM } from '../data/eygnData';
-import { listPosts, listPrograms, PostSummary, ProgramDto } from '../lib/api';
+import { CHAPTER_HUBS } from '../data/eygnData';
+import { listPosts, listPrograms, listTeamMembers, PostSummary, ProgramDto, TeamMemberDto } from '../lib/api';
 import { Search, X, BookOpen, Users, FolderGit2, MapPin, ArrowRight } from 'lucide-react';
 
 interface GlobalSearchModalProps {
@@ -24,6 +24,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   const [query, setQuery] = useState('');
   const [apiPosts, setApiPosts] = useState<PostSummary[]>([]);
   const [apiPrograms, setApiPrograms] = useState<ProgramDto[]>([]);
+  const [apiTeam, setApiTeam] = useState<TeamMemberDto[]>([]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -33,6 +34,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     listPrograms()
       .then(setApiPrograms)
       .catch(() => setApiPrograms([]));
+    listTeamMembers()
+      .then(setApiTeam)
+      .catch(() => setApiTeam([]));
   }, [isOpen]);
 
   const results = useMemo(() => {
@@ -45,15 +49,15 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     const programs = apiPrograms.filter(
       p => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) || (p.acronym && p.acronym.toLowerCase().includes(q))
     );
-    const team = LEADERSHIP_TEAM.filter(
-      t => t.name.toLowerCase().includes(q) || t.role.toLowerCase().includes(q) || t.bio.toLowerCase().includes(q)
+    const team = apiTeam.filter(
+      t => t.fullName.toLowerCase().includes(q) || t.role.toLowerCase().includes(q) || (t.bio ?? '').toLowerCase().includes(q)
     );
     const chapters = CHAPTER_HUBS.filter(
       c => c.city.toLowerCase().includes(q) || c.country.toLowerCase().includes(q) || c.region.toLowerCase().includes(q)
     );
 
     return { posts, programs, team, chapters };
-  }, [query, apiPosts, apiPrograms]);
+  }, [query, apiPosts, apiPrograms, apiTeam]);
 
   if (!isOpen) return null;
 
@@ -196,7 +200,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                   <div className="space-y-1.5">
                     {results.team.map(member => (
                       <button
-                        key={member.id}
+                        key={member.fullName}
                         type="button"
                         onClick={() => {
                           onNavigate('team');
@@ -207,7 +211,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                         <Users className="w-4 h-4 text-stone-500 mt-0.5 shrink-0" />
                         <div className="flex-1 min-w-0">
                           <span className="text-xs font-bold text-[#1a2805] group-hover:text-[#06592b] block truncate">
-                            {member.name} — {member.role}
+                            {member.fullName} — {member.role}
                           </span>
                           <span className="text-[11px] text-stone-500 line-clamp-1">
                             {member.department}

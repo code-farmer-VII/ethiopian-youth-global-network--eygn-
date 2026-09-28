@@ -175,7 +175,13 @@ export interface ProgramDto {
 export interface TeamMemberDto {
   fullName: string;
   role: string;
+  roleAm: string | null;
+  department: string | null;
   bio: string | null;
+  highlights: string[];
+  email: string | null;
+  linkedin: string | null;
+  photoUrl: string | null;
 }
 
 // ---------------------------------------------------------------------------

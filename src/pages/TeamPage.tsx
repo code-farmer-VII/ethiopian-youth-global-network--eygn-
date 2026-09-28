@@ -1,21 +1,34 @@
-import React, { useState } from 'react';
-import { LEADERSHIP_TEAM } from '../data/eygnData';
-import { PageType, TeamMember } from '../types';
+import React, { useEffect, useState } from 'react';
+import { PageType } from '../types';
+import { listTeamMembers, TeamMemberDto } from '../lib/api';
 import { Mail, ArrowRight } from 'lucide-react';
 
 interface TeamPageProps {
   onNavigate: (page: PageType) => void;
 }
 
+// API team members have no id/slug and no photo initials seed — derive both client-side.
+function getInitials(fullName: string): string {
+  const parts = fullName.replace(/^(Mr|Ms|Mrs|Dr)\.?\s+/i, '').trim().split(/\s+/);
+  return parts.slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('') || '??';
+}
+
 export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
   const [filterDepartment, setFilterDepartment] = useState<string>('All');
+  const [teamMembers, setTeamMembers] = useState<TeamMemberDto[]>([]);
 
-  const executiveLeaders = LEADERSHIP_TEAM.filter(m => m.department === 'Executive Leadership');
-  const departmentHeads = LEADERSHIP_TEAM.filter(m => m.department !== 'Executive Leadership');
+  useEffect(() => {
+    listTeamMembers()
+      .then(setTeamMembers)
+      .catch(() => setTeamMembers([]));
+  }, []);
+
+  const executiveLeaders = teamMembers.filter(m => m.department === 'Executive Leadership');
+  const departmentHeads = teamMembers.filter(m => m.department !== 'Executive Leadership');
 
   const filteredHeads = filterDepartment === 'All'
     ? departmentHeads
-    : departmentHeads.filter(m => m.department.toLowerCase().includes(filterDepartment.toLowerCase()));
+    : departmentHeads.filter(m => (m.department ?? '').toLowerCase().includes(filterDepartment.toLowerCase()));
 
   return (
     <div className="space-y-16 lg:space-y-20 py-6">
@@ -50,14 +63,14 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {executiveLeaders.map((member) => (
             <div
-              key={member.id}
+              key={member.fullName}
               className="bg-white rounded-3xl p-8 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between"
             >
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   {/* Portrait Monogram Tile */}
                   <div className="w-16 h-16 rounded-2xl bg-[#1a2805] text-[#f3a310] flex items-center justify-center font-bold text-2xl border border-[#f3a310]/40 shadow-xs shrink-0">
-                    {member.imageFallbackSeed}
+                    {getInitials(member.fullName)}
                   </div>
 
                   <div>
@@ -65,7 +78,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
                       {member.role}
                     </span>
                     <h3 className="text-[22px] font-bold text-[#1a2805]">
-                      {member.name}
+                      {member.fullName}
                     </h3>
                     {member.roleAm && (
                       <span className="text-xs text-stone-500 block">
@@ -151,17 +164,17 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredHeads.map((member) => (
             <div
-              key={member.id}
+              key={member.fullName}
               className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between"
             >
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl bg-[#06592b]/10 text-[#06592b] font-bold text-lg flex items-center justify-center shrink-0">
-                    {member.imageFallbackSeed}
+                    {getInitials(member.fullName)}
                   </div>
                   <div>
                     <h3 className="text-[17px] font-bold text-[#1a2805] leading-tight">
-                      {member.name}
+                      {member.fullName}
                     </h3>
                     <span className="text-xs text-[#06592b] font-medium block">
                       {member.role}
@@ -193,7 +206,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
                   <a
                     href={`mailto:${member.email}`}
                     className="p-1.5 text-stone-600 hover:text-[#06592b] hover:bg-stone-100 rounded transition-colors"
-                    title={`Email ${member.name}`}
+                    title={`Email ${member.fullName}`}
                   >
                     <Mail className="w-4 h-4" />
                   </a>
