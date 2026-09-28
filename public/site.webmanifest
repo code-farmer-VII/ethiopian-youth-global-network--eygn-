@@ -1,0 +1,11 @@
+{
+  "name": "Ethiopian Youth Global Network",
+  "short_name": "EYGN",
+  "icons": [
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#1a2805",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}
