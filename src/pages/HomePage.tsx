@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { EventItem, Language, PageType } from '../types';
-import { EYGN_INFO, STATISTICS, UPCOMING_EVENTS, TRANSLATIONS } from '../data/eygnData';
-import { listPosts, listPrograms, PostSummary, ProgramDto } from '../lib/api';
+import { EYGN_INFO, STATISTICS, TRANSLATIONS } from '../data/eygnData';
+import { listEvents, listPosts, listPrograms, PostSummary, ProgramDto } from '../lib/api';
+import { toEventItem } from '../lib/eventFormat';
 import { ChapterMap } from '../components/ChapterMap';
 import { ArrowRight, Calendar, Sparkles, MapPin, ChevronRight, Globe, Shield, Ticket } from 'lucide-react';
 
@@ -24,10 +25,10 @@ export const HomePage: React.FC<HomePageProps> = ({
   onRegisterEvent,
 }) => {
   const t = TRANSLATIONS[language];
-  const featuredEvents = UPCOMING_EVENTS.slice(0, 3);
 
   const [latestPosts, setLatestPosts] = useState<PostSummary[]>([]);
   const [featuredPrograms, setFeaturedPrograms] = useState<ProgramDto[]>([]);
+  const [featuredEvents, setFeaturedEvents] = useState<EventItem[]>([]);
 
   useEffect(() => {
     listPosts({ size: 3 })
@@ -36,6 +37,9 @@ export const HomePage: React.FC<HomePageProps> = ({
     listPrograms()
       .then((res) => setFeaturedPrograms(res.slice(0, 3)))
       .catch(() => setFeaturedPrograms([]));
+    listEvents('upcoming')
+      .then((res) => setFeaturedEvents(res.slice(0, 3).map(toEventItem)))
+      .catch(() => setFeaturedEvents([]));
   }, []);
 
   return (

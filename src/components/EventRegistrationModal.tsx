@@ -23,9 +23,8 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
 
   if (!event) return null;
 
-  // The API's event id is a slug (see eygn-api's X2). EventItem.id is still a static mock id
-  // (e.g. 'event-1') until F10 replaces UPCOMING_EVENTS/PAST_EVENTS with real API data, so a real
-  // backend will 404 on it until then — that's expected, not a bug in this wiring.
+  // The API's event id is a slug (see eygn-api's X2); event.id is populated with that slug by
+  // eventFormat.ts's toEventItem (F10), so this is a real registration call end to end.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError(null);

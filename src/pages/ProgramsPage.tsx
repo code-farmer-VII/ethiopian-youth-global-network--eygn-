@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { PAST_EVENTS, UPCOMING_EVENTS } from '../data/eygnData';
 import { EventItem, PageType } from '../types';
-import { listPrograms, ProgramDto } from '../lib/api';
+import { listEvents, listPrograms, ProgramDto } from '../lib/api';
+import { toEventItem } from '../lib/eventFormat';
 import { CheckCircle2, Calendar, MapPin, Ticket, ArrowRight, BookOpen, ChevronRight } from 'lucide-react';
 
 interface ProgramsPageProps {
@@ -16,6 +16,8 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
   const [activeTab, setActiveTab] = useState<'programs' | 'upcoming' | 'past'>('programs');
   const [programs, setPrograms] = useState<ProgramDto[]>([]);
   const [selectedProgram, setSelectedProgram] = useState<ProgramDto | null>(null);
+  const [upcomingEvents, setUpcomingEvents] = useState<EventItem[]>([]);
+  const [pastEvents, setPastEvents] = useState<EventItem[]>([]);
 
   useEffect(() => {
     listPrograms()
@@ -24,6 +26,12 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
         setSelectedProgram((prev) => prev ?? res[0] ?? null);
       })
       .catch(() => setPrograms([]));
+    listEvents('upcoming')
+      .then((res) => setUpcomingEvents(res.map(toEventItem)))
+      .catch(() => setUpcomingEvents([]));
+    listEvents('past')
+      .then((res) => setPastEvents(res.map(toEventItem)))
+      .catch(() => setPastEvents([]));
   }, []);
 
   return (
@@ -65,7 +73,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            Upcoming events ({UPCOMING_EVENTS.length})
+            Upcoming events ({upcomingEvents.length})
           </button>
           <button
             type="button"
@@ -76,7 +84,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            Past events archive ({PAST_EVENTS.length})
+            Past events archive ({pastEvents.length})
           </button>
         </div>
       </section>
@@ -233,7 +241,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
       {activeTab === 'upcoming' && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {UPCOMING_EVENTS.map((event) => (
+            {upcomingEvents.map((event) => (
               <div
                 key={event.id}
                 className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between hover:border-[#06592b] transition-colors"
@@ -304,7 +312,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
       {activeTab === 'past' && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {PAST_EVENTS.map((event) => (
+            {pastEvents.map((event) => (
               <div
                 key={event.id}
                 className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs space-y-4"
