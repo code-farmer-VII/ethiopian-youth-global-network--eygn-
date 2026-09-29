@@ -16,6 +16,7 @@ import { NotFoundPage } from './pages/NotFoundPage';
 import { ArticleReaderModal } from './components/ArticleReaderModal';
 import { EventRegistrationModal } from './components/EventRegistrationModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
+import { initAnalytics, trackPageView } from './lib/analytics';
 
 /** Scrolls to the top of the page on every route change (standard react-router pattern --
  * the browser doesn't do this on its own for client-side navigation). */
@@ -23,6 +24,20 @@ function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pathname]);
+  return null;
+}
+
+/** Fires a GA4 page_view on every route change (F15) -- a no-op with no VITE_GA_MEASUREMENT_ID
+ * configured, see src/lib/analytics.ts. Separate from ScrollToTop to keep each concern its own
+ * effect, even though both key off the same route change. */
+function Analytics() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    // A tick late so react-helmet-async's own effect (which sets document.title for the new
+    // route) has already run -- otherwise this would report the previous page's title.
+    const id = setTimeout(() => trackPageView(pathname, document.title), 0);
+    return () => clearTimeout(id);
   }, [pathname]);
   return null;
 }
@@ -47,9 +62,14 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    initAnalytics();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#fcfdfa] text-[#1a2805] font-sans antialiased">
       <ScrollToTop />
+      <Analytics />
 
       {/* Strict Top Bar Navigation */}
       <Navbar
