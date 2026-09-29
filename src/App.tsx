@@ -13,6 +13,8 @@ import { ArticleReaderModal } from './components/ArticleReaderModal';
 import { EventRegistrationModal } from './components/EventRegistrationModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 
+import { motion, AnimatePresence } from 'motion/react';
+
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [language, setLanguage] = useState<Language>('en');
@@ -40,7 +42,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fcfdfa] text-[#1a2805] font-sans antialiased">
+    <div className="min-h-screen flex flex-col bg-[#fcfdfa] text-[#1a2805] font-sans antialiased selection:bg-[#f3a310]/30">
       {/* Strict Top Bar Navigation */}
       <Navbar
         currentPage={currentPage}
@@ -50,43 +52,53 @@ export default function App() {
         onOpenSearch={() => setSearchOpen(true)}
       />
 
-      {/* Main Page Canvas */}
-      <main className="flex-1">
-        {currentPage === 'home' && (
-          <HomePage
-            onNavigate={handleNavigate}
-            language={language}
-            onSelectPost={setSelectedPost}
-            onRegisterEvent={setSelectedEvent}
-          />
-        )}
+      {/* Main Page Canvas with Smooth Page Transitions */}
+      <main className="flex-1 overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentPage}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {currentPage === 'home' && (
+              <HomePage
+                onNavigate={handleNavigate}
+                language={language}
+                onSelectPost={setSelectedPost}
+                onRegisterEvent={setSelectedEvent}
+              />
+            )}
 
-        {currentPage === 'about' && (
-          <AboutPage onNavigate={handleNavigate} />
-        )}
+            {currentPage === 'about' && (
+              <AboutPage onNavigate={handleNavigate} />
+            )}
 
-        {currentPage === 'programs' && (
-          <ProgramsPage
-            onNavigate={handleNavigate}
-            onRegisterEvent={setSelectedEvent}
-          />
-        )}
+            {currentPage === 'programs' && (
+              <ProgramsPage
+                onNavigate={handleNavigate}
+                onRegisterEvent={setSelectedEvent}
+              />
+            )}
 
-        {currentPage === 'team' && (
-          <TeamPage onNavigate={handleNavigate} />
-        )}
+            {currentPage === 'team' && (
+              <TeamPage onNavigate={handleNavigate} />
+            )}
 
-        {currentPage === 'media' && (
-          <MediaPage onSelectPost={setSelectedPost} />
-        )}
+            {currentPage === 'media' && (
+              <MediaPage onSelectPost={setSelectedPost} />
+            )}
 
-        {currentPage === 'membership' && (
-          <MembershipPage onNavigate={handleNavigate} />
-        )}
+            {currentPage === 'membership' && (
+              <MembershipPage onNavigate={handleNavigate} />
+            )}
 
-        {currentPage === 'contact' && (
-          <ContactPage />
-        )}
+            {currentPage === 'contact' && (
+              <ContactPage />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Footer */}

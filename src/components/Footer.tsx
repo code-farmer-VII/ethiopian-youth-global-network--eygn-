@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { PageType } from '../types';
 import { EYGN_INFO } from '../data/eygnData';
 import { Mail, MapPin, Send, CheckCircle2, Globe, Shield, ArrowUp } from 'lucide-react';
+import { motion } from 'motion/react';
+import { buttonHoverProps, transitionSmooth, viewportStandard } from '../utils/motion';
 
 interface FooterProps {
   onNavigate: (page: PageType) => void;
@@ -31,7 +33,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#06592b]/15 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main footer columns */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 relative z-10">
+      <motion.div 
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 relative z-10"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
           
           {/* Col 1: Brand & Tagline (4 cols) */}
@@ -78,7 +86,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => onNavigate('home')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
+                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Home
                 </button>
@@ -87,7 +95,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => onNavigate('about')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
+                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   About EYGN
                 </button>
@@ -96,7 +104,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => onNavigate('programs')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
+                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Flagship programs
                 </button>
@@ -105,7 +113,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => onNavigate('team')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
+                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Leadership & directorate
                 </button>
@@ -114,7 +122,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => onNavigate('media')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
+                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Media center
                 </button>
@@ -123,7 +131,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => onNavigate('membership')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
+                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Join the network
                 </button>
@@ -132,7 +140,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => onNavigate('contact')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
+                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Contact secretariat
                 </button>
@@ -151,7 +159,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   <span className="text-[11px] text-stone-400 block">{item.label}</span>
                   <a
                     href={`mailto:${item.email}`}
-                    className="font-mono text-white hover:text-[#f3a310] transition-colors flex items-center gap-1.5"
+                    className="font-mono text-white hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 flex items-center gap-1.5"
                   >
                     <Mail className="w-3 h-3 text-[#06592b]" />
                     <span className="truncate">{item.email}</span>
@@ -178,14 +186,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   placeholder="Enter your email..."
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className="w-full bg-white/10 border border-white/15 rounded-lg px-3 py-2 text-xs text-white placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#f3a310]"
+                  className="w-full bg-white/10 border border-white/15 rounded-lg px-3 py-2 text-xs text-white placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#f3a310] transition-all"
                 />
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   type="submit"
-                  className="absolute right-1 top-1 bottom-1 px-3 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] text-xs font-semibold rounded-md transition-colors flex items-center justify-center"
+                  className="absolute right-1 top-1 bottom-1 px-3 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] text-xs font-semibold rounded-md transition-colors flex items-center justify-center cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
-                </button>
+                </motion.button>
               </div>
 
               {subscribed && (
@@ -213,17 +223,19 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
           <div className="flex items-center gap-4">
-            <button
+            <motion.button
+              {...buttonHoverProps}
               type="button"
               onClick={scrollToTop}
-              className="flex items-center gap-1.5 text-xs text-[#f3a310] hover:text-white transition-colors"
+              className="flex items-center gap-1.5 text-xs text-[#f3a310] hover:text-white transition-colors cursor-pointer"
             >
               <span>Back to top</span>
               <ArrowUp className="w-3.5 h-3.5" />
-            </button>
+            </motion.button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </footer>
   );
 };
+
