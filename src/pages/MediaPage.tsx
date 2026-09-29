@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { GALLERY_ITEMS } from '../data/eygnData';
-import { MediaItem } from '../types';
-import { listCategories, listPosts, PostSummary } from '../lib/api';
+import { listCategories, listMediaItems, listPosts, listPressItems, MediaItemDto, PostSummary, PressItemDto } from '../lib/api';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
 import { Image as ImageIcon, Download, Play, Search, Eye, ArrowRight, Check } from 'lucide-react';
@@ -18,17 +16,25 @@ function formatDate(iso: string): string {
 export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
   const [activeTab, setActiveTab] = useState<'posts' | 'photos' | 'press'>('posts');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [lightboxItem, setLightboxItem] = useState<MediaItem | null>(null);
+  const [lightboxItem, setLightboxItem] = useState<MediaItemDto | null>(null);
   const [searchFilter, setSearchFilter] = useState('');
   const [downloadedItem, setDownloadedItem] = useState<string | null>(null);
 
   const [categories, setCategories] = useState<string[]>(['All']);
   const [posts, setPosts] = useState<PostSummary[]>([]);
+  const [galleryItems, setGalleryItems] = useState<MediaItemDto[]>([]);
+  const [pressItems, setPressItems] = useState<PressItemDto[]>([]);
 
   useEffect(() => {
     listCategories()
       .then(setCategories)
       .catch(() => setCategories(['All']));
+    listMediaItems()
+      .then(setGalleryItems)
+      .catch(() => setGalleryItems([]));
+    listPressItems()
+      .then(setPressItems)
+      .catch(() => setPressItems([]));
   }, []);
 
   useEffect(() => {
@@ -103,7 +109,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            Visual archives ({GALLERY_ITEMS.length})
+            Visual archives ({galleryItems.length})
           </button>
           <button
             type="button"
@@ -208,7 +214,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
       {activeTab === 'photos' && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {GALLERY_ITEMS.map((item) => (
+            {galleryItems.map((item) => (
               <div
                 key={item.id}
                 onClick={() => setLightboxItem(item)}
@@ -240,7 +246,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                 <div className="p-5 space-y-2">
                   <div className="flex items-center justify-between text-xs text-stone-500">
                     <span className="font-semibold text-[#06592b]">{item.category}</span>
-                    <span>{item.date}</span>
+                    <span>{formatDate(item.date)}</span>
                   </div>
                   <h4 className="text-[16px] font-bold text-[#1a2805] group-hover:text-[#06592b] transition-colors line-clamp-1">
                     {item.title}
@@ -266,7 +272,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                 <div className="flex justify-between items-start border-b border-white/10 pb-3">
                   <div>
                     <span className="text-xs text-[#f3a310] uppercase font-semibold block">
-                      {lightboxItem.category} archive · {lightboxItem.date}
+                      {lightboxItem.category} archive · {formatDate(lightboxItem.date)}
                     </span>
                     <h3 className="text-xl font-bold text-white">{lightboxItem.title}</h3>
                   </div>
@@ -312,23 +318,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
       {activeTab === 'press' && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                title: 'EYGN Official Website Development Brief',
-                format: 'PDF · Technical Specifications',
-                desc: 'Prepared by Mr. Amanuel Lemma, Head of Media & Communication. Core guidelines, brand specifications, and ready-to-use content.',
-              },
-              {
-                title: 'EYGN Founding Charter & Constitution',
-                format: 'PDF · Institutional Document',
-                desc: 'Official governance framework, non-partisan declaration, diaspora engagement mechanisms, and strategic roadmap.',
-              },
-              {
-                title: 'High-Resolution Brand Assets & Seal',
-                format: 'ZIP · Vector Assets (SVG, EPS)',
-                desc: 'Official wordmarks, emblem symbols, and color palette swatches (#1a2805, #06592b, #f3a310).',
-              },
-            ].map((kit, i) => (
+            {pressItems.map((kit, i) => (
               <div
                 key={i}
                 className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between space-y-4"
@@ -336,7 +326,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                 <div>
                   <span className="text-[11px] font-mono text-[#06592b] block mb-1">{kit.format}</span>
                   <h3 className="text-[18px] font-bold text-[#1a2805]">{kit.title}</h3>
-                  <p className="text-[14px] text-stone-600 leading-relaxed mt-2">{kit.desc}</p>
+                  <p className="text-[14px] text-stone-600 leading-relaxed mt-2">{kit.description}</p>
                 </div>
 
                 {/* Buttons: 16px, Medium, sentence case */}

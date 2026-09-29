@@ -313,4 +313,65 @@ export function listTeamMembers(leadershipOnly = false): Promise<TeamMemberDto[]
   return get(`/team-members${leadershipOnly ? '?leadership=true' : ''}`);
 }
 
+// ---------------------------------------------------------------------------
+// Media center: chapters, gallery, statistics, press (B9)
+// ---------------------------------------------------------------------------
+
+export interface ChapterDto {
+  id: number;
+  city: string;
+  country: string;
+  /** Already the display label (e.g. "Africa"), not the enum slug -- see reference.ts. */
+  region: string;
+  leads: string;
+  membersCount: number;
+  established: string;
+  focus: string;
+  coordinates: { x: number; y: number };
+}
+
+export interface StatisticDto {
+  label: string;
+  value: number;
+  suffix: string | null;
+  quarterlyNote: string | null;
+}
+
+export interface MediaItemDto {
+  id: number;
+  title: string;
+  date: string; // YYYY-MM-DD
+  /** Already the display label (e.g. "Heritage"), not the enum slug. */
+  category: string;
+  type: 'photo' | 'video';
+  description: string;
+  location: string | null;
+  aspectRatio: string;
+  duration: string | null;
+  mediaUrl: string | null;
+}
+
+export interface PressItemDto {
+  title: string;
+  format: string;
+  description: string;
+  downloadUrl: string | null;
+}
+
+export function listChapters(): Promise<ChapterDto[]> {
+  return get('/chapters');
+}
+
+export function listStatistics(): Promise<StatisticDto[]> {
+  return get('/statistics');
+}
+
+export function listMediaItems(): Promise<MediaItemDto[]> {
+  return get('/media-items');
+}
+
+export function listPressItems(): Promise<PressItemDto[]> {
+  return get('/press-items');
+}
+
 export { ApiRequestError };

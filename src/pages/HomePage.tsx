@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EventItem, Language } from '../types';
-import { EYGN_INFO, STATISTICS, TRANSLATIONS } from '../data/eygnData';
-import { listEvents, listPosts, listPrograms, PostSummary, ProgramDto } from '../lib/api';
+import { EYGN_INFO, TRANSLATIONS } from '../data/eygnData';
+import { listEvents, listPosts, listPrograms, listStatistics, PostSummary, ProgramDto, StatisticDto } from '../lib/api';
 import { toEventItem } from '../lib/eventFormat';
 import { ChapterMap } from '../components/ChapterMap';
 import { ROUTES } from '../lib/routes';
@@ -45,6 +45,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   const [latestPosts, setLatestPosts] = useState<PostSummary[]>([]);
   const [featuredPrograms, setFeaturedPrograms] = useState<ProgramDto[]>([]);
   const [featuredEvents, setFeaturedEvents] = useState<EventItem[]>([]);
+  const [statistics, setStatistics] = useState<StatisticDto[]>([]);
 
   useEffect(() => {
     listPosts({ size: 3 })
@@ -56,6 +57,9 @@ export const HomePage: React.FC<HomePageProps> = ({
     listEvents('upcoming')
       .then((res) => setFeaturedEvents(res.slice(0, 3).map(toEventItem)))
       .catch(() => setFeaturedEvents([]));
+    listStatistics()
+      .then(setStatistics)
+      .catch(() => setStatistics([]));
   }, []);
 
   return (
@@ -241,7 +245,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-6">
-            {STATISTICS.map((stat, idx) => (
+            {statistics.map((stat, idx) => (
               <div key={idx} className="space-y-1">
                 <div className="flex items-baseline gap-0.5">
                   <span className="text-3xl sm:text-4xl font-bold font-mono text-[#1a2805] tabular-nums">
