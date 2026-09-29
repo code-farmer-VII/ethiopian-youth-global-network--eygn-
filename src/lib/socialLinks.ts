@@ -6,7 +6,7 @@
  * unset ones are simply omitted, not shown broken/empty.
  */
 import type { LucideIcon } from 'lucide-react';
-import { Facebook, Instagram, Linkedin, Twitter, Youtube } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Send, Twitter, Youtube } from 'lucide-react';
 
 interface SocialLink {
   name: string;
@@ -20,6 +20,9 @@ const CANDIDATES: { name: string; envUrl: string | undefined; Icon: LucideIcon }
   { name: 'Instagram', envUrl: import.meta.env.VITE_SOCIAL_INSTAGRAM, Icon: Instagram },
   { name: 'LinkedIn', envUrl: import.meta.env.VITE_SOCIAL_LINKEDIN, Icon: Linkedin },
   { name: 'YouTube', envUrl: import.meta.env.VITE_SOCIAL_YOUTUBE, Icon: Youtube },
+  // lucide-react has no dedicated Telegram glyph -- Send (paper airplane) is Telegram's own
+  // logo motif too, so it's a reasonable stand-in rather than an unrelated icon.
+  { name: 'Telegram', envUrl: import.meta.env.VITE_SOCIAL_TELEGRAM, Icon: Send },
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = CANDIDATES.filter(
