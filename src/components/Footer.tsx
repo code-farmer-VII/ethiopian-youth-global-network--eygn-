@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { PageType } from '../types';
 import { EYGN_INFO } from '../data/eygnData';
 import { ApiRequestError, subscribeToNewsletter } from '../lib/api';
-import { ROUTES } from '../lib/routes';
+import { ROUTES, PRIVACY_ROUTE } from '../lib/routes';
 import { Mail, MapPin, Send, CheckCircle2, Shield, ArrowUp } from 'lucide-react';
 
 const NAV_LINKS: { id: PageType; label: string }[] = [
@@ -188,6 +188,9 @@ export const Footer: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            <Link to={PRIVACY_ROUTE} className="hover:text-[#f3a310] transition-colors">
+              Privacy policy
+            </Link>
             <button
               type="button"
               onClick={scrollToTop}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { EventItem, Language } from './types';
-import { ROUTES } from './lib/routes';
+import { ROUTES, PRIVACY_ROUTE } from './lib/routes';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { HomePage } from './pages/HomePage';
@@ -11,6 +11,7 @@ import { TeamPage } from './pages/TeamPage';
 import { MediaPage } from './pages/MediaPage';
 import { MembershipPage } from './pages/MembershipPage';
 import { ContactPage } from './pages/ContactPage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ArticleReaderModal } from './components/ArticleReaderModal';
 import { EventRegistrationModal } from './components/EventRegistrationModal';
@@ -79,6 +80,7 @@ export default function App() {
           <Route path={ROUTES.media} element={<MediaPage onSelectPost={setSelectedPostSlug} />} />
           <Route path={ROUTES.membership} element={<MembershipPage />} />
           <Route path={ROUTES.contact} element={<ContactPage />} />
+          <Route path={PRIVACY_ROUTE} element={<PrivacyPolicyPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

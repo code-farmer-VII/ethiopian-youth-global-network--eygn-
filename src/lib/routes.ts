@@ -10,3 +10,6 @@ export const ROUTES: Record<PageType, string> = {
   membership: '/membership',
   contact: '/contact',
 };
+
+/** Secondary pages (footer-only, not part of the primary nav / PageType). */
+export const PRIVACY_ROUTE = '/privacy';
