@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CHAPTER_HUBS } from '../data/eygnData';
 import { listPosts, listPrograms, listTeamMembers, PostSummary, ProgramDto, TeamMemberDto } from '../lib/api';
+import { ROUTES } from '../lib/routes';
 import { Search, X, BookOpen, Users, FolderGit2, MapPin, ArrowRight } from 'lucide-react';
 import { useModalA11y } from '../hooks/useModalA11y';
 
@@ -8,7 +10,6 @@ interface GlobalSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectPost: (slug: string) => void;
-  onNavigate: (page: any) => void;
 }
 
 function formatDate(iso: string): string {
@@ -20,8 +21,8 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   isOpen,
   onClose,
   onSelectPost,
-  onNavigate,
 }) => {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [apiPosts, setApiPosts] = useState<PostSummary[]>([]);
   const [apiPrograms, setApiPrograms] = useState<ProgramDto[]>([]);
@@ -147,7 +148,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                         key={p.slug}
                         type="button"
                         onClick={() => {
-                          onNavigate('programs');
+                          navigate(ROUTES.programs);
                           onClose();
                         }}
                         className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group"
@@ -213,7 +214,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                         key={member.fullName}
                         type="button"
                         onClick={() => {
-                          onNavigate('team');
+                          navigate(ROUTES.team);
                           onClose();
                         }}
                         className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group"
@@ -246,7 +247,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                         key={c.id}
                         type="button"
                         onClick={() => {
-                          onNavigate('home');
+                          navigate(ROUTES.home);
                           onClose();
                         }}
                         className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group"

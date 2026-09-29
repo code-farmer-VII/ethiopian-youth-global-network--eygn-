@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { Language, PageType } from '../types';
 import { TRANSLATIONS } from '../data/eygnData';
-import { Search, Globe, Menu, X, ChevronDown, ShieldCheck } from 'lucide-react';
+import { ROUTES } from '../lib/routes';
+import { Search, Globe, Menu, X, ChevronDown } from 'lucide-react';
 
 interface NavbarProps {
-  currentPage: PageType;
-  onNavigate: (page: PageType) => void;
   language: Language;
   onLanguageChange: (lang: Language) => void;
   onOpenSearch: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  currentPage,
-  onNavigate,
   language,
   onLanguageChange,
   onOpenSearch,
@@ -33,11 +31,15 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'contact', label: t.contact },
   ];
 
-  const handleNavClick = (page: PageType) => {
-    onNavigate(page);
-    setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const navLinkClass = (isActive: boolean) =>
+    `relative text-[15px] font-medium py-2 transition-colors whitespace-nowrap ${
+      isActive ? 'text-[#06592b] font-semibold' : 'text-stone-700 hover:text-[#1a2805]'
+    }`;
+
+  const mobileNavLinkClass = (isActive: boolean) =>
+    `w-full text-left px-3 py-2.5 text-sm font-medium rounded-lg transition-colors flex items-center justify-between ${
+      isActive ? 'bg-[#1a2805] text-[#f3a310]' : 'text-stone-700 hover:bg-stone-100'
+    }`;
 
   return (
     <>
@@ -64,11 +66,10 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Main One-Row, Three-Zone Top Navigation Bar */}
       <header className="sticky top-0 z-40 bg-[#ffffff] border-b border-stone-200 transition-colors shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          
+
           {/* Zone 1: Single text element wordmark */}
-          <button
-            type="button"
-            onClick={() => handleNavClick('home')}
+          <Link
+            to={ROUTES.home}
             className="flex items-center gap-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06592b] rounded-lg py-1"
           >
             {/* National emblem badge */}
@@ -83,30 +84,27 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Connecting and Empowering
               </span>
             </div>
-          </button>
+          </Link>
 
           {/* Zone 2: 4-6 Clean text navigation links */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-7">
-            {navItems.map((item) => {
-              const isActive = currentPage === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => handleNavClick(item.id)}
-                  className={`relative text-[15px] font-medium py-2 transition-colors whitespace-nowrap ${
-                    isActive
-                      ? 'text-[#06592b] font-semibold'
-                      : 'text-stone-700 hover:text-[#1a2805]'
-                  }`}
-                >
-                  {item.label}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#f3a310] rounded-full" />
-                  )}
-                </button>
-              );
-            })}
+            {navItems.map((item) => (
+              <NavLink
+                key={item.id}
+                to={ROUTES[item.id]}
+                end={item.id === 'home'}
+                className={({ isActive }) => navLinkClass(isActive)}
+              >
+                {({ isActive }) => (
+                  <>
+                    {item.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#f3a310] rounded-full" />
+                    )}
+                  </>
+                )}
+              </NavLink>
+            ))}
           </nav>
 
           {/* Zone 3: 1-2 Primary actions + Utilities */}
@@ -183,13 +181,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             {/* Primary CTA Button: Buttons: 16px, Medium, sentence case */}
-            <button
-              type="button"
-              onClick={() => handleNavClick('membership')}
+            <Link
+              to={ROUTES.membership}
               className="px-4.5 py-2.5 text-[16px] font-medium text-[#1a2805] bg-[#f3a310] hover:bg-[#e09407] rounded-xl shadow-xs transition-all whitespace-nowrap transform active:scale-95"
             >
               {t.joinNetwork}
-            </button>
+            </Link>
 
             {/* Mobile menu hamburger toggle */}
             <button
@@ -207,21 +204,20 @@ export const Navbar: React.FC<NavbarProps> = ({
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-stone-200 bg-white/98 px-4 py-4 space-y-2 shadow-xl animate-in slide-in-from-top duration-200">
             {navItems.map((item) => (
-              <button
+              <NavLink
                 key={item.id}
-                type="button"
-                onClick={() => handleNavClick(item.id)}
-                className={`w-full text-left px-3 py-2.5 text-sm font-medium rounded-lg transition-colors flex items-center justify-between ${
-                  currentPage === item.id
-                    ? 'bg-[#1a2805] text-[#f3a310]'
-                    : 'text-stone-700 hover:bg-stone-100'
-                }`}
+                to={ROUTES[item.id]}
+                end={item.id === 'home'}
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) => mobileNavLinkClass(isActive)}
               >
-                <span>{item.label}</span>
-                {currentPage === item.id && (
-                  <span className="w-2 h-2 rounded-full bg-[#f3a310]" />
+                {({ isActive }) => (
+                  <>
+                    <span>{item.label}</span>
+                    {isActive && <span className="w-2 h-2 rounded-full bg-[#f3a310]" />}
+                  </>
                 )}
-              </button>
+              </NavLink>
             ))}
 
             <div className="pt-3 border-t border-stone-200 flex items-center justify-between text-xs text-stone-500">

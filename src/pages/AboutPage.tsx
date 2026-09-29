@@ -1,13 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { CORE_VALUES, EYGN_INFO } from '../data/eygnData';
-import { PageType } from '../types';
+import { ROUTES } from '../lib/routes';
 import { Users, ShieldCheck, Award, Share2, Sparkles, Flag, ArrowRight, CheckCircle2, Globe, HeartHandshake, BookOpen } from 'lucide-react';
 
-interface AboutPageProps {
-  onNavigate: (page: PageType) => void;
-}
-
-export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
+export const AboutPage: React.FC = () => {
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'Users': return <Users className="w-5 h-5" />;
@@ -214,14 +211,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
             Whether you are a student abroad or an experienced professional, your insight is vital to our collective future.
           </p>
           <div className="pt-2">
-            <button
-              type="button"
-              onClick={() => onNavigate('membership')}
-              className="px-6 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-colors inline-flex items-center gap-2 cursor-pointer"
+            <Link
+              to={ROUTES.membership}
+              className="px-6 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-colors inline-flex items-center gap-2"
             >
               <span>Join the network</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </Link>
           </div>
         </div>
       </section>

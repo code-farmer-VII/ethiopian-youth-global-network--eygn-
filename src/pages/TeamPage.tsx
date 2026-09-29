@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { PageType } from '../types';
+import { Link } from 'react-router-dom';
 import { listTeamMembers, TeamMemberDto } from '../lib/api';
+import { ROUTES } from '../lib/routes';
 import { Mail, ArrowRight } from 'lucide-react';
-
-interface TeamPageProps {
-  onNavigate: (page: PageType) => void;
-}
 
 // API team members have no id/slug and no photo initials seed — derive both client-side.
 function getInitials(fullName: string): string {
@@ -13,7 +10,7 @@ function getInitials(fullName: string): string {
   return parts.slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('') || '??';
 }
 
-export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
+export const TeamPage: React.FC = () => {
   const [filterDepartment, setFilterDepartment] = useState<string>('All');
   const [teamMembers, setTeamMembers] = useState<TeamMemberDto[]>([]);
 
@@ -232,14 +229,13 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
           </p>
           <div className="pt-2">
             {/* Buttons: 16px, Medium, sentence case */}
-            <button
-              type="button"
-              onClick={() => onNavigate('contact')}
-              className="px-6 py-3.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer"
+            <Link
+              to={ROUTES.contact}
+              className="px-6 py-3.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors inline-flex items-center gap-2"
             >
               <span>Submit chapter leadership application</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </Link>
           </div>
         </div>
       </section>

@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PageType } from '../types';
 import { EYGN_INFO } from '../data/eygnData';
 import { ApiRequestError, subscribeToNewsletter } from '../lib/api';
-import { Mail, MapPin, Send, CheckCircle2, Globe, Shield, ArrowUp } from 'lucide-react';
+import { ROUTES } from '../lib/routes';
+import { Mail, MapPin, Send, CheckCircle2, Shield, ArrowUp } from 'lucide-react';
 
-interface FooterProps {
-  onNavigate: (page: PageType) => void;
-}
+const NAV_LINKS: { id: PageType; label: string }[] = [
+  { id: 'home', label: 'Home' },
+  { id: 'about', label: 'About EYGN' },
+  { id: 'programs', label: 'Flagship programs' },
+  { id: 'team', label: 'Leadership & directorate' },
+  { id: 'media', label: 'Media center' },
+  { id: 'membership', label: 'Join the network' },
+  { id: 'contact', label: 'Contact secretariat' },
+];
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [isSubscribing, setIsSubscribing] = useState(false);
@@ -86,69 +94,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               Navigation
             </h4>
             <ul className="space-y-2 text-sm text-stone-300">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('home')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
-                >
-                  Home
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('about')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
-                >
-                  About EYGN
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('programs')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
-                >
-                  Flagship programs
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('team')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
-                >
-                  Leadership & directorate
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('media')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
-                >
-                  Media center
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('membership')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
-                >
-                  Join the network
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('contact')}
-                  className="hover:text-[#f3a310] transition-colors cursor-pointer"
-                >
-                  Contact secretariat
-                </button>
-              </li>
+              {NAV_LINKS.map((item) => (
+                <li key={item.id}>
+                  <Link to={ROUTES[item.id]} className="hover:text-[#f3a310] transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

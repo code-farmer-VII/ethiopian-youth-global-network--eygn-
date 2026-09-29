@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { EventItem, Language, PageType } from './types';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { EventItem, Language } from './types';
+import { ROUTES } from './lib/routes';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { HomePage } from './pages/HomePage';
@@ -9,12 +11,22 @@ import { TeamPage } from './pages/TeamPage';
 import { MediaPage } from './pages/MediaPage';
 import { MembershipPage } from './pages/MembershipPage';
 import { ContactPage } from './pages/ContactPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { ArticleReaderModal } from './components/ArticleReaderModal';
 import { EventRegistrationModal } from './components/EventRegistrationModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 
+/** Scrolls to the top of the page on every route change (standard react-router pattern --
+ * the browser doesn't do this on its own for client-side navigation). */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pathname]);
+  return null;
+}
+
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [language, setLanguage] = useState<Language>('en');
 
   // Modal states
@@ -34,17 +46,12 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleNavigate = (page: PageType) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-[#fcfdfa] text-[#1a2805] font-sans antialiased">
+      <ScrollToTop />
+
       {/* Strict Top Bar Navigation */}
       <Navbar
-        currentPage={currentPage}
-        onNavigate={handleNavigate}
         language={language}
         onLanguageChange={setLanguage}
         onOpenSearch={() => setSearchOpen(true)}
@@ -52,45 +59,32 @@ export default function App() {
 
       {/* Main Page Canvas */}
       <main className="flex-1">
-        {currentPage === 'home' && (
-          <HomePage
-            onNavigate={handleNavigate}
-            language={language}
-            onSelectPost={setSelectedPostSlug}
-            onRegisterEvent={setSelectedEvent}
+        <Routes>
+          <Route
+            path={ROUTES.home}
+            element={
+              <HomePage
+                language={language}
+                onSelectPost={setSelectedPostSlug}
+                onRegisterEvent={setSelectedEvent}
+              />
+            }
           />
-        )}
-
-        {currentPage === 'about' && (
-          <AboutPage onNavigate={handleNavigate} />
-        )}
-
-        {currentPage === 'programs' && (
-          <ProgramsPage
-            onNavigate={handleNavigate}
-            onRegisterEvent={setSelectedEvent}
+          <Route path={ROUTES.about} element={<AboutPage />} />
+          <Route
+            path={ROUTES.programs}
+            element={<ProgramsPage onRegisterEvent={setSelectedEvent} />}
           />
-        )}
-
-        {currentPage === 'team' && (
-          <TeamPage onNavigate={handleNavigate} />
-        )}
-
-        {currentPage === 'media' && (
-          <MediaPage onSelectPost={setSelectedPostSlug} />
-        )}
-
-        {currentPage === 'membership' && (
-          <MembershipPage onNavigate={handleNavigate} />
-        )}
-
-        {currentPage === 'contact' && (
-          <ContactPage />
-        )}
+          <Route path={ROUTES.team} element={<TeamPage />} />
+          <Route path={ROUTES.media} element={<MediaPage onSelectPost={setSelectedPostSlug} />} />
+          <Route path={ROUTES.membership} element={<MembershipPage />} />
+          <Route path={ROUTES.contact} element={<ContactPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
       </main>
 
       {/* Footer */}
-      <Footer onNavigate={handleNavigate} />
+      <Footer />
 
       {/* Global Modals */}
       <ArticleReaderModal
@@ -107,7 +101,6 @@ export default function App() {
         isOpen={searchOpen}
         onClose={() => setSearchOpen(false)}
         onSelectPost={setSelectedPostSlug}
-        onNavigate={handleNavigate}
       />
     </div>
   );

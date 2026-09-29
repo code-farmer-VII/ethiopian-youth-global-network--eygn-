@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { EventItem, PageType } from '../types';
+import { Link } from 'react-router-dom';
+import { EventItem } from '../types';
 import { listEvents, listPrograms, ProgramDto } from '../lib/api';
 import { toEventItem } from '../lib/eventFormat';
+import { ROUTES } from '../lib/routes';
 import { CheckCircle2, Calendar, MapPin, Ticket, ArrowRight, BookOpen, ChevronRight } from 'lucide-react';
 
 interface ProgramsPageProps {
-  onNavigate: (page: PageType) => void;
   onRegisterEvent: (event: EventItem) => void;
 }
 
 export const ProgramsPage: React.FC<ProgramsPageProps> = ({
-  onNavigate,
   onRegisterEvent,
 }) => {
   const [activeTab, setActiveTab] = useState<'programs' | 'upcoming' | 'past'>('programs');
@@ -215,22 +215,20 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
 
               {/* Buttons: 16px, Medium, sentence case */}
               <div className="pt-8 border-t border-stone-200 space-y-3">
-                <button
-                  type="button"
-                  onClick={() => onNavigate('membership')}
-                  className="w-full py-3.5 px-4 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                <Link
+                  to={ROUTES.membership}
+                  className="w-full py-3.5 px-4 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2"
                 >
                   <span>Apply for {selectedProgram.acronym || 'program'}</span>
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
 
-                <button
-                  type="button"
-                  onClick={() => onNavigate('contact')}
-                  className="w-full py-3 px-4 bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 font-medium text-[15px] rounded-xl transition-colors text-center cursor-pointer"
+                <Link
+                  to={ROUTES.contact}
+                  className="w-full py-3 px-4 bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 font-medium text-[15px] rounded-xl transition-colors text-center"
                 >
                   Request program brief PDF
-                </button>
+                </Link>
               </div>
             </div>
           </div>

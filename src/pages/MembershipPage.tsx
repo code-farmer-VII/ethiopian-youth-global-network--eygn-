@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import { FAQS, MEMBERSHIP_BENEFITS } from '../data/eygnData';
-import { MembershipFormData, PageType } from '../types';
+import { MembershipFormData } from '../types';
 import { DigitalMembershipCard } from '../components/DigitalMembershipCard';
 import { ApiRequestError, InterestArea, submitMembershipApplication, submitPartnershipInquiry } from '../lib/api';
 import { CheckCircle2, ShieldCheck, Award, Sparkles, Send, HelpCircle, ChevronDown, ChevronUp, UserCheck } from 'lucide-react';
-
-interface MembershipPageProps {
-  onNavigate: (page: PageType) => void;
-}
 
 // Frontend display labels -> eygn-api's InterestArea enum slugs (see api.ts). The two lists don't
 // read identically, so submissions map through this table rather than sending the label as-is.
@@ -21,7 +17,7 @@ const INTEREST_AREA_TO_API: Record<string, InterestArea> = {
   'Pan-African Cultural Heritage': 'pan_african_heritage',
 };
 
-export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) => {
+export const MembershipPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'individual' | 'partner'>('individual');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPartnerSubmitted, setIsPartnerSubmitted] = useState(false);

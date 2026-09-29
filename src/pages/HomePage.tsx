@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { EventItem, Language, PageType } from '../types';
+import { Link } from 'react-router-dom';
+import { EventItem, Language } from '../types';
 import { EYGN_INFO, STATISTICS, TRANSLATIONS } from '../data/eygnData';
 import { listEvents, listPosts, listPrograms, PostSummary, ProgramDto } from '../lib/api';
 import { toEventItem } from '../lib/eventFormat';
 import { ChapterMap } from '../components/ChapterMap';
+import { ROUTES } from '../lib/routes';
 import { ArrowRight, Calendar, Sparkles, MapPin, ChevronRight, Globe, Shield, Ticket } from 'lucide-react';
 
 interface HomePageProps {
-  onNavigate: (page: PageType) => void;
   language: Language;
   onSelectPost: (slug: string) => void;
   onRegisterEvent: (event: EventItem) => void;
@@ -19,7 +20,6 @@ function formatDate(iso: string): string {
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
-  onNavigate,
   language,
   onSelectPost,
   onRegisterEvent,
@@ -75,22 +75,20 @@ export const HomePage: React.FC<HomePageProps> = ({
 
               {/* Action Buttons: 16px, Medium, sentence case */}
               <div className="flex flex-wrap items-center gap-4 pt-2">
-                <button
-                  type="button"
-                  onClick={() => onNavigate('membership')}
-                  className="px-6 py-3.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-md transition-all flex items-center gap-2 group cursor-pointer"
+                <Link
+                  to={ROUTES.membership}
+                  className="px-6 py-3.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-md transition-all flex items-center gap-2 group"
                 >
                   <span>{EYGN_INFO.ctaText}</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </button>
+                </Link>
 
-                <button
-                  type="button"
-                  onClick={() => onNavigate('programs')}
-                  className="px-6 py-3.5 bg-white hover:bg-stone-50 text-[#1a2805] border border-stone-300 font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center gap-2 cursor-pointer"
+                <Link
+                  to={ROUTES.programs}
+                  className="px-6 py-3.5 bg-white hover:bg-stone-50 text-[#1a2805] border border-stone-300 font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center gap-2"
                 >
                   <span>{t.explorePrograms}</span>
-                </button>
+                </Link>
               </div>
 
               {/* Trust & Alignment Callout */}
@@ -147,14 +145,13 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => onNavigate('about')}
-                    className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 text-white rounded-xl text-[16px] font-medium transition-colors flex items-center justify-center gap-2 border border-white/20 cursor-pointer"
+                  <Link
+                    to={ROUTES.about}
+                    className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 text-white rounded-xl text-[16px] font-medium transition-colors flex items-center justify-center gap-2 border border-white/20"
                   >
                     <span>Read founding charter</span>
                     <ArrowRight className="w-4 h-4 text-[#f3a310]" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -250,14 +247,13 @@ export const HomePage: React.FC<HomePageProps> = ({
               Structured pathways for national service
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={() => onNavigate('programs')}
-            className="text-[16px] font-medium text-[#06592b] hover:text-[#1a2805] flex items-center gap-1 self-start sm:self-auto cursor-pointer"
+          <Link
+            to={ROUTES.programs}
+            className="text-[16px] font-medium text-[#06592b] hover:text-[#1a2805] flex items-center gap-1 self-start sm:self-auto"
           >
             <span>View all 6 programs</span>
             <ChevronRight className="w-4 h-4" />
-          </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -294,14 +290,13 @@ export const HomePage: React.FC<HomePageProps> = ({
 
               <div className="pt-6 mt-4 border-t border-stone-100 flex items-center justify-between">
                 <span className="text-xs text-[#06592b] font-medium">Flagship initiative</span>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('programs')}
-                  className="text-[15px] font-medium text-[#1a2805] hover:text-[#06592b] flex items-center gap-1 cursor-pointer"
+                <Link
+                  to={ROUTES.programs}
+                  className="text-[15px] font-medium text-[#1a2805] hover:text-[#06592b] flex items-center gap-1"
                 >
                   <span>Learn more</span>
                   <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                </Link>
               </div>
             </div>
           ))}
@@ -325,14 +320,13 @@ export const HomePage: React.FC<HomePageProps> = ({
               Upcoming global & national events
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={() => onNavigate('programs')}
-            className="text-[16px] font-medium text-[#06592b] hover:text-[#1a2805] flex items-center gap-1 self-start sm:self-auto cursor-pointer"
+          <Link
+            to={ROUTES.programs}
+            className="text-[16px] font-medium text-[#06592b] hover:text-[#1a2805] flex items-center gap-1 self-start sm:self-auto"
           >
             <span>See full calendar</span>
             <ChevronRight className="w-4 h-4" />
-          </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -396,14 +390,13 @@ export const HomePage: React.FC<HomePageProps> = ({
               Latest official dispatches
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={() => onNavigate('media')}
-            className="text-[16px] font-medium text-[#06592b] hover:text-[#1a2805] flex items-center gap-1 self-start sm:self-auto cursor-pointer"
+          <Link
+            to={ROUTES.media}
+            className="text-[16px] font-medium text-[#06592b] hover:text-[#1a2805] flex items-center gap-1 self-start sm:self-auto"
           >
             <span>View all dispatches</span>
             <ChevronRight className="w-4 h-4" />
-          </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -466,20 +459,18 @@ export const HomePage: React.FC<HomePageProps> = ({
 
             {/* Buttons: 16px, Medium, sentence case */}
             <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
-              <button
-                type="button"
-                onClick={() => onNavigate('membership')}
-                className="px-8 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+              <Link
+                to={ROUTES.membership}
+                className="px-8 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-all transform hover:scale-105 active:scale-95"
               >
                 Apply for membership
-              </button>
-              <button
-                type="button"
-                onClick={() => onNavigate('contact')}
-                className="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-medium text-[16px] rounded-xl border border-white/20 transition-colors cursor-pointer"
+              </Link>
+              <Link
+                to={ROUTES.contact}
+                className="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-medium text-[16px] rounded-xl border border-white/20 transition-colors"
               >
                 Inquire as institutional partner
-              </button>
+              </Link>
             </div>
           </div>
         </div>
