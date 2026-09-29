@@ -4,6 +4,7 @@ import { PageType } from '../types';
 import { EYGN_INFO } from '../data/eygnData';
 import { ApiRequestError, subscribeToNewsletter } from '../lib/api';
 import { ROUTES, PRIVACY_ROUTE } from '../lib/routes';
+import { SocialLinks } from './SocialLinks';
 import { Mail, MapPin, Send, CheckCircle2, Shield, ArrowUp } from 'lucide-react';
 
 const NAV_LINKS: { id: PageType; label: string }[] = [
@@ -86,6 +87,8 @@ export const Footer: React.FC = () => {
               <MapPin className="w-4 h-4 text-[#f3a310] shrink-0" />
               <span>{EYGN_INFO.headquarters}</span>
             </div>
+
+            <SocialLinks />
           </div>
 
           {/* Col 2: Strategic Navigation (2 cols) */}

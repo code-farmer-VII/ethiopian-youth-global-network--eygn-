@@ -3,6 +3,7 @@ import { EYGN_INFO } from '../data/eygnData';
 import { ApiRequestError, ContactDepartment, submitContactMessage } from '../lib/api';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
+import { SocialLinks } from '../components/SocialLinks';
 import { Mail, MapPin, Send, CheckCircle2, Clock } from 'lucide-react';
 
 // Frontend display labels -> eygn-api's ContactDepartment enum slugs (see api.ts).
@@ -129,6 +130,8 @@ export const ContactPage: React.FC = () => {
                     <span>{EYGN_INFO.workingHours}</span>
                   </div>
                 </div>
+
+                <SocialLinks className="flex items-center gap-3 pt-2" />
               </div>
             </div>
 
