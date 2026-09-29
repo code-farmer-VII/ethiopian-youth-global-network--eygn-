@@ -6,7 +6,23 @@ import { listEvents, listPosts, listPrograms, PostSummary, ProgramDto } from '..
 import { toEventItem } from '../lib/eventFormat';
 import { ChapterMap } from '../components/ChapterMap';
 import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
+import { SITE_URL } from '../lib/siteConfig';
 import { ArrowRight, Calendar, Sparkles, MapPin, ChevronRight, Globe, Shield, Ticket } from 'lucide-react';
+
+const ORGANIZATION_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: EYGN_INFO.name,
+  alternateName: EYGN_INFO.acronym,
+  url: SITE_URL,
+  description: EYGN_INFO.missionStatement,
+  email: EYGN_INFO.officialEmails[0]?.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: EYGN_INFO.headquarters,
+  },
+};
 
 interface HomePageProps {
   language: Language;
@@ -44,6 +60,12 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   return (
     <div className="space-y-16 lg:space-y-24">
+      <SEO
+        title={EYGN_INFO.headline}
+        description={EYGN_INFO.subtitle}
+        path={ROUTES.home}
+        structuredData={ORGANIZATION_SCHEMA}
+      />
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden pt-8 pb-16 lg:pt-16 lg:pb-24 border-b border-stone-200">
         {/* Background decorative subtle gradients */}

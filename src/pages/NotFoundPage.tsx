@@ -1,11 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Compass, Home, Mail } from 'lucide-react';
 import { ROUTES } from '../lib/routes';
 
 export const NotFoundPage: React.FC = () => {
   return (
     <div className="min-h-[60vh] flex items-center justify-center py-16">
+      <Helmet>
+        <title>Page not found | Ethiopian Youth Global Network (EYGN)</title>
+        <meta name="robots" content="noindex" />
+      </Helmet>
       <div className="max-w-lg mx-auto px-4 sm:px-6 text-center space-y-6">
         <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">
           <span className="w-2 h-2 rounded-full bg-[#f3a310]" />

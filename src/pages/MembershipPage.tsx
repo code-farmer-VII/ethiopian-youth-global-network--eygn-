@@ -3,6 +3,8 @@ import { FAQS, MEMBERSHIP_BENEFITS } from '../data/eygnData';
 import { MembershipFormData } from '../types';
 import { DigitalMembershipCard } from '../components/DigitalMembershipCard';
 import { ApiRequestError, InterestArea, submitMembershipApplication, submitPartnershipInquiry } from '../lib/api';
+import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
 import { CheckCircle2, ShieldCheck, Award, Sparkles, Send, HelpCircle, ChevronDown, ChevronUp, UserCheck } from 'lucide-react';
 
 // Frontend display labels -> eygn-api's InterestArea enum slugs (see api.ts). The two lists don't
@@ -159,6 +161,11 @@ export const MembershipPage: React.FC = () => {
 
   return (
     <div className="space-y-16 lg:space-y-20 py-6">
+      <SEO
+        title="Join the Ethiopian Youth Global Network"
+        description="Become a registered member of the premier non-partisan network uniting diaspora and homeland youth to lead global change and serve Ethiopia."
+        path={ROUTES.membership}
+      />
       {/* 1. Header */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
         <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">

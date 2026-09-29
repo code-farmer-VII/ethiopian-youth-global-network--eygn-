@@ -4,6 +4,7 @@ import { EventItem } from '../types';
 import { listEvents, listPrograms, ProgramDto } from '../lib/api';
 import { toEventItem } from '../lib/eventFormat';
 import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
 import { CheckCircle2, Calendar, MapPin, Ticket, ArrowRight, BookOpen, ChevronRight } from 'lucide-react';
 
 interface ProgramsPageProps {
@@ -36,6 +37,11 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
 
   return (
     <div className="space-y-12 lg:space-y-16 py-6">
+      <SEO
+        title="EYGN Flagship Programs & Events"
+        description="Actionable frameworks channel diaspora knowledge into Ethiopian higher education, climate action, and youth civic governance."
+        path={ROUTES.programs}
+      />
       {/* 1. Header */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
         <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { GALLERY_ITEMS } from '../data/eygnData';
 import { MediaItem } from '../types';
 import { listCategories, listPosts, PostSummary } from '../lib/api';
+import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
 import { Image as ImageIcon, Download, Play, Search, Eye, ArrowRight, Check } from 'lucide-react';
 
 interface MediaPageProps {
@@ -59,6 +61,11 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
 
   return (
     <div className="space-y-12 lg:space-y-16 py-6">
+      <SEO
+        title="EYGN Media Center & Official Communiqués"
+        description="Official announcements, diplomatic delegations, Pan-African museum visits, and university partnerships."
+        path={ROUTES.media}
+      />
       {/* 1. Header */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
         <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">

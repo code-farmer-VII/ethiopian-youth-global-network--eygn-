@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { CORE_VALUES, EYGN_INFO } from '../data/eygnData';
 import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
 import { Users, ShieldCheck, Award, Share2, Sparkles, Flag, ArrowRight, CheckCircle2, Globe, HeartHandshake, BookOpen } from 'lucide-react';
 
 export const AboutPage: React.FC = () => {
@@ -19,6 +20,11 @@ export const AboutPage: React.FC = () => {
 
   return (
     <div className="space-y-16 lg:space-y-24 py-6">
+      <SEO
+        title="About Ethiopian Youth Global Network"
+        description="A neutral, structured, and nationally aligned platform connecting Ethiopian youth across the world with the development of their homeland."
+        path={ROUTES.about}
+      />
       {/* 1. Page Header */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
         <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { listTeamMembers, TeamMemberDto } from '../lib/api';
 import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
 import { Mail, ArrowRight } from 'lucide-react';
 
 // API team members have no id/slug and no photo initials seed — derive both client-side.
@@ -29,6 +30,11 @@ export const TeamPage: React.FC = () => {
 
   return (
     <div className="space-y-16 lg:space-y-20 py-6">
+      <SEO
+        title="Executive Leadership & Department Directorate"
+        description="Dedicated innovators, diplomats, and operational coordinators uniting the global diaspora to serve Ethiopia's strategic priorities."
+        path={ROUTES.team}
+      />
       {/* 1. Header */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
         <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">
