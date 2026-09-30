@@ -88,14 +88,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Zone 1: Single text element wordmark */}
           <Link
             to={ROUTES.home}
-            className="flex items-center gap-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06592b] rounded-lg py-1 cursor-pointer group"
+            className="flex items-center gap-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06592b] rounded-lg py-1 cursor-pointer group min-w-0"
           >
             {/* National emblem badge */}
             <div className="w-10 h-10 rounded-lg bg-[#1a2805] text-[#f3a310] flex items-center justify-center font-bold text-sm tracking-tight border border-[#f3a310]/30 shadow-sm shrink-0 transition-transform group-hover:scale-105">
               EYGN
             </div>
-            <div className="flex flex-col">
-              <span className="text-lg sm:text-xl font-bold tracking-tight text-[#1a2805] leading-tight group-hover:text-[#06592b] transition-colors whitespace-nowrap">
+            <div className="flex flex-col min-w-0">
+              <span className="text-lg sm:text-xl font-bold tracking-tight text-[#1a2805] leading-tight group-hover:text-[#06592b] transition-colors truncate">
                 Ethiopian Youth Global Network
               </span>
               <span className="text-[11px] text-[#06592b] font-medium hidden sm:block">
@@ -143,7 +143,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {/* Language Switcher Selector */}
-            <div className="relative">
+            <div className="relative hidden sm:block">
               <button
                 type="button"
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
@@ -212,7 +212,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <MotionLink
               to={ROUTES.membership}
               {...buttonHoverProps}
-              className="px-4.5 py-2.5 text-[16px] font-medium text-[#1a2805] bg-[#f3a310] hover:bg-[#e09407] rounded-xl shadow-xs transition-colors whitespace-nowrap cursor-pointer"
+              className="hidden sm:inline-flex px-4.5 py-2.5 text-[16px] font-medium text-[#1a2805] bg-[#f3a310] hover:bg-[#e09407] rounded-xl shadow-xs transition-colors whitespace-nowrap cursor-pointer"
             >
               {t.joinNetwork}
             </MotionLink>
