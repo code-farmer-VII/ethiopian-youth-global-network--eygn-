@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
+import { transitionSmooth } from '../utils/motion';
 import { EYGN_INFO } from '../data/eygnData';
 import { ApiRequestError, ContactDepartment, submitContactMessage } from '../lib/api';
 import { ROUTES } from '../lib/routes';
@@ -66,23 +68,49 @@ export const ContactPage: React.FC = () => {
         path={ROUTES.contact}
       />
       {/* 1. Header */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
-        <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">
+      <motion.section
+        className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={transitionSmooth}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]"
+        >
           <span className="w-2 h-2 rounded-full bg-[#f3a310]" />
           <span>Secretariat dispatch & correspondence</span>
-        </div>
+        </motion.div>
         {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-        <h1 className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]">
+        <motion.h1
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.15 }}
+          className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]"
+        >
           Connect with the EYGN Secretariat
-        </h1>
+        </motion.h1>
         {/* Body: 16px, Regular, Dark color */}
-        <p className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto">
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.25 }}
+          className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto"
+        >
           Have an inquiry, partnership proposal, or chapter initiative? Reach our direct liaison desks across Addis Ababa and international hubs.
-        </p>
-      </section>
+        </motion.p>
+      </motion.section>
 
       {/* 2. Main Contact Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={transitionSmooth}
+      >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           
           {/* Left Column: Official Direct Channels */}
@@ -99,7 +127,14 @@ export const ContactPage: React.FC = () => {
 
               <div className="space-y-4">
                 {EYGN_INFO.officialEmails.map((item, idx) => (
-                  <div key={idx} className="p-3.5 bg-white/5 rounded-xl border border-white/10 space-y-1">
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: idx * 0.06 }}
+                    className="p-3.5 bg-white/5 rounded-xl border border-white/10 space-y-1 hover:border-[#f3a310]/40 transition-colors"
+                  >
                     <span className="text-[11px] uppercase tracking-wider text-[#f3a310] font-semibold block">
                       {item.label}
                     </span>
@@ -110,7 +145,7 @@ export const ContactPage: React.FC = () => {
                       <Mail className="w-4 h-4 text-[#06592b] shrink-0" />
                       <span className="truncate">{item.email}</span>
                     </a>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
@@ -264,17 +299,24 @@ export const ContactPage: React.FC = () => {
                 )}
 
                 {/* Buttons: 16px, Medium, sentence case */}
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full py-3.5 px-6 bg-[#1a2805] hover:bg-[#06592b] disabled:opacity-60 disabled:cursor-not-allowed text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   <span>{isSubmitting ? 'Transmitting dispatch…' : 'Transmit official dispatch'}</span>
-                </button>
+                </motion.button>
               </form>
             ) : (
-              <div className="text-center py-10 space-y-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.35 }}
+                className="text-center py-10 space-y-4"
+              >
                 <div className="w-14 h-14 bg-emerald-100 text-[#06592b] rounded-full flex items-center justify-center mx-auto">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
@@ -292,12 +334,12 @@ export const ContactPage: React.FC = () => {
                 >
                   Send another message
                 </button>
-              </div>
+              </motion.div>
             )}
           </div>
 
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { modalBackdropVariants, modalDialogVariants } from '../utils/motion';
 import { getPost, PostDetail } from '../lib/api';
 import { X, Calendar, MapPin, Clock, Share2, Check, ArrowLeft } from 'lucide-react';
 import { useModalA11y } from '../hooks/useModalA11y';
@@ -35,8 +37,6 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({ slug, on
 
   const panelRef = useModalA11y<HTMLDivElement>(!!slug, onClose);
 
-  if (!slug) return null;
-
   const handleShare = () => {
     navigator.clipboard.writeText(`${post?.title ?? 'EYGN dispatch'} - Ethiopian Youth Global Network`);
     setCopied(true);
@@ -44,11 +44,21 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({ slug, on
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
-      onClick={onClose}
-    >
-      <div
+    <AnimatePresence>
+      {slug && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm"
+          onClick={onClose}
+        >
+      <motion.div
+        variants={modalDialogVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
         ref={panelRef}
         role="dialog"
         aria-modal="true"
@@ -70,7 +80,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({ slug, on
               type="button"
               onClick={handleShare}
               disabled={!post}
-              className="p-2 text-stone-500 hover:text-[#1a2805] hover:bg-stone-100 rounded-lg transition-colors disabled:opacity-40"
+              className="p-2 text-stone-500 hover:text-[#1a2805] hover:bg-stone-100 rounded-lg transition-colors disabled:opacity-40 cursor-pointer"
               title="Share article"
             >
               {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
@@ -78,7 +88,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({ slug, on
             <button
               type="button"
               onClick={onClose}
-              className="p-2 text-stone-500 hover:text-stone-900 hover:bg-stone-100 rounded-lg transition-colors"
+              className="p-2 text-stone-500 hover:text-stone-900 hover:bg-stone-100 rounded-lg transition-colors cursor-pointer"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
@@ -177,7 +187,9 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({ slug, on
             </>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

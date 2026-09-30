@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import { listTeamMembers, TeamMemberDto } from '../lib/api';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
+import { MotionLink } from '../components/MotionLink';
 import { Mail, ArrowRight } from 'lucide-react';
+import { transitionSmooth, buttonHoverProps, viewportStandard } from '../utils/motion';
 
 // API team members have no id/slug and no photo initials seed — derive both client-side.
 function getInitials(fullName: string): string {
@@ -36,23 +38,49 @@ export const TeamPage: React.FC = () => {
         path={ROUTES.team}
       />
       {/* 1. Header */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
-        <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">
+      <motion.section
+        className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={transitionSmooth}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]"
+        >
           <span className="w-2 h-2 rounded-full bg-[#f3a310]" />
           <span>Governance & secretariat</span>
-        </div>
+        </motion.div>
         {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-        <h1 className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]">
+        <motion.h1
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.15 }}
+          className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]"
+        >
           Executive Leadership & Department Directorate
-        </h1>
+        </motion.h1>
         {/* Body: 16px, Regular, Dark color */}
-        <p className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto">
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.25 }}
+          className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto"
+        >
           Dedicated innovators, diplomats, and operational coordinators uniting the global diaspora to serve Ethiopia's strategic priorities.
-        </p>
-      </section>
+        </motion.p>
+      </motion.section>
 
       {/* 2. Executive Leadership Spotlight (Founder & General Secretary) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="border-b border-stone-200 pb-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[#06592b]">
             Executive council
@@ -64,9 +92,14 @@ export const TeamPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {executiveLeaders.map((member) => (
-            <div
+          {executiveLeaders.map((member, idx) => (
+            <motion.div
               key={member.fullName}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
               className="bg-white rounded-3xl p-8 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between"
             >
               <div className="space-y-4">
@@ -128,13 +161,19 @@ export const TeamPage: React.FC = () => {
 
                 <span className="text-[12px] font-semibold text-[#06592b]">Official EYGN Council</span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* 3. Department Heads */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-stone-200 pb-3 gap-4">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-[#06592b]">
@@ -164,12 +203,19 @@ export const TeamPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredHeads.map((member) => (
-            <div
-              key={member.fullName}
-              className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between"
-            >
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatePresence>
+            {filteredHeads.map((member) => (
+              <motion.div
+                key={member.fullName}
+                layout
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.3 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between"
+              >
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl bg-[#06592b]/10 text-[#06592b] font-bold text-lg flex items-center justify-center shrink-0">
@@ -215,13 +261,20 @@ export const TeamPage: React.FC = () => {
                   </a>
                 )}
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      </motion.section>
 
       {/* 4. Join the Directorate / Chapter Leads Callout */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center pt-8">
+      <motion.section
+        className="max-w-4xl mx-auto px-4 sm:px-6 text-center pt-8"
+        initial={{ opacity: 0, scale: 0.98, y: 20 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={transitionSmooth}
+      >
         <div className="bg-white border border-stone-200 p-8 sm:p-12 rounded-3xl space-y-4 shadow-xs">
           <span className="text-xs font-bold uppercase tracking-wider text-[#06592b] block">
             Regional mobilization
@@ -235,16 +288,17 @@ export const TeamPage: React.FC = () => {
           </p>
           <div className="pt-2">
             {/* Buttons: 16px, Medium, sentence case */}
-            <Link
+            <MotionLink
               to={ROUTES.contact}
+              {...buttonHoverProps}
               className="px-6 py-3.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors inline-flex items-center gap-2"
             >
               <span>Submit chapter leadership application</span>
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </MotionLink>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import { cubicEase } from './utils/motion';
 import { EventItem, Language } from './types';
 import { ROUTES, PRIVACY_ROUTE } from './lib/routes';
 import { Navbar } from './components/Navbar';
@@ -66,6 +68,8 @@ export default function App() {
     initAnalytics();
   }, []);
 
+  const location = useLocation();
+
   return (
     <div className="min-h-screen flex flex-col bg-[#fcfdfa] text-[#1a2805] font-sans antialiased">
       <ScrollToTop />
@@ -78,31 +82,41 @@ export default function App() {
         onOpenSearch={() => setSearchOpen(true)}
       />
 
-      {/* Main Page Canvas */}
-      <main className="flex-1">
-        <Routes>
-          <Route
-            path={ROUTES.home}
-            element={
-              <HomePage
-                language={language}
-                onSelectPost={setSelectedPostSlug}
-                onRegisterEvent={setSelectedEvent}
+      {/* Main Page Canvas with Smooth Page Transitions */}
+      <main className="flex-1 overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.35, ease: cubicEase }}
+          >
+            <Routes location={location}>
+              <Route
+                path={ROUTES.home}
+                element={
+                  <HomePage
+                    language={language}
+                    onSelectPost={setSelectedPostSlug}
+                    onRegisterEvent={setSelectedEvent}
+                  />
+                }
               />
-            }
-          />
-          <Route path={ROUTES.about} element={<AboutPage />} />
-          <Route
-            path={ROUTES.programs}
-            element={<ProgramsPage onRegisterEvent={setSelectedEvent} />}
-          />
-          <Route path={ROUTES.team} element={<TeamPage />} />
-          <Route path={ROUTES.media} element={<MediaPage onSelectPost={setSelectedPostSlug} />} />
-          <Route path={ROUTES.membership} element={<MembershipPage />} />
-          <Route path={ROUTES.contact} element={<ContactPage />} />
-          <Route path={PRIVACY_ROUTE} element={<PrivacyPolicyPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+              <Route path={ROUTES.about} element={<AboutPage />} />
+              <Route
+                path={ROUTES.programs}
+                element={<ProgramsPage onRegisterEvent={setSelectedEvent} />}
+              />
+              <Route path={ROUTES.team} element={<TeamPage />} />
+              <Route path={ROUTES.media} element={<MediaPage onSelectPost={setSelectedPostSlug} />} />
+              <Route path={ROUTES.membership} element={<MembershipPage />} />
+              <Route path={ROUTES.contact} element={<ContactPage />} />
+              <Route path={PRIVACY_ROUTE} element={<PrivacyPolicyPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Footer */}

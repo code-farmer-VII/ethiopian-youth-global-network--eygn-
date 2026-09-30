@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { modalBackdropVariants, modalDialogVariants } from '../utils/motion';
 import { EventItem } from '../types';
 import { ApiRequestError, registerForEvent } from '../lib/api';
 import { X, Calendar, Clock, MapPin, CheckCircle2, Ticket, ShieldCheck, Download, Share2 } from 'lucide-react';
@@ -24,12 +26,21 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
 
   const panelRef = useModalA11y<HTMLDivElement>(!!event, onClose);
 
-  if (!event) return null;
+  // Resets the form step back to 'form' shortly after close, so reopening a fresh event
+  // doesn't land straight on a stale 'confirmed' screen (this modal stays mounted the whole
+  // time -- only its `event` prop changes -- so step/formData otherwise persist across closes).
+  const handleClose = () => {
+    onClose();
+    setTimeout(() => {
+      setStep('form');
+    }, 200);
+  };
 
   // The API's event id is a slug (see eygn-api's X2); event.id is populated with that slug by
   // eventFormat.ts's toEventItem (F10), so this is a real registration call end to end.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!event) return; // form only renders when event is set, but TS can't see that here
     setSubmitError(null);
     setIsSubmitting(true);
     try {
@@ -55,11 +66,21 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
-      onClick={onClose}
-    >
-      <div
+    <AnimatePresence>
+      {event && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm"
+          onClick={handleClose}
+        >
+      <motion.div
+        variants={modalDialogVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
         ref={panelRef}
         role="dialog"
         aria-modal="true"
@@ -73,9 +94,9 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
           <div className="absolute inset-0 bg-dark-pattern opacity-30 pointer-events-none" />
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close modal"
-            className="absolute top-4 right-4 p-1 text-white/70 hover:text-white rounded-full bg-black/20 hover:bg-black/40 transition-colors"
+            className="absolute top-4 right-4 p-1 text-white/70 hover:text-white rounded-full bg-black/20 hover:bg-black/40 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -196,18 +217,25 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
               )}
 
               <div className="pt-3">
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full py-3 px-4 bg-[#1a2805] hover:bg-[#06592b] disabled:opacity-60 disabled:cursor-not-allowed text-[#f3a310] font-medium text-[15px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Ticket className="w-4 h-4" />
                   <span>{isSubmitting ? 'Submitting registration…' : 'Confirm registration & issue pass'}</span>
-                </button>
+                </motion.button>
               </div>
             </form>
           ) : (
-            <div className="text-center py-4 space-y-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-center py-4 space-y-4"
+            >
               <div className="w-12 h-12 bg-emerald-100 text-[#06592b] rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-7 h-7" />
               </div>
@@ -269,16 +297,18 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
                 </button>
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="px-5 py-2.5 text-[14px] font-medium text-white bg-[#1a2805] hover:bg-[#06592b] rounded-xl transition-colors cursor-pointer"
                 >
                   Close window
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

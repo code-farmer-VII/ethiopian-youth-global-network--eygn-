@@ -1,5 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
+import { MotionLink } from '../components/MotionLink';
+import { transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
 import { CORE_VALUES, EYGN_INFO } from '../data/eygnData';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
@@ -26,23 +28,49 @@ export const AboutPage: React.FC = () => {
         path={ROUTES.about}
       />
       {/* 1. Page Header */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
-        <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">
+      <motion.section
+        className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={transitionSmooth}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]"
+        >
           <span className="w-2 h-2 rounded-full bg-[#f3a310]" />
           <span>Institutional profile & mandate</span>
-        </div>
+        </motion.div>
         {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-        <h1 className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]">
+        <motion.h1
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.15 }}
+          className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]"
+        >
           About Ethiopian Youth Global Network
-        </h1>
+        </motion.h1>
         {/* Body: 16px, Regular, Dark color */}
-        <p className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto">
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.25 }}
+          className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto"
+        >
           A neutral, structured, and nationally aligned platform connecting Ethiopian youth across the world with the development of their homeland.
-        </p>
-      </section>
+        </motion.p>
+      </motion.section>
 
-      {/* 2. Organization Introduction (From Brief) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 2. Organization Introduction */}
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="bg-white rounded-3xl p-8 sm:p-12 border border-stone-200 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-7 space-y-5">
             <span className="text-xs font-bold uppercase tracking-wider text-[#06592b] block">
@@ -81,10 +109,16 @@ export const AboutPage: React.FC = () => {
             </ul>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* 3. Why EYGN Exists (Problem Statement From Brief) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="bg-white border border-stone-200 rounded-3xl p-8 sm:p-12 shadow-xs relative overflow-hidden">
           <div className="max-w-3xl space-y-4">
             <span className="text-xs font-bold uppercase tracking-wider text-[#06592b] block">
@@ -104,10 +138,16 @@ export const AboutPage: React.FC = () => {
             </p>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* 4. Who We Serve (From Brief) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="space-y-6">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-[#06592b] block">
@@ -147,8 +187,13 @@ export const AboutPage: React.FC = () => {
             ].map((item, idx) => {
               const Icon = item.icon;
               return (
-                <div
+                <motion.div
                   key={idx}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  {...cardHoverProps}
                   className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs space-y-3 hover:border-[#06592b] transition-colors"
                 >
                   <div className="w-10 h-10 rounded-lg bg-[#06592b]/10 text-[#06592b] flex items-center justify-center">
@@ -156,15 +201,21 @@ export const AboutPage: React.FC = () => {
                   </div>
                   <h3 className="text-[17px] font-bold text-[#1a2805]">{item.title}</h3>
                   <p className="text-[14px] text-stone-600 leading-relaxed">{item.desc}</p>
-                </div>
+                </motion.div>
               );
             })}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* 5. Core Values (6 Values With Descriptions From Page 7) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="space-y-8">
           <div className="text-center max-w-2xl mx-auto space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-[#06592b] block">
@@ -181,8 +232,13 @@ export const AboutPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {CORE_VALUES.map((value, idx) => (
-              <div
+              <motion.div
                 key={idx}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                {...cardHoverProps}
                 className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs hover:border-[#06592b] transition-colors space-y-3"
               >
                 <div className="flex items-center justify-between">
@@ -201,14 +257,20 @@ export const AboutPage: React.FC = () => {
                     {value.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* 6. Call to Action: Buttons: 16px, Medium, sentence case */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center pt-8">
+      <motion.section
+        className="max-w-4xl mx-auto px-4 sm:px-6 text-center pt-8"
+        initial={{ opacity: 0, scale: 0.98, y: 20 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="p-8 sm:p-12 bg-[#1a2805] rounded-3xl text-white space-y-4 shadow-xl border border-[#f3a310]/30">
           <h2 className="text-[26px] sm:text-[30px] font-bold text-white">
             Ready to stand with Ethiopian youth?
@@ -217,16 +279,17 @@ export const AboutPage: React.FC = () => {
             Whether you are a student abroad or an experienced professional, your insight is vital to our collective future.
           </p>
           <div className="pt-2">
-            <Link
+            <MotionLink
               to={ROUTES.membership}
+              {...buttonHoverProps}
               className="px-6 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-colors inline-flex items-center gap-2"
             >
               <span>Join the network</span>
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </MotionLink>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };

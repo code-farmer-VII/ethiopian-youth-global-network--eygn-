@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import { modalBackdropVariants, modalDialogVariants } from '../utils/motion';
 import { ChapterDto, listChapters, listPosts, listPrograms, listTeamMembers, PostSummary, ProgramDto, TeamMemberDto } from '../lib/api';
 import { ROUTES } from '../lib/routes';
 import { Search, X, BookOpen, Users, FolderGit2, MapPin, ArrowRight } from 'lucide-react';
@@ -66,16 +68,24 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
   const panelRef = useModalA11y<HTMLDivElement>(isOpen, onClose);
 
-  if (!isOpen) return null;
-
   const totalResults = results.posts.length + results.programs.length + results.team.length + results.chapters.length;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 pt-16 sm:pt-24 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
-      onClick={onClose}
-    >
-      <div
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 pt-16 sm:pt-24 bg-black/60 backdrop-blur-sm"
+          onClick={onClose}
+        >
+      <motion.div
+        variants={modalDialogVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
         ref={panelRef}
         role="dialog"
         aria-modal="true"
@@ -86,7 +96,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       >
         {/* Search Input Bar */}
         <div className="flex items-center px-4 py-3 border-b border-stone-200 bg-[#fcfdfa]">
-          <Search className="w-5 h-5 text-stone-400 mr-3" />
+          <Search className="w-5 h-5 text-stone-400 mr-3 shrink-0" />
           <input
             type="text"
             aria-label="Search the site"
@@ -100,7 +110,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
               type="button"
               onClick={() => setQuery('')}
               aria-label="Clear search"
-              className="p-1 text-stone-400 hover:text-stone-600 rounded"
+              className="p-1 text-stone-400 hover:text-stone-600 rounded cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -109,7 +119,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Close search"
-            className="ml-2 text-xs font-medium text-stone-500 hover:text-stone-900 px-2 py-1 bg-stone-100 rounded"
+            className="ml-2 text-xs font-medium text-stone-500 hover:text-stone-900 px-2 py-1 bg-stone-100 rounded cursor-pointer"
           >
             ESC
           </button>
@@ -126,7 +136,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                     key={tag}
                     type="button"
                     onClick={() => setQuery(tag)}
-                    className="px-2.5 py-1 text-xs rounded bg-stone-100 text-stone-600 hover:bg-[#1a2805] hover:text-[#f3a310] transition-colors"
+                    className="px-2.5 py-1 text-xs rounded bg-stone-100 text-stone-600 hover:bg-[#1a2805] hover:text-[#f3a310] transition-colors cursor-pointer"
                   >
                     {tag}
                   </button>
@@ -154,7 +164,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                           navigate(ROUTES.programs);
                           onClose();
                         }}
-                        className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group"
+                        className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group cursor-pointer"
                       >
                         <FolderGit2 className="w-4 h-4 text-[#06592b] mt-0.5 shrink-0" />
                         <div className="flex-1 min-w-0">
@@ -187,7 +197,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                           onSelectPost(post.slug);
                           onClose();
                         }}
-                        className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group"
+                        className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group cursor-pointer"
                       >
                         <BookOpen className="w-4 h-4 text-[#f3a310] mt-0.5 shrink-0" />
                         <div className="flex-1 min-w-0">
@@ -220,7 +230,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                           navigate(ROUTES.team);
                           onClose();
                         }}
-                        className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group"
+                        className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group cursor-pointer"
                       >
                         <Users className="w-4 h-4 text-stone-500 mt-0.5 shrink-0" />
                         <div className="flex-1 min-w-0">
@@ -253,7 +263,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                           navigate(ROUTES.home);
                           onClose();
                         }}
-                        className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group"
+                        className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group cursor-pointer"
                       >
                         <MapPin className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
                         <div className="flex-1 min-w-0">
@@ -273,7 +283,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

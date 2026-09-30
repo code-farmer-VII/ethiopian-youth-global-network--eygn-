@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import { EventItem } from '../types';
 import { listEvents, listPrograms, ProgramDto } from '../lib/api';
 import { toEventItem } from '../lib/eventFormat';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
+import { MotionLink } from '../components/MotionLink';
 import { CheckCircle2, Calendar, MapPin, Ticket, ArrowRight, BookOpen, ChevronRight } from 'lucide-react';
+import { transitionSmooth, buttonHoverProps } from '../utils/motion';
 
 interface ProgramsPageProps {
   onRegisterEvent: (event: EventItem) => void;
@@ -43,19 +46,39 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
         path={ROUTES.programs}
       />
       {/* 1. Header */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
-        <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">
+      <motion.section
+        className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={transitionSmooth}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]"
+        >
           <span className="w-2 h-2 rounded-full bg-[#f3a310]" />
           <span>Strategic pipelines & event infrastructure</span>
-        </div>
+        </motion.div>
         {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-        <h1 className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]">
+        <motion.h1
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.15 }}
+          className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]"
+        >
           EYGN Flagship Programs & Events
-        </h1>
+        </motion.h1>
         {/* Body: 16px, Regular, Dark color */}
-        <p className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto">
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.25 }}
+          className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto"
+        >
           Actionable frameworks channel diaspora knowledge into Ethiopian higher education, climate action, and youth civic governance.
-        </p>
+        </motion.p>
 
         {/* View Switcher Tabs */}
         <div className="inline-flex items-center gap-1 p-1 bg-stone-100 rounded-xl border border-stone-200 mt-2">
@@ -93,11 +116,20 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
             Past events archive ({pastEvents.length})
           </button>
         </div>
-      </section>
+      </motion.section>
 
+      {/* Tab Content Wrapper */}
+      <AnimatePresence mode="wait">
       {/* 2. TAB CONTENT: PROGRAMS */}
       {activeTab === 'programs' && selectedProgram && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <motion.section
+          key="tab-programs"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10"
+        >
           {/* Program Selector Navigation Bar */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {programs.map((prog) => {
@@ -127,7 +159,15 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
           </div>
 
           {/* Selected Program Deep-Dive Container */}
-          <div className="bg-white rounded-3xl p-8 sm:p-12 border border-stone-200 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <AnimatePresence mode="wait">
+          <motion.div
+            key={selectedProgram.slug}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.25 }}
+            className="bg-white rounded-3xl p-8 sm:p-12 border border-stone-200 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-10"
+          >
             <div className="lg:col-span-8 space-y-6">
               <div className="flex items-center gap-2 text-xs text-stone-500">
                 {selectedProgram.pillar && (
@@ -221,13 +261,14 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
 
               {/* Buttons: 16px, Medium, sentence case */}
               <div className="pt-8 border-t border-stone-200 space-y-3">
-                <Link
+                <MotionLink
                   to={ROUTES.membership}
+                  {...buttonHoverProps}
                   className="w-full py-3.5 px-4 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2"
                 >
                   <span>Apply for {selectedProgram.acronym || 'program'}</span>
                   <ArrowRight className="w-4 h-4" />
-                </Link>
+                </MotionLink>
 
                 <Link
                   to={ROUTES.contact}
@@ -237,17 +278,29 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                 </Link>
               </div>
             </div>
-          </div>
-        </section>
+          </motion.div>
+          </AnimatePresence>
+        </motion.section>
       )}
 
       {/* 3. TAB CONTENT: UPCOMING EVENTS */}
       {activeTab === 'upcoming' && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <motion.section
+          key="tab-upcoming"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6"
+        >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {upcomingEvents.map((event) => (
-              <div
+            {upcomingEvents.map((event, idx) => (
+              <motion.div
                 key={event.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: idx * 0.08 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between hover:border-[#06592b] transition-colors"
               >
                 <div className="space-y-4">
@@ -297,28 +350,41 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                     {event.registeredCount}/{event.capacity} registered
                   </span>
                   {/* Buttons: 16px, Medium, sentence case */}
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     type="button"
                     onClick={() => onRegisterEvent(event)}
                     className="px-4 py-2.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[15px] rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                   >
                     <Ticket className="w-4 h-4" />
                     <span>Reserve seat</span>
-                  </button>
+                  </motion.button>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
       )}
 
       {/* 4. TAB CONTENT: PAST EVENTS ARCHIVE */}
       {activeTab === 'past' && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <motion.section
+          key="tab-past"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {pastEvents.map((event) => (
-              <div
+            {pastEvents.map((event, idx) => (
+              <motion.div
                 key={event.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: idx * 0.08 }}
+                whileHover={{ y: -3, transition: { duration: 0.2 } }}
                 className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs space-y-4"
               >
                 <div className="flex items-center justify-between text-xs">
@@ -344,11 +410,12 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                   </span>
                   <span className="text-[#06592b] font-medium">400+ delegates attended</span>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
       )}
+      </AnimatePresence>
     </div>
   );
 };
