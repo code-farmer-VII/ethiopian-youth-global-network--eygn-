@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { FAQS, MEMBERSHIP_BENEFITS } from '../data/eygnData';
 import { MembershipFormData } from '../types';
 import { DigitalMembershipCard } from '../components/DigitalMembershipCard';
@@ -6,6 +7,7 @@ import { ApiRequestError, InterestArea, submitMembershipApplication, submitPartn
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
 import { CheckCircle2, ShieldCheck, Award, Sparkles, Send, HelpCircle, ChevronDown, ChevronUp, UserCheck } from 'lucide-react';
+import { transitionSmooth } from '../utils/motion';
 
 // Frontend display labels -> eygn-api's InterestArea enum slugs (see api.ts). The two lists don't
 // read identically, so submissions map through this table rather than sending the label as-is.
@@ -167,19 +169,39 @@ export const MembershipPage: React.FC = () => {
         path={ROUTES.membership}
       />
       {/* 1. Header */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
-        <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">
+      <motion.section
+        className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={transitionSmooth}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]"
+        >
           <span className="w-2 h-2 rounded-full bg-[#f3a310]" />
           <span>Membership recruitment & global registry</span>
-        </div>
+        </motion.div>
         {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-        <h1 className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]">
+        <motion.h1
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.15 }}
+          className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]"
+        >
           Join the Ethiopian Youth Global Network
-        </h1>
+        </motion.h1>
         {/* Body: 16px, Regular, Dark color */}
-        <p className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto">
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.25 }}
+          className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto"
+        >
           Become a registered member of the premier non-partisan network uniting diaspora and homeland youth to lead global change and serve Ethiopia.
-        </p>
+        </motion.p>
 
         {/* Tab switcher: Buttons: 16px, Medium, sentence case */}
         <div className="inline-flex items-center gap-1 p-1 bg-stone-100 rounded-xl border border-stone-200 mt-2">
@@ -206,10 +228,16 @@ export const MembershipPage: React.FC = () => {
             Institutional & university partner
           </button>
         </div>
-      </section>
+      </motion.section>
 
       {/* 2. MEMBERSHIP BENEFITS OVERVIEW */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={transitionSmooth}
+      >
         <div className="bg-[#1a2805] text-white rounded-3xl p-8 sm:p-12 border border-[#f3a310]/30 shadow-xl relative overflow-hidden">
           <div className="absolute inset-0 bg-dark-pattern opacity-30 pointer-events-none" />
 
@@ -228,8 +256,13 @@ export const MembershipPage: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
               {MEMBERSHIP_BENEFITS.map((b, i) => (
-                <div
+                <motion.div
                   key={i}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
                   className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-[#f3a310]/40 transition-colors space-y-2"
                 >
                   <div className="w-9 h-9 rounded-lg bg-[#f3a310]/20 text-[#f3a310] flex items-center justify-center font-bold text-sm">
@@ -237,16 +270,24 @@ export const MembershipPage: React.FC = () => {
                   </div>
                   <h3 className="text-[17px] font-bold text-white">{b.title}</h3>
                   <p className="text-[14px] text-stone-300 leading-relaxed">{b.description}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* 3. INDIVIDUAL MEMBERSHIP REGISTRATION FORM */}
+      {/* 3. INDIVIDUAL / PARTNER TABS WITH ANIMATION */}
+      <AnimatePresence mode="wait">
       {activeTab === 'individual' && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.section
+          key="tab-individual-form"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
             {/* Form Column */}
@@ -459,18 +500,25 @@ export const MembershipPage: React.FC = () => {
                   )}
 
                   {/* Submit button: Buttons: 16px, Medium, sentence case */}
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     type="submit"
                     disabled={isSubmitting}
                     className="w-full py-3.5 px-6 bg-[#1a2805] hover:bg-[#06592b] disabled:opacity-60 disabled:cursor-not-allowed text-[#f3a310] font-medium text-[16px] rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <UserCheck className="w-5 h-5" />
                     <span>{isSubmitting ? 'Submitting application…' : 'Submit application & generate credential'}</span>
-                  </button>
+                  </motion.button>
                 </form>
               ) : (
                 /* Confirmation Screen */
-                <div className="text-center py-6 space-y-6 animate-in fade-in">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.35 }}
+                  className="text-center py-6 space-y-6"
+                >
                   <div className="w-16 h-16 bg-emerald-100 text-[#06592b] rounded-full flex items-center justify-center mx-auto shadow-inner">
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
@@ -506,7 +554,7 @@ export const MembershipPage: React.FC = () => {
                   >
                     Edit application or register another member
                   </button>
-                </div>
+                </motion.div>
               )}
             </div>
 
@@ -534,12 +582,19 @@ export const MembershipPage: React.FC = () => {
             </div>
 
           </div>
-        </section>
+        </motion.section>
       )}
 
       {/* 4. INSTITUTIONAL PARTNER TAB */}
       {activeTab === 'partner' && (
-        <section className="max-w-4xl mx-auto px-4 sm:px-6">
+        <motion.section
+          key="tab-partner-form"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-4xl mx-auto px-4 sm:px-6"
+        >
           <div className="bg-white rounded-3xl p-8 sm:p-12 border border-stone-200 shadow-xs space-y-6">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-[#06592b] block">
@@ -555,7 +610,12 @@ export const MembershipPage: React.FC = () => {
             </div>
 
             {isPartnerSubmitted ? (
-              <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-3">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.35 }}
+                className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-3"
+              >
                 <CheckCircle2 className="w-10 h-10 text-[#06592b] mx-auto" />
                 <h3 className="text-[18px] font-bold text-[#1a2805]">
                   Institutional brief submitted
@@ -570,7 +630,7 @@ export const MembershipPage: React.FC = () => {
                 >
                   Submit another partnership inquiry
                 </button>
-              </div>
+              </motion.div>
             ) : (
               <form onSubmit={handlePartnerSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -656,22 +716,31 @@ export const MembershipPage: React.FC = () => {
                 )}
 
                 {/* Buttons: 16px, Medium, sentence case */}
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isPartnerSubmitting}
                   className="w-full py-3.5 px-4 bg-[#1a2805] hover:bg-[#06592b] disabled:opacity-60 disabled:cursor-not-allowed text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   <span>{isPartnerSubmitting ? 'Submitting inquiry…' : 'Submit institutional partnership inquiry'}</span>
-                </button>
+                </motion.button>
               </form>
             )}
           </div>
-        </section>
+        </motion.section>
       )}
+      </AnimatePresence>
 
       {/* 5. FREQUENTLY ASKED QUESTIONS (FAQ) */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 space-y-6">
+      <motion.section
+        className="max-w-4xl mx-auto px-4 sm:px-6 space-y-6"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={transitionSmooth}
+      >
         <div className="text-center space-y-2">
           <span className="text-xs font-bold uppercase tracking-wider text-[#06592b]">
             Common queries
@@ -698,16 +767,26 @@ export const MembershipPage: React.FC = () => {
                   <span className="text-[16px] font-bold text-[#1a2805]">{faq.question}</span>
                   {isOpen ? <ChevronUp className="w-4 h-4 text-[#06592b] shrink-0" /> : <ChevronDown className="w-4 h-4 text-stone-400 shrink-0" />}
                 </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 text-[15px] text-[#1a2805] leading-relaxed border-t border-stone-100 pt-3">
-                    {faq.answer}
-                  </div>
-                )}
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-5 text-[15px] text-[#1a2805] leading-relaxed border-t border-stone-100 pt-3">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };
