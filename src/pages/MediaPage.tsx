@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { listCategories, listMediaItems, listPosts, listPressItems, MediaItemDto, PostSummary, PressItemDto } from '../lib/api';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
-import { Image as ImageIcon, Download, Play, Search, Eye, ArrowRight, Check } from 'lucide-react';
+import { Image as ImageIcon, Download, Play, Search, Eye, ArrowRight, Check, X } from 'lucide-react';
+import { transitionSmooth, modalBackdropVariants, modalDialogVariants } from '../utils/motion';
 
 interface MediaPageProps {
   onSelectPost: (slug: string) => void;
@@ -73,19 +75,39 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
         path={ROUTES.media}
       />
       {/* 1. Header */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
-        <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">
+      <motion.section
+        className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={transitionSmooth}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]"
+        >
           <span className="w-2 h-2 rounded-full bg-[#f3a310]" />
           <span>Press, dispatches & visual archives</span>
-        </div>
+        </motion.div>
         {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-        <h1 className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]">
+        <motion.h1
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.15 }}
+          className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16]"
+        >
           EYGN Media Center & Official Communiqués
-        </h1>
+        </motion.h1>
         {/* Body: 16px, Regular, Dark color */}
-        <p className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto">
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.25 }}
+          className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl mx-auto"
+        >
           Official announcements, diplomatic delegations, Pan-African museum visits, and university partnerships.
-        </p>
+        </motion.p>
 
         {/* View Switcher Tabs: 15-16px, Medium, sentence case */}
         <div className="inline-flex items-center gap-1 p-1 bg-stone-100 rounded-xl border border-stone-200 mt-2">
@@ -123,11 +145,20 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
             Press kit & downloads
           </button>
         </div>
-      </section>
+      </motion.section>
 
+      {/* Tab Content Wrapper */}
+      <AnimatePresence mode="wait">
       {/* 2. TAB: BLOG POSTS / DISPATCHES */}
       {activeTab === 'posts' && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <motion.section
+          key="media-posts"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+        >
           {/* Filter and Search Bar */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-stone-200">
             {/* Category pills */}
@@ -164,9 +195,13 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
 
           {/* Posts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post) => (
-              <article
+            {filteredPosts.map((post, idx) => (
+              <motion.article
                 key={post.slug}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: idx * 0.08 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between group"
               >
                 <div className="space-y-4">
@@ -204,19 +239,30 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
-              </article>
+              </motion.article>
             ))}
           </div>
-        </section>
+        </motion.section>
       )}
 
       {/* 3. TAB: VISUAL ARCHIVES */}
       {activeTab === 'photos' && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <motion.section
+          key="media-photos"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+        >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {galleryItems.map((item) => (
-              <div
+            {galleryItems.map((item, idx) => (
+              <motion.div
                 key={item.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: idx * 0.08 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 onClick={() => setLightboxItem(item)}
                 className="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-xs hover:border-[#06592b] cursor-pointer group transition-all"
               >
@@ -255,72 +301,30 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                     {item.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-
-          {/* Lightbox Modal */}
-          {lightboxItem && (
-            <div
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in"
-              onClick={() => setLightboxItem(null)}
-            >
-              <div
-                className="bg-[#1a2805] text-white rounded-2xl max-w-2xl w-full p-6 space-y-4 border border-[#f3a310]/30 shadow-2xl relative"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex justify-between items-start border-b border-white/10 pb-3">
-                  <div>
-                    <span className="text-xs text-[#f3a310] uppercase font-semibold block">
-                      {lightboxItem.category} archive · {formatDate(lightboxItem.date)}
-                    </span>
-                    <h3 className="text-xl font-bold text-white">{lightboxItem.title}</h3>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setLightboxItem(null)}
-                    className="text-white/60 hover:text-white p-1 rounded cursor-pointer"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <div className="aspect-[16/9] bg-black/50 rounded-xl flex items-center justify-center border border-white/10 relative p-6 text-center">
-                  <div className="space-y-2">
-                    <div className="w-16 h-16 rounded-full bg-[#f3a310]/20 text-[#f3a310] flex items-center justify-center mx-auto border border-[#f3a310]/50">
-                      {lightboxItem.type === 'video' ? <Play className="w-8 h-8 ml-1" /> : <ImageIcon className="w-8 h-8" />}
-                    </div>
-                    <p className="text-sm font-medium text-white">{lightboxItem.title}</p>
-                    <p className="text-xs text-stone-400">{lightboxItem.location}</p>
-                  </div>
-                </div>
-
-                <p className="text-[14px] text-stone-300 leading-relaxed">
-                  {lightboxItem.description}
-                </p>
-
-                <div className="flex justify-end pt-2 border-t border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => setLightboxItem(null)}
-                    className="px-5 py-2.5 bg-[#f3a310] text-[#1a2805] font-medium text-[15px] rounded-xl cursor-pointer"
-                  >
-                    Close viewer
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </section>
+        </motion.section>
       )}
 
       {/* 4. TAB: PRESS KIT & DOWNLOADS */}
       {activeTab === 'press' && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <motion.section
+          key="media-press"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pressItems.map((kit, i) => (
-              <div
+              <motion.div
                 key={i}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: i * 0.1 }}
+                whileHover={{ y: -3, transition: { duration: 0.2 } }}
                 className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between space-y-4"
               >
                 <div>
@@ -330,7 +334,9 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                 </div>
 
                 {/* Buttons: 16px, Medium, sentence case */}
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={() => handleDownload(kit.title)}
                   className="w-full py-3 px-4 bg-stone-100 hover:bg-[#1a2805] hover:text-[#f3a310] text-[#1a2805] text-[15px] font-medium rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
@@ -346,12 +352,76 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                       <span>Download document</span>
                     </>
                   )}
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
       )}
+      </AnimatePresence>
+
+      {/* Lightbox Modal with AnimatePresence */}
+      <AnimatePresence>
+        {lightboxItem && (
+          <motion.div
+            variants={modalBackdropVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs"
+            onClick={() => setLightboxItem(null)}
+          >
+            <motion.div
+              variants={modalDialogVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="bg-[#1a2805] text-white rounded-2xl max-w-2xl w-full p-6 space-y-4 border border-[#f3a310]/30 shadow-2xl relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-start border-b border-white/10 pb-3">
+                <div>
+                  <span className="text-xs text-[#f3a310] uppercase font-semibold block">
+                    {lightboxItem.category} archive · {formatDate(lightboxItem.date)}
+                  </span>
+                  <h3 className="text-xl font-bold text-white">{lightboxItem.title}</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxItem(null)}
+                  className="text-white/60 hover:text-white p-1 rounded cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="aspect-[16/9] bg-black/50 rounded-xl flex items-center justify-center border border-white/10 relative p-6 text-center">
+                <div className="space-y-2">
+                  <div className="w-16 h-16 rounded-full bg-[#f3a310]/20 text-[#f3a310] flex items-center justify-center mx-auto border border-[#f3a310]/50">
+                    {lightboxItem.type === 'video' ? <Play className="w-8 h-8 ml-1" /> : <ImageIcon className="w-8 h-8" />}
+                  </div>
+                  <p className="text-sm font-medium text-white">{lightboxItem.title}</p>
+                  <p className="text-xs text-stone-400">{lightboxItem.location}</p>
+                </div>
+              </div>
+
+              <p className="text-[14px] text-stone-300 leading-relaxed">
+                {lightboxItem.description}
+              </p>
+
+              <div className="flex justify-end pt-2 border-t border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setLightboxItem(null)}
+                  className="px-5 py-2.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[15px] rounded-xl cursor-pointer transition-colors"
+                >
+                  Close viewer
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
