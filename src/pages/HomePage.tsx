@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { EventItem, Language } from '../types';
 import { EYGN_INFO, TRANSLATIONS } from '../data/eygnData';
 import { listEvents, listPosts, listPrograms, listStatistics, PostSummary, ProgramDto, StatisticDto } from '../lib/api';
@@ -8,7 +9,9 @@ import { ChapterMap } from '../components/ChapterMap';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
 import { SITE_URL } from '../lib/siteConfig';
+import { MotionLink } from '../components/MotionLink';
 import { ArrowRight, Calendar, Sparkles, MapPin, ChevronRight, Globe, Shield, Ticket } from 'lucide-react';
+import { transitionSmooth, buttonHoverProps, viewportStandard } from '../utils/motion';
 
 const ORGANIZATION_SCHEMA = {
   '@context': 'https://schema.org',
@@ -78,47 +81,79 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
+
             {/* Left Copy Column */}
-            <div className="lg:col-span-7 space-y-6">
+            <motion.div
+              className="lg:col-span-7 space-y-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={transitionSmooth}
+            >
               {/* Domain Kicker */}
-              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]">
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.1 }}
+                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#06592b]"
+              >
                 <span className="w-2 h-2 rounded-full bg-[#f3a310]" />
                 <span>{t.heroKicker}</span>
                 <span className="text-stone-300">·</span>
                 <span className="text-stone-600 font-mono text-[11px]">DISPATCH Q1 2026</span>
-              </div>
+              </motion.div>
 
               {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-              <h1 className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16] text-balance">
+              <motion.h1
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.15 }}
+                className="text-[32px] sm:text-[36px] lg:text-[40px] font-bold text-[#1a2805] tracking-tight leading-[1.16] text-balance"
+              >
                 {EYGN_INFO.headline}
-              </h1>
+              </motion.h1>
 
               {/* Body: 16px, Regular, Dark color */}
-              <p className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl">
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.25 }}
+                className="text-[16px] text-[#1a2805] leading-relaxed max-w-2xl"
+              >
                 {EYGN_INFO.subtitle}
-              </p>
+              </motion.p>
 
               {/* Action Buttons: 16px, Medium, sentence case */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <Link
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+                className="flex flex-wrap items-center gap-4 pt-2"
+              >
+                <MotionLink
                   to={ROUTES.membership}
+                  {...buttonHoverProps}
                   className="px-6 py-3.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-md transition-all flex items-center gap-2 group"
                 >
                   <span>{EYGN_INFO.ctaText}</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </Link>
+                </MotionLink>
 
-                <Link
+                <MotionLink
                   to={ROUTES.programs}
+                  {...buttonHoverProps}
                   className="px-6 py-3.5 bg-white hover:bg-stone-50 text-[#1a2805] border border-stone-300 font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center gap-2"
                 >
                   <span>{t.explorePrograms}</span>
-                </Link>
-              </div>
+                </MotionLink>
+              </motion.div>
 
               {/* Trust & Alignment Callout */}
-              <div className="pt-4 flex flex-wrap items-center gap-4 text-xs text-stone-600">
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.45 }}
+                className="pt-4 flex flex-wrap items-center gap-4 text-xs text-stone-600"
+              >
                 <div className="flex items-center gap-1.5">
                   <Shield className="w-4 h-4 text-[#06592b]" />
                   <span>Structured & neutral mechanism</span>
@@ -128,18 +163,23 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <Globe className="w-4 h-4 text-[#06592b]" />
                   <span>Global diaspora & homeland alignment</span>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Right Visual Composition: Hero Artwork & Editorial Card */}
-            <div className="lg:col-span-5">
+            <motion.div
+              className="lg:col-span-5"
+              initial={{ opacity: 0, scale: 0.96, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            >
               <div className="relative">
                 <div className="absolute inset-0 bg-[#1a2805] rounded-2xl transform rotate-2 translate-x-2 translate-y-2 opacity-15" />
-                
+
                 {/* Main Hero Card: Primary Green #1a2805 with Gold #f3a310 Accent */}
                 <div className="relative bg-[#1a2805] text-white p-6 sm:p-8 rounded-2xl shadow-xl border border-[#f3a310]/30 overflow-hidden">
                   <div className="absolute inset-0 bg-dark-pattern opacity-30 pointer-events-none" />
-                  
+
                   {/* Ethiopian Tri-color Accent Bar */}
                   <div className="h-1.5 w-24 bg-gradient-to-r from-emerald-500 via-[#f3a310] to-red-500 rounded-full mb-6" />
 
@@ -171,27 +211,41 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </div>
                   </div>
 
-                  <Link
+                  <MotionLink
                     to={ROUTES.about}
+                    {...buttonHoverProps}
                     className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 text-white rounded-xl text-[16px] font-medium transition-colors flex items-center justify-center gap-2 border border-white/20"
                   >
                     <span>Read founding charter</span>
                     <ArrowRight className="w-4 h-4 text-[#f3a310]" />
-                  </Link>
+                  </MotionLink>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
           </div>
         </div>
       </section>
 
       {/* 2. MISSION & VISION DUAL PILLARS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
+
           {/* Mission Box */}
-          <div className="bg-white p-8 rounded-2xl border border-stone-200 shadow-xs relative overflow-hidden group hover:border-[#06592b]/40 transition-colors">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            className="bg-white p-8 rounded-2xl border border-stone-200 shadow-xs relative overflow-hidden group hover:border-[#06592b]/40 transition-colors"
+          >
             <div className="w-11 h-11 rounded-xl bg-[#06592b]/10 text-[#06592b] flex items-center justify-center mb-4">
               <Sparkles className="w-5 h-5" />
             </div>
@@ -205,10 +259,17 @@ export const HomePage: React.FC<HomePageProps> = ({
             <p className="text-[16px] text-[#1a2805] leading-relaxed">
               "{EYGN_INFO.missionStatement}"
             </p>
-          </div>
+          </motion.div>
 
           {/* Vision Box */}
-          <div className="bg-[#1a2805] text-white p-8 rounded-2xl border border-[#f3a310]/30 shadow-sm relative overflow-hidden group">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            className="bg-[#1a2805] text-white p-8 rounded-2xl border border-[#f3a310]/30 shadow-sm relative overflow-hidden group"
+          >
             <div className="w-11 h-11 rounded-xl bg-[#f3a310]/20 text-[#f3a310] flex items-center justify-center mb-4">
               <Globe className="w-5 h-5" />
             </div>
@@ -221,13 +282,19 @@ export const HomePage: React.FC<HomePageProps> = ({
             <p className="text-[16px] text-stone-200 leading-relaxed">
               "{EYGN_INFO.visionStatement}"
             </p>
-          </div>
+          </motion.div>
 
         </div>
-      </section>
+      </motion.section>
 
       {/* 3. STATISTICS COUNTER (Quarterly Update) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="bg-white rounded-2xl p-8 border border-stone-200 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-stone-100 gap-2">
             <div>
@@ -246,7 +313,14 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-6">
             {statistics.map((stat, idx) => (
-              <div key={idx} className="space-y-1">
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="space-y-1"
+              >
                 <div className="flex items-baseline gap-0.5">
                   <span className="text-3xl sm:text-4xl font-bold font-mono text-[#1a2805] tabular-nums">
                     {stat.value}
@@ -255,14 +329,20 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
                 <h4 className="text-[16px] font-semibold text-[#1a2805]">{stat.label}</h4>
                 <p className="text-xs text-stone-500">{stat.quarterlyNote}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* 4. FEATURED PROGRAMS SHOWCASE */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
           <div>
             <span className="text-xs font-semibold text-[#06592b] uppercase tracking-wider block">
@@ -283,9 +363,14 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredPrograms.map((program) => (
-            <div
+          {featuredPrograms.map((program, idx) => (
+            <motion.div
               key={program.slug}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className="bg-white rounded-2xl p-6 border border-stone-200 hover:border-[#06592b] shadow-xs hover:shadow-sm transition-all flex flex-col justify-between"
             >
               <div>
@@ -324,18 +409,30 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* 5. INTERACTIVE CHAPTER NETWORK MAP */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <ChapterMap onSelectChapter={() => {}} />
-      </section>
+      </motion.section>
 
       {/* 6. UPCOMING EVENTS PREVIEW */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
           <div>
             <span className="text-xs font-semibold text-[#06592b] uppercase tracking-wider block">
@@ -356,9 +453,14 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredEvents.map((event) => (
-            <div
+          {featuredEvents.map((event, idx) => (
+            <motion.div
               key={event.id}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between hover:border-[#f3a310] transition-colors"
             >
               <div>
@@ -390,22 +492,30 @@ export const HomePage: React.FC<HomePageProps> = ({
                   {event.registeredCount}/{event.capacity} seats filled
                 </span>
                 {/* Buttons: 16px, Medium, sentence case */}
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={() => onRegisterEvent(event)}
                   className="px-4 py-2 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] text-[15px] font-medium rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <Ticket className="w-3.5 h-3.5" />
                   <span>Register for event</span>
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* 7. LATEST NEWS / BLOG POSTS (VERBATIM CONTENT FROM BRIEF) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportStandard}
+        transition={transitionSmooth}
+      >
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
           <div>
             <span className="text-xs font-semibold text-[#06592b] uppercase tracking-wider block">
@@ -426,9 +536,14 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {latestPosts.map((post) => (
-            <div
+          {latestPosts.map((post, idx) => (
+            <motion.div
               key={post.slug}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between hover:shadow-sm transition-all group"
             >
               <div>
@@ -458,13 +573,19 @@ export const HomePage: React.FC<HomePageProps> = ({
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* 8. PROMINENT "JOIN THE NETWORK" CONVERSION BANNER */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        initial={{ opacity: 0, scale: 0.98, y: 20 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={transitionSmooth}
+      >
         <div className="bg-[#1a2805] text-white rounded-3xl p-8 sm:p-12 lg:p-16 border-2 border-[#f3a310]/40 relative overflow-hidden shadow-xl">
           <div className="absolute inset-0 bg-dark-pattern opacity-30 pointer-events-none" />
           <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#f3a310]/15 rounded-full blur-3xl pointer-events-none" />
@@ -485,22 +606,25 @@ export const HomePage: React.FC<HomePageProps> = ({
 
             {/* Buttons: 16px, Medium, sentence case */}
             <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
-              <Link
+              <MotionLink
                 to={ROUTES.membership}
-                className="px-8 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-all transform hover:scale-105 active:scale-95"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-all"
               >
                 Apply for membership
-              </Link>
-              <Link
+              </MotionLink>
+              <MotionLink
                 to={ROUTES.contact}
+                {...buttonHoverProps}
                 className="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-medium text-[16px] rounded-xl border border-white/20 transition-colors"
               >
                 Inquire as institutional partner
-              </Link>
+              </MotionLink>
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };
