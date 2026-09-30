@@ -105,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </Link>
 
           {/* Zone 2: 4-6 Clean text navigation links */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-7">
+          <nav className="hidden xl:flex items-center gap-6 xl:gap-7">
             {navItems.map((item) => (
               <NavLink
                 key={item.id}
@@ -221,7 +221,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 text-stone-700 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition-colors cursor-pointer"
+              className="xl:hidden p-2.5 text-stone-700 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition-colors cursor-pointer"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -237,7 +237,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:hidden border-t border-stone-200 bg-white/98 px-4 py-4 space-y-2 shadow-xl overflow-hidden"
+              className="xl:hidden border-t border-stone-200 bg-white/98 px-4 py-4 space-y-2 shadow-xl overflow-hidden"
             >
               {navItems.map((item) => (
                 <NavLink
