@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { PAST_EVENTS, PROGRAMS, UPCOMING_EVENTS } from '../data/eygnData';
-import { EventItem, PageType, Program } from '../types';
+import React, { useEffect, useState } from 'react';
+import { EventItem, PageType } from '../types';
+import { listEvents, listPrograms, ProgramDto } from '../lib/api';
+import { toEventItem } from '../lib/eventFormat';
 import { CheckCircle2, Calendar, MapPin, Ticket, ArrowRight, BookOpen, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
-
 
 interface ProgramsPageProps {
   onNavigate: (page: PageType) => void;
@@ -16,7 +16,25 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
   onRegisterEvent,
 }) => {
   const [activeTab, setActiveTab] = useState<'programs' | 'upcoming' | 'past'>('programs');
-  const [selectedProgram, setSelectedProgram] = useState<Program>(PROGRAMS[0]);
+  const [programs, setPrograms] = useState<ProgramDto[]>([]);
+  const [selectedProgram, setSelectedProgram] = useState<ProgramDto | null>(null);
+  const [upcomingEvents, setUpcomingEvents] = useState<EventItem[]>([]);
+  const [pastEvents, setPastEvents] = useState<EventItem[]>([]);
+
+  useEffect(() => {
+    listPrograms()
+      .then((res) => {
+        setPrograms(res);
+        setSelectedProgram((prev) => prev ?? res[0] ?? null);
+      })
+      .catch(() => setPrograms([]));
+    listEvents('upcoming')
+      .then((res) => setUpcomingEvents(res.map(toEventItem)))
+      .catch(() => setUpcomingEvents([]));
+    listEvents('past')
+      .then((res) => setPastEvents(res.map(toEventItem)))
+      .catch(() => setPastEvents([]));
+  }, []);
 
   return (
     <div className="space-y-12 lg:space-y-16 py-6">
@@ -66,7 +84,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            Flagship programs ({PROGRAMS.length})
+            Flagship programs ({programs.length})
           </button>
           <button
             type="button"
@@ -77,7 +95,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            Upcoming events ({UPCOMING_EVENTS.length})
+            Upcoming events ({upcomingEvents.length})
           </button>
           <button
             type="button"
@@ -88,7 +106,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            Past events archive ({PAST_EVENTS.length})
+            Past events archive ({pastEvents.length})
           </button>
         </div>
       </motion.section>
@@ -96,7 +114,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
       {/* Tab Content Wrapper */}
       <AnimatePresence mode="wait">
         {/* 2. TAB CONTENT: PROGRAMS */}
-        {activeTab === 'programs' && (
+        {activeTab === 'programs' && selectedProgram && (
           <motion.section 
             key="tab-programs"
             initial={{ opacity: 0, y: 12 }}
@@ -107,11 +125,11 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
           >
             {/* Program Selector Navigation Bar */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {PROGRAMS.map((prog) => {
-                const isSelected = selectedProgram.id === prog.id;
+              {programs.map((prog) => {
+                const isSelected = selectedProgram.slug === prog.slug;
                 return (
                   <button
-                    key={prog.id}
+                    key={prog.slug}
                     type="button"
                     onClick={() => setSelectedProgram(prog)}
                     className={`p-4 rounded-xl text-left border transition-all cursor-pointer ${
@@ -136,7 +154,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
             {/* Selected Program Deep-Dive Container */}
             <AnimatePresence mode="wait">
               <motion.div 
-                key={selectedProgram.id}
+                key={selectedProgram.slug}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
@@ -145,10 +163,14 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
               >
                 <div className="lg:col-span-8 space-y-6">
                   <div className="flex items-center gap-2 text-xs text-stone-500">
-                    <span className="px-2.5 py-0.5 rounded bg-stone-100 text-stone-700 font-medium">
-                      {selectedProgram.pillar}
-                    </span>
-                    <span>·</span>
+                    {selectedProgram.pillar && (
+                      <>
+                        <span className="px-2.5 py-0.5 rounded bg-stone-100 text-stone-700 font-medium">
+                          {selectedProgram.pillar}
+                        </span>
+                        <span>·</span>
+                      </>
+                    )}
                     <span className="font-semibold text-[#06592b]">{selectedProgram.status}</span>
                   </div>
 
@@ -157,51 +179,59 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                     {selectedProgram.title} {selectedProgram.acronym && `(${selectedProgram.acronym})`}
                   </h2>
 
-                  <p className="text-[16px] text-[#1a2805] font-medium leading-relaxed">
-                    {selectedProgram.subtitle}
-                  </p>
+                  {selectedProgram.subtitle && (
+                    <p className="text-[16px] text-[#1a2805] font-medium leading-relaxed">
+                      {selectedProgram.subtitle}
+                    </p>
+                  )}
 
                   <div className="space-y-3 text-[#1a2805] text-[16px] leading-relaxed border-t border-stone-100 pt-4">
                     <p>{selectedProgram.description}</p>
                   </div>
 
                   {/* Core Activities Breakdown */}
-                  <div className="space-y-3 pt-4 border-t border-stone-100">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a2805]">
-                      Key program activities:
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {selectedProgram.activities.map((activity, idx) => (
-                        <div key={idx} className="p-3.5 bg-stone-50 border border-stone-200/80 rounded-xl flex items-start gap-2.5">
-                          <CheckCircle2 className="w-4 h-4 text-[#06592b] shrink-0 mt-0.5" />
-                          <span className="text-[14px] text-stone-700 leading-relaxed">{activity}</span>
-                        </div>
-                      ))}
+                  {selectedProgram.activities.length > 0 && (
+                    <div className="space-y-3 pt-4 border-t border-stone-100">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-[#1a2805]">
+                        Key program activities:
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {selectedProgram.activities.map((activity, idx) => (
+                          <div key={idx} className="p-3.5 bg-stone-50 border border-stone-200/80 rounded-xl flex items-start gap-2.5">
+                            <CheckCircle2 className="w-4 h-4 text-[#06592b] shrink-0 mt-0.5" />
+                            <span className="text-[14px] text-stone-700 leading-relaxed">{activity}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* How to Join Guideline */}
-                  <div className="p-5 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
-                    <span className="text-xs font-bold text-[#1a2805] uppercase tracking-wider block">
-                      How to participate or join:
-                    </span>
-                    <p className="text-[15px] text-stone-700 leading-relaxed">
-                      {selectedProgram.howToJoin}
-                    </p>
-                  </div>
+                  {selectedProgram.howToJoin && (
+                    <div className="p-5 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
+                      <span className="text-xs font-bold text-[#1a2805] uppercase tracking-wider block">
+                        How to participate or join:
+                      </span>
+                      <p className="text-[15px] text-stone-700 leading-relaxed">
+                        {selectedProgram.howToJoin}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Sidebar Meta & Direct Action */}
                 <div className="lg:col-span-4 flex flex-col justify-between bg-stone-50/70 p-6 sm:p-8 rounded-2xl border border-stone-200">
                   <div className="space-y-6">
-                    <div>
-                      <span className="text-[11px] uppercase text-stone-500 font-semibold tracking-wider block">
-                        Target demographic
-                      </span>
-                      <p className="text-[15px] text-[#1a2805] mt-1 leading-relaxed">
-                        {selectedProgram.targetAudience}
-                      </p>
-                    </div>
+                    {selectedProgram.targetAudience && (
+                      <div>
+                        <span className="text-[11px] uppercase text-stone-500 font-semibold tracking-wider block">
+                          Target demographic
+                        </span>
+                        <p className="text-[15px] text-[#1a2805] mt-1 leading-relaxed">
+                          {selectedProgram.targetAudience}
+                        </p>
+                      </div>
+                    )}
 
                     {selectedProgram.stats && selectedProgram.stats.length > 0 && (
                       <div className="pt-4 border-t border-stone-200 space-y-3">
@@ -260,7 +290,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
             className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6"
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {UPCOMING_EVENTS.map((event, idx) => (
+              {upcomingEvents.map((event, idx) => (
                 <motion.div
                   key={event.id}
                   initial={{ opacity: 0, y: 16 }}
@@ -344,7 +374,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
             className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {PAST_EVENTS.map((event, idx) => (
+              {pastEvents.map((event, idx) => (
                 <motion.div
                   key={event.id}
                   initial={{ opacity: 0, y: 16 }}

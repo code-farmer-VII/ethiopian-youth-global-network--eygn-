@@ -1,30 +1,36 @@
-import React, { useState } from 'react';
-import { LEADERSHIP_TEAM } from '../data/eygnData';
-import { PageType, TeamMember } from '../types';
+import React, { useEffect, useState } from 'react';
+import { PageType } from '../types';
+import { listTeamMembers, TeamMemberDto } from '../lib/api';
 import { Mail, ArrowRight, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
-
 
 interface TeamPageProps {
   onNavigate: (page: PageType) => void;
 }
 
+// API team members have no id/slug and no photo initials seed — derive both client-side.
+function getInitials(fullName: string): string {
+  const parts = fullName.replace(/^(Mr|Ms|Mrs|Dr)\.?\s+/i, '').trim().split(/\s+/);
+  return parts.slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('') || '??';
+}
+
 export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
   const [filterDepartment, setFilterDepartment] = useState<string>('All');
+  const [teamMembers, setTeamMembers] = useState<TeamMemberDto[]>([]);
 
-  // Top Executive Leadership (Sisay, Amen, Amanuel)
-  const topLeaderIds = ['sisay-lucas', 'amen-biniyam', 'amanuel-lemma'];
-  const topLeaders = topLeaderIds
-    .map(id => LEADERSHIP_TEAM.find(m => m.id === id))
-    .filter((m): m is TeamMember => Boolean(m));
+  useEffect(() => {
+    listTeamMembers()
+      .then(setTeamMembers)
+      .catch(() => setTeamMembers([]));
+  }, []);
 
-  // Remaining department heads
-  const otherDirectors = LEADERSHIP_TEAM.filter(m => !topLeaderIds.includes(m.id));
+  const executiveLeaders = teamMembers.filter(m => m.department === 'Executive Leadership');
+  const departmentHeads = teamMembers.filter(m => m.department !== 'Executive Leadership');
 
-  const filteredDirectors = filterDepartment === 'All'
-    ? otherDirectors
-    : otherDirectors.filter(m => m.department.toLowerCase().includes(filterDepartment.toLowerCase()));
+  const filteredHeads = filterDepartment === 'All'
+    ? departmentHeads
+    : departmentHeads.filter(m => (m.department ?? '').toLowerCase().includes(filterDepartment.toLowerCase()));
 
   return (
     <div className="space-y-16 lg:space-y-20 py-6">
@@ -83,9 +89,9 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {topLeaders.map((member, idx) => (
+          {executiveLeaders.map((member, idx) => (
             <motion.div
-              key={member.id}
+              key={member.fullName}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -109,7 +115,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
                   {/* Monogram / Big Picture Center Holder */}
                   <div className="relative z-10 flex flex-col items-center justify-center space-y-2">
                     <div className="w-20 h-20 rounded-full bg-[#f3a310]/15 border-2 border-[#f3a310]/50 flex items-center justify-center text-[#f3a310] shadow-md group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-3xl font-bold font-serif">{member.imageFallbackSeed}</span>
+                      <span className="text-3xl font-bold font-serif">{member.imageFallbackSeed || getInitials(member.fullName)}</span>
                     </div>
                     <span className="text-xs text-stone-300/80 tracking-wider font-mono uppercase">
                       Official Portrait
@@ -130,7 +136,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
                     )}
                   </div>
                   <h3 className="text-[21px] font-bold text-[#1a2805] leading-tight">
-                    {member.name}
+                    {member.fullName}
                   </h3>
                 </div>
 
@@ -218,9 +224,9 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           <AnimatePresence>
-            {filteredDirectors.map((member) => (
+            {filteredHeads.map((member) => (
               <motion.div
-                key={member.id}
+                key={member.fullName}
                 layout
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -234,7 +240,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
                   <div className="relative w-full h-44 rounded-xl bg-gradient-to-br from-[#1a2805] to-[#06592b]/80 flex flex-col items-center justify-center overflow-hidden border border-[#06592b]/30 shadow-inner">
                     <div className="absolute inset-0 bg-dark-pattern opacity-30 pointer-events-none" />
                     <div className="w-16 h-16 rounded-full bg-white/10 text-[#f3a310] border border-white/20 flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-105 transition-transform duration-300">
-                      {member.imageFallbackSeed}
+                      {member.imageFallbackSeed || getInitials(member.fullName)}
                     </div>
                     <span className="text-[10px] text-white/70 font-mono tracking-wider uppercase mt-1">
                       {member.department}
@@ -246,7 +252,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
                       {member.role}
                     </span>
                     <h3 className="text-[18px] font-bold text-[#1a2805] leading-tight mt-0.5">
-                      {member.name}
+                      {member.fullName}
                     </h3>
                   </div>
 
@@ -274,7 +280,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
                     <a
                       href={`mailto:${member.email}`}
                       className="p-1.5 text-stone-600 hover:text-[#06592b] hover:bg-stone-100 rounded transition-colors"
-                      title={`Email ${member.name}`}
+                      title={`Email ${member.fullName}`}
                     >
                       <Mail className="w-4 h-4" />
                     </a>

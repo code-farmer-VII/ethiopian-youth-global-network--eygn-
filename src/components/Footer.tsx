@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PageType } from '../types';
 import { EYGN_INFO } from '../data/eygnData';
+import { ApiRequestError, subscribeToNewsletter } from '../lib/api';
 import { Mail, MapPin, Send, CheckCircle2, Globe, Shield, ArrowUp } from 'lucide-react';
 import { motion } from 'motion/react';
 import { buttonHoverProps, transitionSmooth, viewportStandard } from '../utils/motion';
@@ -12,13 +13,24 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newsletterEmail) {
+    if (!newsletterEmail) return;
+
+    setSubscribeError(null);
+    setIsSubscribing(true);
+    try {
+      await subscribeToNewsletter(newsletterEmail);
       setSubscribed(true);
       setNewsletterEmail('');
       setTimeout(() => setSubscribed(false), 5000);
+    } catch (err) {
+      setSubscribeError(err instanceof ApiRequestError ? err.message : 'Something went wrong. Please try again.');
+    } finally {
+      setIsSubscribing(false);
     }
   };
 
@@ -192,7 +204,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
-                  className="absolute right-1 top-1 bottom-1 px-3 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] text-xs font-semibold rounded-md transition-colors flex items-center justify-center cursor-pointer"
+                  disabled={isSubscribing}
+                  className="absolute right-1 top-1 bottom-1 px-3 bg-[#f3a310] hover:bg-[#e09407] disabled:opacity-60 disabled:cursor-not-allowed text-[#1a2805] text-xs font-semibold rounded-md transition-colors flex items-center justify-center cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
                 </motion.button>
@@ -201,7 +214,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               {subscribed && (
                 <div className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-950/40 p-2 rounded border border-emerald-800/50 animate-in fade-in">
                   <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                  <span>Subscribed! Welcome to EYGN communications.</span>
+                  <span>Almost there — check your email to confirm your subscription.</span>
+                </div>
+              )}
+
+              {subscribeError && (
+                <div className="text-xs text-red-400 bg-red-950/40 p-2 rounded border border-red-800/50">
+                  {subscribeError}
                 </div>
               )}
             </form>

@@ -119,6 +119,10 @@ export interface EventRegistrationResult {
 export interface NewsletterSubscriptionResult {
   email: string;
   subscribedAt: string;
+  /** Null until the subscriber clicks the confirmation link emailed to them (double opt-in, B6). */
+  confirmedAt: string | null;
+  /** Signed token (B11) required to unsubscribe this email — keep it if you want to offer an unsubscribe action. */
+  unsubscribeToken: string;
 }
 
 export interface PostSummary {
@@ -127,6 +131,8 @@ export interface PostSummary {
   publishedAt: string;
   categories: string[];
   excerpt: string;
+  author: string | null;
+  readingTime: string | null;
 }
 
 export interface PostList {
@@ -142,19 +148,44 @@ export interface PostDetail {
   publishedAt: string;
   categories: string[];
   body: string[];
+  author: string | null;
+  location: string | null;
+  featuredQuote: string | null;
+  readingTime: string | null;
 }
+
+export interface ProgramStat {
+  label: string;
+  value: string;
+}
+
+export type ProgramStatus = 'Active' | 'Upcoming' | 'Flagship';
 
 export interface ProgramDto {
   slug: string;
+  acronym: string | null;
   title: string;
+  subtitle: string | null;
   description: string;
+  activities: string[];
+  targetAudience: string | null;
+  howToJoin: string | null;
+  stats: ProgramStat[] | null;
+  status: ProgramStatus;
+  pillar: string | null;
   isActive: boolean;
 }
 
 export interface TeamMemberDto {
   fullName: string;
   role: string;
+  roleAm: string | null;
+  department: string | null;
   bio: string | null;
+  highlights: string[];
+  email: string | null;
+  linkedin: string | null;
+  photoUrl: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -237,8 +268,8 @@ export function subscribeToNewsletter(email: string): Promise<NewsletterSubscrip
   return post('/newsletter/subscribers', { email });
 }
 
-export function unsubscribeFromNewsletter(email: string): Promise<void> {
-  return del(`/newsletter/subscribers/${encodeURIComponent(email)}`);
+export function unsubscribeFromNewsletter(email: string, unsubscribeToken: string): Promise<void> {
+  return del(`/newsletter/subscribers/${encodeURIComponent(email)}?token=${encodeURIComponent(unsubscribeToken)}`);
 }
 
 // ---------------------------------------------------------------------------
