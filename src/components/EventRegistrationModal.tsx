@@ -51,8 +51,10 @@ export const EventRegistrationModal: React.FC<EventRegistrationModalProps> = ({ 
       setPassId(`EYGN-EVT-${String(registration.id).padStart(6, '0')}`);
       setStep('confirmed');
     } catch (err) {
-      if (err instanceof ApiRequestError && err.status === 409) {
+      if (err instanceof ApiRequestError && err.code === 'ALREADY_REGISTERED') {
         setSubmitError('This email is already registered for this event.');
+      } else if (err instanceof ApiRequestError && err.code === 'EVENT_FULL') {
+        setSubmitError('This event has reached its registration capacity.');
       } else if (err instanceof ApiRequestError && err.status === 404) {
         setSubmitError('This event could not be found. Please refresh and try again.');
       } else if (err instanceof ApiRequestError) {
