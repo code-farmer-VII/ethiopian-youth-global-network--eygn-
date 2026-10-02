@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { PageType } from '../types';
 import { EYGN_INFO } from '../data/eygnData';
 import { ApiRequestError, subscribeToNewsletter } from '../lib/api';
+import { SocialLinks } from './SocialLinks';
 import { Mail, MapPin, Send, CheckCircle2, Globe, Shield, ArrowUp } from 'lucide-react';
 import { motion } from 'motion/react';
 import { buttonHoverProps, transitionSmooth, viewportStandard } from '../utils/motion';
@@ -21,6 +22,7 @@ const NAV_LINKS: { id: PageType; label: string }[] = [
 
 export const Footer: React.FC = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
+  const navigate = useNavigate();
   const [subscribed, setSubscribed] = useState(false);
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<string | null>(null);

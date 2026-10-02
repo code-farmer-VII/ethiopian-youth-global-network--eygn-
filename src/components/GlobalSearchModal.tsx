@@ -5,6 +5,7 @@ import { ROUTES } from '../lib/routes';
 import { Search, X, BookOpen, Users, FolderGit2, MapPin, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { modalBackdropVariants, modalDialogVariants } from '../utils/motion';
+import { useModalA11y } from '../hooks/useModalA11y';
 
 interface GlobalSearchModalProps {
   isOpen: boolean;

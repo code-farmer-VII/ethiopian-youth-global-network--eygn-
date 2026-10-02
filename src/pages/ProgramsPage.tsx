@@ -19,6 +19,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
   onRegisterEvent,
 }) => {
   const [activeTab, setActiveTab] = useState<'programs' | 'upcoming' | 'past'>('programs');
+  const navigate = useNavigate();
   const [programs, setPrograms] = useState<ProgramDto[]>([]);
   const [selectedProgram, setSelectedProgram] = useState<ProgramDto | null>(null);
   const [upcomingEvents, setUpcomingEvents] = useState<EventItem[]>([]);

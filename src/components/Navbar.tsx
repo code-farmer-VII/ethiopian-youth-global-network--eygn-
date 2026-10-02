@@ -4,6 +4,8 @@ import { TRANSLATIONS } from '../data/eygnData';
 import { Search, Globe, Menu, X, ChevronDown, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { buttonHoverProps } from '../utils/motion';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { ROUTES } from '../lib/routes';
 
 interface NavbarProps {
   language: Language;
@@ -19,6 +21,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Deduce current page identifier from the route path
+  const currentPageEntry = Object.entries(ROUTES).find(([, path]) => path === location.pathname);
+  const currentPage = (currentPageEntry ? currentPageEntry[0] : 'home') as PageType;
+
+  const handleNavClick = (page: PageType) => {
+    navigate(ROUTES[page]);
+    setMobileMenuOpen(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => {

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { EventItem, Language, PageType } from '../types';
 import { EYGN_INFO, STATISTICS, TRANSLATIONS } from '../data/eygnData';
-import { listEvents, listPosts, listPrograms, PostSummary, ProgramDto } from '../lib/api';
+import { listEvents, listPosts, listPrograms, listStatistics, PostSummary, ProgramDto, StatisticDto } from '../lib/api';
 import { toEventItem } from '../lib/eventFormat';
 import { ChapterMap } from '../components/ChapterMap';
 import { ROUTES } from '../lib/routes';
@@ -37,6 +37,7 @@ interface HomePageProps {
 // Smooth Count-Up Animated Number Component
 function AnimatedCounter({ to, duration = 2 }: { to: number; duration?: number }) {
   const [count, setCount] = useState(0);
+  const navigate = useNavigate();
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.3 });
 

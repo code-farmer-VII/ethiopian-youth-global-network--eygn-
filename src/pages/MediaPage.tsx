@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { GALLERY_ITEMS } from '../data/eygnData';
 import { MediaItem } from '../types';
-import { listCategories, listPosts, PostSummary } from '../lib/api';
+import { listCategories, listPosts, PostSummary, listMediaItems, listPressItems, MediaItemDto, PressItemDto } from '../lib/api';
+import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
 import { Image as ImageIcon, Download, Play, Search, Eye, ArrowRight, Check, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard, modalBackdropVariants, modalDialogVariants } from '../utils/motion';

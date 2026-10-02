@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
 import { Link } from 'react-router-dom';
 import { listTeamMembers, TeamMemberDto } from '../lib/api';
 import { Mail, ArrowRight, User } from 'lucide-react';
@@ -15,6 +16,7 @@ function getInitials(fullName: string): string {
 
 export const TeamPage: React.FC = () => {
   const [filterDepartment, setFilterDepartment] = useState<string>('All');
+  const navigate = useNavigate();
   const [teamMembers, setTeamMembers] = useState<TeamMemberDto[]>([]);
 
   useEffect(() => {

@@ -10,6 +10,7 @@ import { motion } from 'motion/react';
 import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
 
 export const AboutPage: React.FC = () => {
+  const navigate = useNavigate();
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'Users': return <Users className="w-5 h-5" />;
