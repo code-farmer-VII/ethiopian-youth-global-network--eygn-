@@ -1,16 +1,34 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { EventItem, Language, PageType } from '../types';
 import { EYGN_INFO, STATISTICS, TRANSLATIONS } from '../data/eygnData';
 import { listEvents, listPosts, listPrograms, PostSummary, ProgramDto } from '../lib/api';
 import { toEventItem } from '../lib/eventFormat';
 import { ChapterMap } from '../components/ChapterMap';
+import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
+import { SITE_URL } from '../lib/siteConfig';
 import { ArrowRight, Calendar, Sparkles, MapPin, ChevronRight, Globe, Shield, Ticket } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform, useInView, animate } from 'motion/react';
 import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
 
 
+const ORGANIZATION_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: EYGN_INFO.name,
+  alternateName: EYGN_INFO.acronym,
+  url: SITE_URL,
+  description: EYGN_INFO.missionStatement,
+  email: EYGN_INFO.officialEmails[0]?.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: EYGN_INFO.headquarters,
+  },
+};
+
 interface HomePageProps {
-  onNavigate: (page: PageType) => void;
   language: Language;
   onSelectPost: (slug: string) => void;
   onRegisterEvent: (event: EventItem) => void;
@@ -42,7 +60,6 @@ function formatDate(iso: string): string {
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
-  onNavigate,
   language,
   onSelectPost,
   onRegisterEvent,
@@ -52,6 +69,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   const [latestPosts, setLatestPosts] = useState<PostSummary[]>([]);
   const [featuredPrograms, setFeaturedPrograms] = useState<ProgramDto[]>([]);
   const [featuredEvents, setFeaturedEvents] = useState<EventItem[]>([]);
+  const [statistics, setStatistics] = useState<StatisticDto[]>([]);
 
   useEffect(() => {
     listPosts({ size: 3 })
@@ -63,6 +81,9 @@ export const HomePage: React.FC<HomePageProps> = ({
     listEvents('upcoming')
       .then((res) => setFeaturedEvents(res.slice(0, 3).map(toEventItem)))
       .catch(() => setFeaturedEvents([]));
+    listStatistics()
+      .then(setStatistics)
+      .catch(() => setStatistics([]));
   }, []);
 
   // Mouse Movement Parallax for Hero Section
@@ -189,7 +210,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <motion.button
                 {...buttonHoverProps}
                 type="button"
-                onClick={() => onNavigate('membership')}
+                onClick={() => navigate(ROUTES.membership)}
                 className="px-8 py-3.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-md transition-colors flex items-center gap-2 group cursor-pointer"
               >
                 <span>{EYGN_INFO.ctaText}</span>
@@ -199,7 +220,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <motion.button
                 {...buttonHoverProps}
                 type="button"
-                onClick={() => onNavigate('programs')}
+                onClick={() => navigate(ROUTES.programs)}
                 className="px-7 py-3.5 bg-white/90 hover:bg-white text-[#1a2805] border border-stone-300 font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center gap-2 cursor-pointer"
               >
                 <span>{t.explorePrograms}</span>
@@ -351,7 +372,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
           <button
             type="button"
-            onClick={() => onNavigate('programs')}
+            onClick={() => navigate(ROUTES.programs)}
             className="text-[16px] font-medium text-[#06592b] hover:text-[#1a2805] flex items-center gap-1 self-start sm:self-auto cursor-pointer group"
           >
             <span>View all 6 programs</span>
@@ -400,7 +421,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <span className="text-xs text-[#06592b] font-medium">Flagship initiative</span>
                 <button
                   type="button"
-                  onClick={() => onNavigate('programs')}
+                  onClick={() => navigate(ROUTES.programs)}
                   className="text-[15px] font-medium text-[#1a2805] hover:text-[#06592b] flex items-center gap-1 cursor-pointer group"
                 >
                   <span>Learn more</span>
@@ -443,7 +464,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
           <button
             type="button"
-            onClick={() => onNavigate('programs')}
+            onClick={() => navigate(ROUTES.programs)}
             className="text-[16px] font-medium text-[#06592b] hover:text-[#1a2805] flex items-center gap-1 self-start sm:self-auto cursor-pointer group"
           >
             <span>See full calendar</span>
@@ -527,7 +548,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
           <button
             type="button"
-            onClick={() => onNavigate('media')}
+            onClick={() => navigate(ROUTES.media)}
             className="text-[16px] font-medium text-[#06592b] hover:text-[#1a2805] flex items-center gap-1 self-start sm:self-auto cursor-pointer group"
           >
             <span>View all dispatches</span>
@@ -620,7 +641,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 type="button"
-                onClick={() => onNavigate('membership')}
+                onClick={() => navigate(ROUTES.membership)}
                 className="px-8 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-colors cursor-pointer"
               >
                 Apply for membership
@@ -629,7 +650,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 type="button"
-                onClick={() => onNavigate('contact')}
+                onClick={() => navigate(ROUTES.contact)}
                 className="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-medium text-[16px] rounded-xl border border-white/20 transition-colors cursor-pointer"
               >
                 Inquire as institutional partner

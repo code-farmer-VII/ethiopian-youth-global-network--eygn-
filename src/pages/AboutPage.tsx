@@ -1,15 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { Link } from 'react-router-dom';
 import { CORE_VALUES, EYGN_INFO } from '../data/eygnData';
-import { PageType } from '../types';
+import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
 import { Users, ShieldCheck, Award, Share2, Sparkles, Flag, ArrowRight, CheckCircle2, Globe, HeartHandshake, BookOpen } from 'lucide-react';
 import { motion } from 'motion/react';
 import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
 
-interface AboutPageProps {
-  onNavigate: (page: PageType) => void;
-}
-
-export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
+export const AboutPage: React.FC = () => {
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'Users': return <Users className="w-5 h-5" />;
@@ -24,6 +24,11 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
   return (
     <div className="space-y-16 lg:space-y-24 py-6">
+      <SEO
+        title="About Ethiopian Youth Global Network"
+        description="A neutral, structured, and nationally aligned platform connecting Ethiopian youth across the world with the development of their homeland."
+        path={ROUTES.about}
+      />
       {/* 1. Page Header */}
       <motion.section 
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
@@ -279,7 +284,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
             <motion.button
               {...buttonHoverProps}
               type="button"
-              onClick={() => onNavigate('membership')}
+              onClick={() => navigate(ROUTES.membership)}
               className="px-6 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-colors inline-flex items-center gap-2 cursor-pointer"
             >
               <span>Join the network</span>

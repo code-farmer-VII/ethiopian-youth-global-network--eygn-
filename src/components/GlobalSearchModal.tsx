@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { CHAPTER_HUBS } from '../data/eygnData';
-import { listPosts, listPrograms, listTeamMembers, PostSummary, ProgramDto, TeamMemberDto } from '../lib/api';
+import { useNavigate } from 'react-router-dom';
+import { ChapterDto, listChapters, listPosts, listPrograms, listTeamMembers, PostSummary, ProgramDto, TeamMemberDto } from '../lib/api';
+import { ROUTES } from '../lib/routes';
 import { Search, X, BookOpen, Users, FolderGit2, MapPin, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { modalBackdropVariants, modalDialogVariants } from '../utils/motion';
@@ -9,7 +10,6 @@ interface GlobalSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectPost: (slug: string) => void;
-  onNavigate: (page: any) => void;
 }
 
 function formatDate(iso: string): string {
@@ -21,12 +21,13 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   isOpen,
   onClose,
   onSelectPost,
-  onNavigate,
 }) => {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [apiPosts, setApiPosts] = useState<PostSummary[]>([]);
   const [apiPrograms, setApiPrograms] = useState<ProgramDto[]>([]);
   const [apiTeam, setApiTeam] = useState<TeamMemberDto[]>([]);
+  const [apiChapters, setApiChapters] = useState<ChapterDto[]>([]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -39,6 +40,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     listTeamMembers()
       .then(setApiTeam)
       .catch(() => setApiTeam([]));
+    listChapters()
+      .then(setApiChapters)
+      .catch(() => setApiChapters([]));
   }, [isOpen]);
 
   const results = useMemo(() => {
@@ -54,12 +58,14 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     const team = apiTeam.filter(
       t => t.fullName.toLowerCase().includes(q) || t.role.toLowerCase().includes(q) || (t.bio ?? '').toLowerCase().includes(q)
     );
-    const chapters = CHAPTER_HUBS.filter(
+    const chapters = apiChapters.filter(
       c => c.city.toLowerCase().includes(q) || c.country.toLowerCase().includes(q) || c.region.toLowerCase().includes(q)
     );
 
     return { posts, programs, team, chapters };
-  }, [query, apiPosts, apiPrograms, apiTeam]);
+  }, [query, apiPosts, apiPrograms, apiTeam, apiChapters]);
+
+  const panelRef = useModalA11y<HTMLDivElement>(isOpen, onClose);
 
   const totalResults = results.posts.length + results.programs.length + results.team.length + results.chapters.length;
 
@@ -180,7 +186,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                             key={p.id}
                             type="button"
                             onClick={() => {
-                              onNavigate('programs');
+                              navigate(ROUTES.programs);
                               onClose();
                             }}
                             className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group cursor-pointer"
@@ -213,7 +219,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                             key={member.fullName}
                             type="button"
                             onClick={() => {
-                              onNavigate('team');
+                              navigate(ROUTES.team);
                               onClose();
                             }}
                             className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group cursor-pointer"
@@ -246,7 +252,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                             key={c.id}
                             type="button"
                             onClick={() => {
-                              onNavigate('home');
+                              navigate(ROUTES.home);
                               onClose();
                             }}
                             className="w-full text-left p-2.5 rounded-lg hover:bg-stone-50 flex items-start gap-3 transition-colors group cursor-pointer"

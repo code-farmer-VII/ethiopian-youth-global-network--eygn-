@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { EventItem, PageType } from '../types';
+import { useNavigate } from 'react-router-dom';
+
+import { Link } from 'react-router-dom';
+import { EventItem } from '../types';
 import { listEvents, listPrograms, ProgramDto } from '../lib/api';
 import { toEventItem } from '../lib/eventFormat';
+import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
 import { CheckCircle2, Calendar, MapPin, Ticket, ArrowRight, BookOpen, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
 
 interface ProgramsPageProps {
-  onNavigate: (page: PageType) => void;
   onRegisterEvent: (event: EventItem) => void;
 }
 
 export const ProgramsPage: React.FC<ProgramsPageProps> = ({
-  onNavigate,
   onRegisterEvent,
 }) => {
   const [activeTab, setActiveTab] = useState<'programs' | 'upcoming' | 'past'>('programs');
@@ -38,6 +41,11 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
 
   return (
     <div className="space-y-12 lg:space-y-16 py-6">
+      <SEO
+        title="EYGN Flagship Programs & Events"
+        description="Actionable frameworks channel diaspora knowledge into Ethiopian higher education, climate action, and youth civic governance."
+        path={ROUTES.programs}
+      />
       {/* 1. Header */}
       <motion.section 
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
@@ -258,7 +266,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       type="button"
-                      onClick={() => onNavigate('membership')}
+                      onClick={() => navigate(ROUTES.membership)}
                       className="w-full py-3.5 px-4 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <span>Apply for {selectedProgram.acronym || 'program'}</span>
@@ -267,7 +275,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
 
                     <button
                       type="button"
-                      onClick={() => onNavigate('contact')}
+                      onClick={() => navigate(ROUTES.contact)}
                       className="w-full py-3 px-4 bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 font-medium text-[15px] rounded-xl transition-colors text-center cursor-pointer"
                     >
                       Request program brief PDF

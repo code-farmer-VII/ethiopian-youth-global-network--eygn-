@@ -6,16 +6,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import { buttonHoverProps } from '../utils/motion';
 
 interface NavbarProps {
-  currentPage: PageType;
-  onNavigate: (page: PageType) => void;
   language: Language;
   onLanguageChange: (lang: Language) => void;
   onOpenSearch: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  currentPage,
-  onNavigate,
   language,
   onLanguageChange,
   onOpenSearch,
@@ -44,11 +40,15 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'contact', label: t.contact },
   ];
 
-  const handleNavClick = (page: PageType) => {
-    onNavigate(page);
-    setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const navLinkClass = (isActive: boolean) =>
+    `relative text-[15px] font-medium py-2 transition-colors whitespace-nowrap ${
+      isActive ? 'text-[#06592b] font-semibold' : 'text-stone-700 hover:text-[#1a2805]'
+    }`;
+
+  const mobileNavLinkClass = (isActive: boolean) =>
+    `w-full text-left px-3 py-2.5 text-sm font-medium rounded-lg transition-colors flex items-center justify-between ${
+      isActive ? 'bg-[#1a2805] text-[#f3a310]' : 'text-stone-700 hover:bg-stone-100'
+    }`;
 
   return (
     <>
@@ -80,7 +80,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       }`}>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          
+
           {/* Zone 1: Single text element wordmark */}
           <button
             type="button"

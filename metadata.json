@@ -1,6 +1,0 @@
-{
-  "name": "Ethiopian Youth Global Network (EYGN)",
-  "description": "Official platform of the Ethiopian Youth Global Network (EYGN). Connecting and empowering Ethiopian youth worldwide to lead global change through knowledge, innovation, and national development.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

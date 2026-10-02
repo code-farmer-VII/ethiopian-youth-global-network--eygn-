@@ -18,17 +18,25 @@ function formatDate(iso: string): string {
 export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
   const [activeTab, setActiveTab] = useState<'posts' | 'photos' | 'press'>('posts');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [lightboxItem, setLightboxItem] = useState<MediaItem | null>(null);
+  const [lightboxItem, setLightboxItem] = useState<MediaItemDto | null>(null);
   const [searchFilter, setSearchFilter] = useState('');
   const [downloadedItem, setDownloadedItem] = useState<string | null>(null);
 
   const [categories, setCategories] = useState<string[]>(['All']);
   const [posts, setPosts] = useState<PostSummary[]>([]);
+  const [galleryItems, setGalleryItems] = useState<MediaItemDto[]>([]);
+  const [pressItems, setPressItems] = useState<PressItemDto[]>([]);
 
   useEffect(() => {
     listCategories()
       .then(setCategories)
       .catch(() => setCategories(['All']));
+    listMediaItems()
+      .then(setGalleryItems)
+      .catch(() => setGalleryItems([]));
+    listPressItems()
+      .then(setPressItems)
+      .catch(() => setPressItems([]));
   }, []);
 
   useEffect(() => {
@@ -61,6 +69,11 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
 
   return (
     <div className="space-y-12 lg:space-y-16 py-6">
+      <SEO
+        title="EYGN Media Center & Official Communiqués"
+        description="Official announcements, diplomatic delegations, Pan-African museum visits, and university partnerships."
+        path={ROUTES.media}
+      />
       {/* 1. Header */}
       <motion.section 
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
@@ -118,7 +131,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            Visual archives ({GALLERY_ITEMS.length})
+            Visual archives ({galleryItems.length})
           </button>
           <button
             type="button"

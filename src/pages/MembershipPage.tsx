@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { FAQS, MEMBERSHIP_BENEFITS } from '../data/eygnData';
-import { MembershipFormData, PageType } from '../types';
+import { MembershipFormData } from '../types';
 import { DigitalMembershipCard } from '../components/DigitalMembershipCard';
 import { ApiRequestError, InterestArea, submitMembershipApplication, submitPartnershipInquiry } from '../lib/api';
+import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
 import { CheckCircle2, ShieldCheck, Award, Sparkles, Send, HelpCircle, ChevronDown, ChevronUp, UserCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
 
-
-interface MembershipPageProps {
-  onNavigate: (page: PageType) => void;
-}
 
 // Frontend display labels -> eygn-api's InterestArea enum slugs (see api.ts). The two lists don't
 // read identically, so submissions map through this table rather than sending the label as-is.
@@ -24,7 +22,7 @@ const INTEREST_AREA_TO_API: Record<string, InterestArea> = {
   'Pan-African Cultural Heritage': 'pan_african_heritage',
 };
 
-export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) => {
+export const MembershipPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'individual' | 'partner'>('individual');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPartnerSubmitted, setIsPartnerSubmitted] = useState(false);
@@ -166,6 +164,11 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
 
   return (
     <div className="space-y-16 lg:space-y-20 py-6">
+      <SEO
+        title="Join the Ethiopian Youth Global Network"
+        description="Become a registered member of the premier non-partisan network uniting diaspora and homeland youth to lead global change and serve Ethiopia."
+        path={ROUTES.membership}
+      />
       {/* 1. Header */}
       <motion.section 
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
@@ -643,6 +646,7 @@ export const MembershipPage: React.FC<MembershipPageProps> = ({ onNavigate }) =>
                     <div>
                       <label className="block text-xs font-semibold text-stone-700 mb-1">Official Institutional Email *</label>
                       <input
+                        id="member-email"
                         type="email"
                         required
                         placeholder="partner@institution.gov.et"

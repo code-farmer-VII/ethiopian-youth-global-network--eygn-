@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../lib/routes';
+import { Link } from 'react-router-dom';
 import { PageType } from '../types';
 import { EYGN_INFO } from '../data/eygnData';
 import { ApiRequestError, subscribeToNewsletter } from '../lib/api';
@@ -6,11 +9,17 @@ import { Mail, MapPin, Send, CheckCircle2, Globe, Shield, ArrowUp } from 'lucide
 import { motion } from 'motion/react';
 import { buttonHoverProps, transitionSmooth, viewportStandard } from '../utils/motion';
 
-interface FooterProps {
-  onNavigate: (page: PageType) => void;
-}
+const NAV_LINKS: { id: PageType; label: string }[] = [
+  { id: 'home', label: 'Home' },
+  { id: 'about', label: 'About EYGN' },
+  { id: 'programs', label: 'Flagship programs' },
+  { id: 'team', label: 'Leadership & directorate' },
+  { id: 'media', label: 'Media center' },
+  { id: 'membership', label: 'Join the network' },
+  { id: 'contact', label: 'Contact secretariat' },
+];
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [isSubscribing, setIsSubscribing] = useState(false);
@@ -86,6 +95,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <MapPin className="w-4 h-4 text-[#f3a310] shrink-0" />
               <span>{EYGN_INFO.headquarters}</span>
             </div>
+
+            <SocialLinks />
           </div>
 
           {/* Col 2: Strategic Navigation (2 cols) */}
@@ -97,7 +108,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigate('home')}
+                  onClick={() => navigate(ROUTES.home)}
                   className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Home
@@ -106,7 +117,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigate('about')}
+                  onClick={() => navigate(ROUTES.about)}
                   className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   About EYGN
@@ -115,7 +126,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigate('programs')}
+                  onClick={() => navigate(ROUTES.programs)}
                   className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Flagship programs
@@ -124,7 +135,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigate('team')}
+                  onClick={() => navigate(ROUTES.team)}
                   className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Leadership & directorate
@@ -133,7 +144,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigate('media')}
+                  onClick={() => navigate(ROUTES.media)}
                   className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Media center
@@ -142,7 +153,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigate('membership')}
+                  onClick={() => navigate(ROUTES.membership)}
                   className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Join the network
@@ -151,7 +162,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigate('contact')}
+                  onClick={() => navigate(ROUTES.contact)}
                   className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
                 >
                   Contact secretariat
@@ -192,7 +203,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
             <form onSubmit={handleSubscribe} className="space-y-2">
               <div className="relative">
+                <label htmlFor="footer-newsletter-email" className="sr-only">
+                  Email address
+                </label>
                 <input
+                  id="footer-newsletter-email"
                   type="email"
                   required
                   placeholder="Enter your email..."

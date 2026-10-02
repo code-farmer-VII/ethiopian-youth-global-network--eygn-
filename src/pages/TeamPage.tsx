@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { PageType } from '../types';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../lib/routes';
+import { Link } from 'react-router-dom';
 import { listTeamMembers, TeamMemberDto } from '../lib/api';
 import { Mail, ArrowRight, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
-
-interface TeamPageProps {
-  onNavigate: (page: PageType) => void;
-}
 
 // API team members have no id/slug and no photo initials seed — derive both client-side.
 function getInitials(fullName: string): string {
@@ -15,7 +13,7 @@ function getInitials(fullName: string): string {
   return parts.slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('') || '??';
 }
 
-export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
+export const TeamPage: React.FC = () => {
   const [filterDepartment, setFilterDepartment] = useState<string>('All');
   const [teamMembers, setTeamMembers] = useState<TeamMemberDto[]>([]);
 
@@ -34,6 +32,11 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
 
   return (
     <div className="space-y-16 lg:space-y-20 py-6">
+      <SEO
+        title="Executive Leadership & Department Directorate"
+        description="Dedicated innovators, diplomats, and operational coordinators uniting the global diaspora to serve Ethiopia's strategic priorities."
+        path={ROUTES.team}
+      />
       {/* 1. Header */}
       <motion.section 
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
@@ -317,7 +320,7 @@ export const TeamPage: React.FC<TeamPageProps> = ({ onNavigate }) => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="button"
-              onClick={() => onNavigate('contact')}
+              onClick={() => navigate(ROUTES.contact)}
               className="px-6 py-3.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer"
             >
               <span>Submit chapter leadership application</span>

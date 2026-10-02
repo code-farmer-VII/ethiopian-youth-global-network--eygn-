@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { EYGN_INFO } from '../data/eygnData';
 import { ApiRequestError, ContactDepartment, submitContactMessage } from '../lib/api';
+import { ROUTES } from '../lib/routes';
+import { SEO } from '../components/SEO';
+import { SocialLinks } from '../components/SocialLinks';
 import { Mail, MapPin, Send, CheckCircle2, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
@@ -60,6 +63,11 @@ export const ContactPage: React.FC = () => {
 
   return (
     <div className="space-y-16 lg:space-y-20 py-6">
+      <SEO
+        title="Connect with the EYGN Secretariat"
+        description="Have an inquiry, partnership proposal, or chapter initiative? Reach our direct liaison desks across Addis Ababa and international hubs."
+        path={ROUTES.contact}
+      />
       {/* 1. Header */}
       <motion.section 
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
@@ -158,6 +166,8 @@ export const ContactPage: React.FC = () => {
                     <span>{EYGN_INFO.workingHours}</span>
                   </div>
                 </div>
+
+                <SocialLinks className="flex items-center gap-3 pt-2" />
               </div>
             </div>
 
@@ -194,10 +204,11 @@ export const ContactPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    <label htmlFor="contact-name" className="block text-xs font-semibold text-stone-700 mb-1">
                       Your Full Name *
                     </label>
                     <input
+                      id="contact-name"
                       type="text"
                       required
                       placeholder="e.g. Dawit Wolde"
@@ -208,10 +219,11 @@ export const ContactPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    <label htmlFor="contact-email" className="block text-xs font-semibold text-stone-700 mb-1">
                       Email Address *
                     </label>
                     <input
+                      id="contact-email"
                       type="email"
                       required
                       placeholder="dawit@example.com"
@@ -224,10 +236,11 @@ export const ContactPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    <label htmlFor="contact-department" className="block text-xs font-semibold text-stone-700 mb-1">
                       Target Department Desk
                     </label>
                     <select
+                      id="contact-department"
                       value={formData.department}
                       onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                       className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b] bg-white"
@@ -243,10 +256,11 @@ export const ContactPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    <label htmlFor="contact-subject" className="block text-xs font-semibold text-stone-700 mb-1">
                       Subject Line *
                     </label>
                     <input
+                      id="contact-subject"
                       type="text"
                       required
                       placeholder="e.g. Chapter Proposal / DEAIP Inquiry"
@@ -258,10 +272,11 @@ export const ContactPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
+                  <label htmlFor="contact-message" className="block text-xs font-semibold text-stone-700 mb-1">
                     Your Message / Proposal *
                   </label>
                   <textarea
+                    id="contact-message"
                     rows={5}
                     required
                     placeholder="Provide detailed background regarding your organization, inquiry, or partnership intention..."
