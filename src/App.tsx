@@ -46,6 +46,7 @@ function Analytics() {
 
 export default function App() {
   const [language, setLanguage] = useState<Language>('en');
+  const location = useLocation();
 
   // Modal states
   const [selectedPostSlug, setSelectedPostSlug] = useState<string | null>(null);
@@ -68,10 +69,8 @@ export default function App() {
     initAnalytics();
   }, []);
 
-  const location = useLocation();
-
   return (
-    <div className="min-h-screen flex flex-col bg-[#fcfdfa] text-[#1a2805] font-sans antialiased">
+    <div className="min-h-screen flex flex-col bg-[#fcfdfa] text-[#1a2805] font-sans antialiased selection:bg-[#f3a310]/30">
       <ScrollToTop />
       <Analytics />
 
