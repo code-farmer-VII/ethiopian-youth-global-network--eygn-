@@ -276,6 +276,15 @@ export function unsubscribeFromNewsletter(email: string, unsubscribeToken: strin
   return del(`/newsletter/subscribers/${encodeURIComponent(email)}?token=${encodeURIComponent(unsubscribeToken)}`);
 }
 
+export interface NewsletterConfirmResult {
+  email: string;
+  confirmedAt: string;
+}
+
+export function confirmNewsletterSubscription(email: string, token: string): Promise<NewsletterConfirmResult> {
+  return get(`/newsletter/confirm?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
+}
+
 // ---------------------------------------------------------------------------
 // Contact
 // ---------------------------------------------------------------------------
