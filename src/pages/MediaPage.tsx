@@ -271,20 +271,33 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
               >
                 {/* Visual Canvas */}
                 <div className="aspect-[4/3] bg-[#1a2805] relative flex items-center justify-center p-6 text-center overflow-hidden">
-                  <div className="absolute inset-0 bg-dark-pattern opacity-40 group-hover:scale-105 transition-transform duration-300" />
-                  
-                  {/* Geometric emblem */}
-                  <div className="relative z-10 space-y-3">
-                    <div className="w-12 h-12 rounded-full bg-[#f3a310]/20 text-[#f3a310] border border-[#f3a310]/40 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
-                      {item.type === 'video' ? <Play className="w-5 h-5 ml-0.5" /> : <ImageIcon className="w-5 h-5" />}
-                    </div>
-                    <span className="text-xs font-semibold text-white/90 block max-w-xs truncate">
-                      {item.title}
-                    </span>
-                    <span className="text-[10px] text-white/60 block">
-                      {item.location}
-                    </span>
-                  </div>
+                  {item.type === 'photo' && item.mediaUrl ? (
+                    <>
+                      <img
+                        src={item.mediaUrl}
+                        alt={item.title}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    </>
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-dark-pattern opacity-40 group-hover:scale-105 transition-transform duration-300" />
+
+                      {/* Geometric emblem */}
+                      <div className="relative z-10 space-y-3">
+                        <div className="w-12 h-12 rounded-full bg-[#f3a310]/20 text-[#f3a310] border border-[#f3a310]/40 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+                          {item.type === 'video' ? <Play className="w-5 h-5 ml-0.5" /> : <ImageIcon className="w-5 h-5" />}
+                        </div>
+                        <span className="text-xs font-semibold text-white/90 block max-w-xs truncate">
+                          {item.title}
+                        </span>
+                        <span className="text-[10px] text-white/60 block">
+                          {item.location}
+                        </span>
+                      </div>
+                    </>
+                  )}
 
                   <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/60 text-white text-[10px] font-mono flex items-center gap-1">
                     <Eye className="w-3 h-3 text-[#f3a310]" />
@@ -398,14 +411,28 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                 </button>
               </div>
 
-              <div className="aspect-[16/9] bg-black/50 rounded-xl flex items-center justify-center border border-white/10 relative p-6 text-center">
-                <div className="space-y-2">
-                  <div className="w-16 h-16 rounded-full bg-[#f3a310]/20 text-[#f3a310] flex items-center justify-center mx-auto border border-[#f3a310]/50">
-                    {lightboxItem.type === 'video' ? <Play className="w-8 h-8 ml-1" /> : <ImageIcon className="w-8 h-8" />}
+              <div className="aspect-[16/9] bg-black/50 rounded-xl flex items-center justify-center border border-white/10 relative p-6 text-center overflow-hidden">
+                {lightboxItem.mediaUrl && lightboxItem.type === 'photo' ? (
+                  <img
+                    src={lightboxItem.mediaUrl}
+                    alt={lightboxItem.title}
+                    className="absolute inset-0 w-full h-full object-contain"
+                  />
+                ) : lightboxItem.mediaUrl && lightboxItem.type === 'video' ? (
+                  <video
+                    src={lightboxItem.mediaUrl}
+                    controls
+                    className="absolute inset-0 w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="space-y-2">
+                    <div className="w-16 h-16 rounded-full bg-[#f3a310]/20 text-[#f3a310] flex items-center justify-center mx-auto border border-[#f3a310]/50">
+                      {lightboxItem.type === 'video' ? <Play className="w-8 h-8 ml-1" /> : <ImageIcon className="w-8 h-8" />}
+                    </div>
+                    <p className="text-sm font-medium text-white">{lightboxItem.title}</p>
+                    <p className="text-xs text-stone-400">{lightboxItem.location}</p>
                   </div>
-                  <p className="text-sm font-medium text-white">{lightboxItem.title}</p>
-                  <p className="text-xs text-stone-400">{lightboxItem.location}</p>
-                </div>
+                )}
               </div>
 
               <p className="text-[14px] text-stone-300 leading-relaxed">
