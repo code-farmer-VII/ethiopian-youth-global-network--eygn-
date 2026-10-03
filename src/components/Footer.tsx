@@ -183,13 +183,6 @@ export const Footer: React.FC = () => {
                 </div>
               )}
             </form>
-
-            <div className="pt-2">
-              <span className="text-[11px] text-stone-400 block mb-1">Prepared by:</span>
-              <p className="text-xs font-medium text-white">
-                Mr. Amanuel Lemma · Head of Media & Communication
-              </p>
-            </div>
           </div>
         </div>
 
