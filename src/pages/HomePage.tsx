@@ -371,9 +371,12 @@ export const HomePage: React.FC<HomePageProps> = ({
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="bg-white rounded-2xl p-6 border border-stone-200 hover:border-[#06592b] shadow-xs hover:shadow-sm transition-all flex flex-col justify-between"
+              className="bg-white rounded-2xl overflow-hidden border border-stone-200 hover:border-[#06592b] shadow-xs hover:shadow-sm transition-all flex flex-col justify-between"
             >
-              <div>
+              {program.imageUrl && (
+                <img src={program.imageUrl} alt={program.title} className="w-full h-36 object-cover" />
+              )}
+              <div className="p-6 pb-0">
                 <div className="flex items-center justify-between text-xs mb-3">
                   <span className="font-mono text-[11px] font-bold px-2 py-0.5 bg-stone-50 border border-stone-200 text-[#06592b] rounded">
                     {program.acronym}
@@ -399,7 +402,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
               </div>
 
-              <div className="pt-6 mt-4 border-t border-stone-100 flex items-center justify-between">
+              <div className="px-6 pb-6 pt-6 mt-4 border-t border-stone-100 flex items-center justify-between">
                 <span className="text-xs text-[#06592b] font-medium">Flagship initiative</span>
                 <Link
                   to={ROUTES.programs}
@@ -461,9 +464,12 @@ export const HomePage: React.FC<HomePageProps> = ({
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between hover:border-[#f3a310] transition-colors"
+              className="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-xs flex flex-col justify-between hover:border-[#f3a310] transition-colors"
             >
-              <div>
+              {event.imageUrl && (
+                <img src={event.imageUrl} alt={event.title} className="w-full h-36 object-cover" />
+              )}
+              <div className="p-6 pb-0">
                 <div className="flex items-center justify-between text-xs text-stone-500 mb-3">
                   <span className="flex items-center gap-1 text-[#06592b] font-medium">
                     <Calendar className="w-3.5 h-3.5" />
@@ -487,7 +493,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-stone-100 flex items-center justify-between">
+              <div className="px-6 pb-6 pt-4 border-t border-stone-100 flex items-center justify-between">
                 <span className="text-[12px] text-stone-500">
                   {event.registeredCount}/{event.capacity} seats filled
                 </span>
@@ -544,9 +550,12 @@ export const HomePage: React.FC<HomePageProps> = ({
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between hover:shadow-sm transition-all group"
+              className="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-xs flex flex-col justify-between hover:shadow-sm transition-all group"
             >
-              <div>
+              {post.imageUrl && (
+                <img src={post.imageUrl} alt={post.title} className="w-full h-36 object-cover" />
+              )}
+              <div className="p-6 pb-0">
                 <div className="flex items-center gap-2 text-xs text-stone-500 mb-2">
                   <span className="font-semibold text-[#06592b]">{post.categories.join(', ')}</span>
                   <span>·</span>
@@ -562,7 +571,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </p>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-stone-100 flex items-center justify-between text-xs">
+              <div className="px-6 pb-6 pt-4 mt-4 border-t border-stone-100 flex items-center justify-between text-xs">
                 <span className="text-[12px] text-stone-400">{post.readingTime}</span>
                 <button
                   type="button"

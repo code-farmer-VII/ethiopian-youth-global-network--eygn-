@@ -202,9 +202,12 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: idx * 0.08 }}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between group"
+                className="bg-white rounded-3xl overflow-hidden border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between group"
               >
-                <div className="space-y-4">
+                {post.imageUrl && (
+                  <img src={post.imageUrl} alt={post.title} className="w-full h-40 object-cover" />
+                )}
+                <div className="space-y-4 p-6 sm:p-8 pb-0">
                   {/* Clean unboxed metadata row */}
                   <div className="flex items-center gap-2 text-xs text-stone-500">
                     <span className="font-semibold text-[#06592b]">{post.categories.join(', ')}</span>
@@ -227,7 +230,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
                   </p>
                 </div>
 
-                <div className="pt-6 mt-6 border-t border-stone-100 flex items-center justify-between text-xs">
+                <div className="px-6 sm:px-8 pb-6 sm:pb-8 pt-6 mt-6 border-t border-stone-100 flex items-center justify-between text-xs">
                   <span className="text-stone-500 truncate max-w-[140px]">{post.author}</span>
                   {/* Buttons: 16px, Medium, sentence case */}
                   <button

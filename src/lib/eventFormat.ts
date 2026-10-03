@@ -41,5 +41,6 @@ export function toEventItem(dto: EventDto): EventItem {
     capacity: dto.capacity ?? 0,
     registeredCount: dto.registeredCount,
     status: dto.status,
+    imageUrl: dto.imageUrl ?? undefined,
   };
 }

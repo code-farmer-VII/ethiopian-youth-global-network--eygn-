@@ -169,6 +169,14 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
             className="bg-white rounded-3xl p-8 sm:p-12 border border-stone-200 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-10"
           >
             <div className="lg:col-span-8 space-y-6">
+              {selectedProgram.imageUrl && (
+                <img
+                  src={selectedProgram.imageUrl}
+                  alt={selectedProgram.title}
+                  className="w-full h-48 sm:h-64 object-cover rounded-2xl border border-stone-200"
+                />
+              )}
+
               <div className="flex items-center gap-2 text-xs text-stone-500">
                 {selectedProgram.pillar && (
                   <>
@@ -301,9 +309,16 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: idx * 0.08 }}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between hover:border-[#06592b] transition-colors"
+                className="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-xs flex flex-col justify-between hover:border-[#06592b] transition-colors"
               >
-                <div className="space-y-4">
+                {event.imageUrl && (
+                  <img
+                    src={event.imageUrl}
+                    alt={event.title}
+                    className="w-full h-36 object-cover"
+                  />
+                )}
+                <div className="space-y-4 p-6">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-[#06592b]">{event.category}</span>
                     <span className="px-2 py-0.5 bg-stone-100 text-stone-700 rounded text-[11px]">
@@ -345,7 +360,7 @@ export const ProgramsPage: React.FC<ProgramsPageProps> = ({
                   </div>
                 </div>
 
-                <div className="pt-6 mt-4 border-t border-stone-100 flex items-center justify-between">
+                <div className="px-6 pb-6 pt-6 mt-4 border-t border-stone-100 flex items-center justify-between">
                   <span className="text-[12px] text-stone-500 font-mono">
                     {event.registeredCount}/{event.capacity} registered
                   </span>

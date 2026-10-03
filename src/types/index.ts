@@ -56,6 +56,7 @@ export interface EventItem {
   capacity: number;
   registeredCount: number;
   status: 'Open' | 'Past';
+  imageUrl?: string;
 }
 
 export interface BlogPost {

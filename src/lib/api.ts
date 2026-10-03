@@ -101,6 +101,7 @@ export interface EventDto {
   category: string | null;
   featuredSpeakers: string[];
   capacity: number | null;
+  imageUrl: string | null;
   registeredCount: number;
   status: EventStatus;
 }
@@ -133,6 +134,7 @@ export interface PostSummary {
   excerpt: string;
   author: string | null;
   readingTime: string | null;
+  imageUrl: string | null;
 }
 
 export interface PostList {
@@ -152,6 +154,7 @@ export interface PostDetail {
   location: string | null;
   featuredQuote: string | null;
   readingTime: string | null;
+  imageUrl: string | null;
 }
 
 export interface ProgramStat {
@@ -173,6 +176,7 @@ export interface ProgramDto {
   stats: ProgramStat[] | null;
   status: ProgramStatus;
   pillar: string | null;
+  imageUrl: string | null;
   isActive: boolean;
 }
 
@@ -327,6 +331,7 @@ export interface ChapterDto {
   membersCount: number;
   established: string;
   focus: string;
+  imageUrl: string | null;
   coordinates: { x: number; y: number };
 }
 

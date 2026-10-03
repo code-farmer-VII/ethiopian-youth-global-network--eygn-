@@ -139,6 +139,14 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({ slug, on
                 {post.title}
               </h1>
 
+              {post.imageUrl && (
+                <img
+                  src={post.imageUrl}
+                  alt={post.title}
+                  className="w-full h-48 sm:h-72 object-cover rounded-2xl mb-6"
+                />
+              )}
+
               {/* Author attribution */}
               {post.author && (
                 <div className="flex items-center gap-3 p-3.5 mb-8 bg-stone-50 border border-stone-200 rounded-xl">
