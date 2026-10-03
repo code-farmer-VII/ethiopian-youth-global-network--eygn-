@@ -1,22 +1,32 @@
-import React, { useState } from 'react';
-import { CHAPTER_HUBS } from '../data/eygnData';
-import { Chapter } from '../types';
+import React, { useEffect, useState } from 'react';
+import { ChapterDto, listChapters } from '../lib/api';
 import { Globe, MapPin, Users, Compass, ExternalLink, ShieldCheck } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 
 interface ChapterMapProps {
-  onSelectChapter?: (chapter: Chapter) => void;
+  onSelectChapter?: (chapter: ChapterDto) => void;
 }
 
 export const ChapterMap: React.FC<ChapterMapProps> = ({ onSelectChapter }) => {
-  const [activeChapter, setActiveChapter] = useState<Chapter>(CHAPTER_HUBS[0]);
+  const [chapters, setChapters] = useState<ChapterDto[]>([]);
+  const [activeChapter, setActiveChapter] = useState<ChapterDto | null>(null);
   const [activeRegionFilter, setActiveRegionFilter] = useState<string>('All');
 
-  const filteredChapters = activeRegionFilter === 'All' 
-    ? CHAPTER_HUBS 
-    : CHAPTER_HUBS.filter(c => c.region === activeRegionFilter);
+  useEffect(() => {
+    listChapters()
+      .then((res) => {
+        setChapters(res);
+        // Default to the HQ chapter (Addis Ababa) if present, matching the previous
+        // static data's default selection, else just the first chapter.
+        setActiveChapter(res.find((c) => c.city === 'Addis Ababa') ?? res[0] ?? null);
+      })
+      .catch(() => setChapters([]));
+  }, []);
 
-  const handleNodeClick = (chapter: Chapter) => {
+  const filteredChapters = activeRegionFilter === 'All'
+    ? chapters
+    : chapters.filter(c => c.region === activeRegionFilter);
+
+  const handleNodeClick = (chapter: ChapterDto) => {
     setActiveChapter(chapter);
     if (onSelectChapter) onSelectChapter(chapter);
   };
@@ -51,7 +61,7 @@ export const ChapterMap: React.FC<ChapterMapProps> = ({ onSelectChapter }) => {
               key={region}
               type="button"
               onClick={() => setActiveRegionFilter(region)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors ${
                 activeRegionFilter === region 
                   ? 'bg-[#f3a310] text-[#1a2805] font-semibold shadow' 
                   : 'text-white/70 hover:text-white hover:bg-white/10'
@@ -160,8 +170,8 @@ export const ChapterMap: React.FC<ChapterMapProps> = ({ onSelectChapter }) => {
 
             {/* Interactive Chapter Pins */}
             {filteredChapters.map(chapter => {
-              const isSelected = activeChapter.id === chapter.id;
-              const isHQ = chapter.id === 'addis-ababa';
+              const isSelected = activeChapter?.id === chapter.id;
+              const isHQ = chapter.city === 'Addis Ababa';
 
               return (
                 <button
@@ -172,7 +182,7 @@ export const ChapterMap: React.FC<ChapterMapProps> = ({ onSelectChapter }) => {
                     left: `${chapter.coordinates.x}%`,
                     top: `${chapter.coordinates.y}%`,
                   }}
-                  className="absolute -translate-x-1/2 -translate-y-1/2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f3a310] rounded-full p-1 transition-transform transform hover:scale-125 z-20 cursor-pointer"
+                  className="absolute -translate-x-1/2 -translate-y-1/2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f3a310] rounded-full p-1 transition-transform transform hover:scale-125 z-20"
                   aria-label={`${chapter.city}, ${chapter.country} Chapter`}
                 >
                   {/* Outer pulse ring */}
@@ -224,78 +234,74 @@ export const ChapterMap: React.FC<ChapterMapProps> = ({ onSelectChapter }) => {
           </div>
         </div>
 
-        {/* Chapter Detail Inspector Card with AnimatePresence */}
+        {/* Chapter Detail Inspector Card */}
         <div className="lg:col-span-4 bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10 text-white flex flex-col justify-between">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeChapter.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.22 }}
-            >
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-[#f3a310]" />
-                  <span className="text-xs uppercase tracking-wider font-semibold text-[#f3a310]">
-                    {activeChapter.region} Hub
-                  </span>
+          {activeChapter && (
+            <>
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-[#f3a310]" />
+                    <span className="text-xs uppercase tracking-wider font-semibold text-[#f3a310]">
+                      {activeChapter.region} Hub
+                    </span>
+                  </div>
+                  {activeChapter.city === 'Addis Ababa' ? (
+                    <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#f3a310] text-[#1a2805]">
+                      Global HQ
+                    </span>
+                  ) : (
+                    <span className="text-xs text-white/60">Est. {activeChapter.established}</span>
+                  )}
                 </div>
-                {activeChapter.id === 'addis-ababa' ? (
-                  <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#f3a310] text-[#1a2805]">
-                    Global HQ
+
+                <div className="mt-4">
+                  <h4 className="text-2xl font-bold text-white tracking-tight">
+                    {activeChapter.city}
+                  </h4>
+                  <p className="text-xs text-white/70">{activeChapter.country}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 my-5 py-3 px-3 bg-black/20 rounded-lg border border-white/5">
+                  <div>
+                    <span className="text-[11px] text-white/60 uppercase">Active Members</span>
+                    <p className="text-xl font-bold font-mono text-[#f3a310] tabular-nums">
+                      {activeChapter.membersCount}+
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-[11px] text-white/60 uppercase">Coordination</span>
+                    <p className="text-xs font-semibold text-white truncate mt-1">
+                      {activeChapter.leads}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <span className="text-xs font-semibold text-[#f3a310] uppercase tracking-wider block">
+                    Primary Focus Areas:
                   </span>
-                ) : (
-                  <span className="text-xs text-white/60">Est. {activeChapter.established}</span>
-                )}
-              </div>
-
-              <div className="mt-4">
-                <h4 className="text-2xl font-bold text-white tracking-tight">
-                  {activeChapter.city}
-                </h4>
-                <p className="text-xs text-white/70">{activeChapter.country}</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 my-5 py-3 px-3 bg-black/20 rounded-lg border border-white/5">
-                <div>
-                  <span className="text-[11px] text-white/60 uppercase">Active Members</span>
-                  <p className="text-xl font-bold font-mono text-[#f3a310] tabular-nums">
-                    {activeChapter.membersCount}+
+                  <p className="text-xs leading-relaxed text-white/80 bg-white/5 p-3 rounded border border-white/5">
+                    {activeChapter.focus}
                   </p>
                 </div>
-                <div>
-                  <span className="text-[11px] text-white/60 uppercase">Coordination</span>
-                  <p className="text-xs font-semibold text-white truncate mt-1">
-                    {activeChapter.leads}
-                  </p>
+              </div>
+
+              <div className="pt-6 mt-4 border-t border-white/10 flex flex-col gap-2">
+                <div className="flex items-center gap-2 text-[11px] text-white/70">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Official accredited EYGN Chapter</span>
                 </div>
+                <a
+                  href="#contact"
+                  className="mt-2 w-full py-3 px-4 text-center text-[15px] font-medium text-[#1a2805] bg-[#f3a310] hover:bg-[#e09407] rounded-xl transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                >
+                  <span>Connect with {activeChapter.city} desk</span>
+                  <ExternalLink className="w-4 h-4" />
+                </a>
               </div>
-
-              <div className="space-y-2">
-                <span className="text-xs font-semibold text-[#f3a310] uppercase tracking-wider block">
-                  Primary Focus Areas:
-                </span>
-                <p className="text-xs leading-relaxed text-white/80 bg-white/5 p-3 rounded border border-white/5">
-                  {activeChapter.focus}
-                </p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          <div className="pt-6 mt-4 border-t border-white/10 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-[11px] text-white/70">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Official accredited EYGN Chapter</span>
-            </div>
-            <a
-              href="#contact"
-              className="mt-2 w-full py-3 px-4 text-center text-[15px] font-medium text-[#1a2805] bg-[#f3a310] hover:bg-[#e09407] rounded-xl transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-            >
-              <span>Connect with {activeChapter.city} desk</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          </div>
+            </>
+          )}
         </div>
       </div>
     </div>

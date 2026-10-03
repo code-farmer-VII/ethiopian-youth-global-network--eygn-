@@ -34,8 +34,8 @@ export const viewportCard = {
 // Fade & Slide Presets
 export const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 22 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: transitionSmooth,
   },
@@ -43,8 +43,8 @@ export const fadeInUp: Variants = {
 
 export const fadeInDown: Variants = {
   hidden: { opacity: 0, y: -16 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: transitionSmooth,
   },
@@ -52,8 +52,8 @@ export const fadeInDown: Variants = {
 
 export const fadeInLeft: Variants = {
   hidden: { opacity: 0, x: -24 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
     transition: transitionSmooth,
   },
@@ -61,8 +61,8 @@ export const fadeInLeft: Variants = {
 
 export const fadeInRight: Variants = {
   hidden: { opacity: 0, x: 24 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
     transition: transitionSmooth,
   },
@@ -70,10 +70,10 @@ export const fadeInRight: Variants = {
 
 export const fadeInScale: Variants = {
   hidden: { opacity: 0, scale: 0.95, y: 12 },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
-    y: 0, 
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
     transition: transitionSmooth,
   },
 };
@@ -92,26 +92,26 @@ export const staggerContainer = (staggerDelay = 0.08, delayChildren = 0.05): Var
 
 // Card Hover & Tap Presets (Refined, no layout displacement)
 export const cardHoverProps = {
-  whileHover: { 
-    y: -4, 
-    transition: { duration: 0.22, ease: cubicEase } 
+  whileHover: {
+    y: -4,
+    transition: { duration: 0.22, ease: cubicEase }
   } as TargetAndTransition,
-  whileTap: { 
+  whileTap: {
     scale: 0.99,
-    transition: { duration: 0.15 } 
+    transition: { duration: 0.15 }
   } as TargetAndTransition,
 };
 
 // Button Micro-interaction Presets
 export const buttonHoverProps = {
-  whileHover: { 
-    scale: 1.02, 
+  whileHover: {
+    scale: 1.02,
     y: -1,
-    transition: { duration: 0.18, ease: cubicEase } 
+    transition: { duration: 0.18, ease: cubicEase }
   } as TargetAndTransition,
-  whileTap: { 
+  whileTap: {
     scale: 0.98,
-    transition: { duration: 0.1 } 
+    transition: { duration: 0.1 }
   } as TargetAndTransition,
 };
 
@@ -124,18 +124,16 @@ export const modalBackdropVariants: Variants = {
 
 export const modalDialogVariants: Variants = {
   hidden: { opacity: 0, scale: 0.94, y: 16 },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
-    y: 0, 
-    transition: { duration: 0.28, ease: modalEase } 
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.28, ease: modalEase }
   },
-  exit: { 
-    opacity: 0, 
-    scale: 0.96, 
-    y: 10, 
-    transition: { duration: 0.18, ease: modalEase } 
+  exit: {
+    opacity: 0,
+    scale: 0.96,
+    y: 10,
+    transition: { duration: 0.18, ease: modalEase }
   },
 };
-
-

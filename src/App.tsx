@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import { cubicEase } from './utils/motion';
 import { EventItem, Language } from './types';
 import { ROUTES, PRIVACY_ROUTE } from './lib/routes';
 import { Navbar } from './components/Navbar';
@@ -17,7 +19,6 @@ import { ArticleReaderModal } from './components/ArticleReaderModal';
 import { EventRegistrationModal } from './components/EventRegistrationModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { initAnalytics, trackPageView } from './lib/analytics';
-import { motion, AnimatePresence } from 'motion/react';
 
 /** Scrolls to the top of the page on every route change (standard react-router pattern --
  * the browser doesn't do this on its own for client-side navigation). */
@@ -88,7 +89,7 @@ export default function App() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.35, ease: cubicEase }}
           >
             <Routes location={location}>
               <Route

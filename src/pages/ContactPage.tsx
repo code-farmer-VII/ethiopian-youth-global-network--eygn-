@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
+import { transitionSmooth } from '../utils/motion';
 import { EYGN_INFO } from '../data/eygnData';
 import { ApiRequestError, ContactDepartment, submitContactMessage } from '../lib/api';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
 import { SocialLinks } from '../components/SocialLinks';
 import { Mail, MapPin, Send, CheckCircle2, Clock } from 'lucide-react';
-import { motion } from 'motion/react';
-import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
-
 
 // Frontend display labels -> eygn-api's ContactDepartment enum slugs (see api.ts).
 const DEPARTMENT_TO_API: Record<string, ContactDepartment> = {
@@ -69,13 +68,13 @@ export const ContactPage: React.FC = () => {
         path={ROUTES.contact}
       />
       {/* 1. Header */}
-      <motion.section 
+      <motion.section
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={transitionSmooth}
       >
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.1 }}
@@ -85,7 +84,7 @@ export const ContactPage: React.FC = () => {
           <span>Secretariat dispatch & correspondence</span>
         </motion.div>
         {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.15 }}
@@ -94,7 +93,7 @@ export const ContactPage: React.FC = () => {
           Connect with the EYGN Secretariat
         </motion.h1>
         {/* Body: 16px, Regular, Dark color */}
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.25 }}
@@ -105,7 +104,7 @@ export const ContactPage: React.FC = () => {
       </motion.section>
 
       {/* 2. Main Contact Grid */}
-      <motion.section 
+      <motion.section
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -128,7 +127,7 @@ export const ContactPage: React.FC = () => {
 
               <div className="space-y-4">
                 {EYGN_INFO.officialEmails.map((item, idx) => (
-                  <motion.div 
+                  <motion.div
                     key={idx}
                     initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -312,7 +311,7 @@ export const ContactPage: React.FC = () => {
                 </motion.button>
               </form>
             ) : (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.35 }}

@@ -1,16 +1,13 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
+import { MotionLink } from '../components/MotionLink';
+import { transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
 import { CORE_VALUES, EYGN_INFO } from '../data/eygnData';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
 import { Users, ShieldCheck, Award, Share2, Sparkles, Flag, ArrowRight, CheckCircle2, Globe, HeartHandshake, BookOpen } from 'lucide-react';
-import { motion } from 'motion/react';
-import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
 
 export const AboutPage: React.FC = () => {
-  const navigate = useNavigate();
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'Users': return <Users className="w-5 h-5" />;
@@ -31,13 +28,13 @@ export const AboutPage: React.FC = () => {
         path={ROUTES.about}
       />
       {/* 1. Page Header */}
-      <motion.section 
+      <motion.section
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={transitionSmooth}
       >
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.1 }}
@@ -47,7 +44,7 @@ export const AboutPage: React.FC = () => {
           <span>Institutional profile & mandate</span>
         </motion.div>
         {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.15 }}
@@ -56,7 +53,7 @@ export const AboutPage: React.FC = () => {
           About Ethiopian Youth Global Network
         </motion.h1>
         {/* Body: 16px, Regular, Dark color */}
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.25 }}
@@ -67,7 +64,7 @@ export const AboutPage: React.FC = () => {
       </motion.section>
 
       {/* 2. Organization Introduction */}
-      <motion.section 
+      <motion.section
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -114,8 +111,8 @@ export const AboutPage: React.FC = () => {
         </div>
       </motion.section>
 
-      {/* 3. Why EYGN Exists */}
-      <motion.section 
+      {/* 3. Why EYGN Exists (Problem Statement From Brief) */}
+      <motion.section
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -143,8 +140,8 @@ export const AboutPage: React.FC = () => {
         </div>
       </motion.section>
 
-      {/* 4. Who We Serve */}
-      <motion.section 
+      {/* 4. Who We Serve (From Brief) */}
+      <motion.section
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -211,8 +208,8 @@ export const AboutPage: React.FC = () => {
         </div>
       </motion.section>
 
-      {/* 5. Core Values */}
-      <motion.section 
+      {/* 5. Core Values (6 Values With Descriptions From Page 7) */}
+      <motion.section
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -266,8 +263,8 @@ export const AboutPage: React.FC = () => {
         </div>
       </motion.section>
 
-      {/* 6. Call to Action */}
-      <motion.section 
+      {/* 6. Call to Action: Buttons: 16px, Medium, sentence case */}
+      <motion.section
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center pt-8"
         initial={{ opacity: 0, scale: 0.98, y: 20 }}
         whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -282,19 +279,17 @@ export const AboutPage: React.FC = () => {
             Whether you are a student abroad or an experienced professional, your insight is vital to our collective future.
           </p>
           <div className="pt-2">
-            <motion.button
+            <MotionLink
+              to={ROUTES.membership}
               {...buttonHoverProps}
-              type="button"
-              onClick={() => navigate(ROUTES.membership)}
-              className="px-6 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-colors inline-flex items-center gap-2 cursor-pointer"
+              className="px-6 py-3.5 bg-[#f3a310] hover:bg-[#e09407] text-[#1a2805] font-medium text-[16px] rounded-xl shadow-md transition-colors inline-flex items-center gap-2"
             >
               <span>Join the network</span>
               <ArrowRight className="w-4 h-4" />
-            </motion.button>
+            </MotionLink>
           </div>
         </div>
       </motion.section>
     </div>
   );
 };
-

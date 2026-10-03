@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import { listTeamMembers, TeamMemberDto } from '../lib/api';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
-import { Link } from 'react-router-dom';
-import { listTeamMembers, TeamMemberDto } from '../lib/api';
-import { Mail, ArrowRight, User } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
+import { MotionLink } from '../components/MotionLink';
+import { Mail, ArrowRight } from 'lucide-react';
+import { transitionSmooth, buttonHoverProps, viewportStandard } from '../utils/motion';
 
 // API team members have no id/slug and no photo initials seed — derive both client-side.
 function getInitials(fullName: string): string {
@@ -16,7 +15,6 @@ function getInitials(fullName: string): string {
 
 export const TeamPage: React.FC = () => {
   const [filterDepartment, setFilterDepartment] = useState<string>('All');
-  const navigate = useNavigate();
   const [teamMembers, setTeamMembers] = useState<TeamMemberDto[]>([]);
 
   useEffect(() => {
@@ -40,13 +38,13 @@ export const TeamPage: React.FC = () => {
         path={ROUTES.team}
       />
       {/* 1. Header */}
-      <motion.section 
+      <motion.section
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={transitionSmooth}
       >
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.1 }}
@@ -56,7 +54,7 @@ export const TeamPage: React.FC = () => {
           <span>Governance & secretariat</span>
         </motion.div>
         {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.15 }}
@@ -65,7 +63,7 @@ export const TeamPage: React.FC = () => {
           Executive Leadership & Department Directorate
         </motion.h1>
         {/* Body: 16px, Regular, Dark color */}
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.25 }}
@@ -75,25 +73,25 @@ export const TeamPage: React.FC = () => {
         </motion.p>
       </motion.section>
 
-      {/* 2. Executive Leadership Spotlight (Sisay, Amen & Amanuel in the Top with Big Picture Frames) */}
-      <motion.section 
+      {/* 2. Executive Leadership Spotlight (Founder & General Secretary) */}
+      <motion.section
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={viewportStandard}
         transition={transitionSmooth}
       >
         <div className="border-b border-stone-200 pb-3">
           <span className="text-xs font-bold uppercase tracking-wider text-[#06592b]">
-            Executive leadership
+            Executive council
           </span>
           {/* H2: 24-28px, Bold, Dark Green (#06592b) */}
           <h2 className="text-[24px] sm:text-[28px] font-bold text-[#06592b]">
-            Founder & executive secretariat
+            Founder & secretariat
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {executiveLeaders.map((member, idx) => (
             <motion.div
               key={member.fullName}
@@ -102,63 +100,44 @@ export const TeamPage: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="bg-white rounded-3xl p-6 sm:p-7 border border-stone-200 shadow-sm hover:border-[#06592b] hover:shadow-md transition-all flex flex-col justify-between group overflow-hidden"
+              className="bg-white rounded-3xl p-8 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between"
             >
-              <div className="space-y-5">
-                {/* BIG PORTRAIT PICTURE PLACEHOLDER CONTAINER */}
-                <div className="relative w-full aspect-[4/3] sm:h-56 rounded-2xl bg-gradient-to-br from-[#1a2805] via-[#122003] to-[#0a1101] flex flex-col items-center justify-center overflow-hidden border border-[#f3a310]/30 shadow-inner group-hover:scale-[1.01] transition-transform duration-300">
-                  <div className="absolute inset-0 bg-dark-pattern opacity-40 pointer-events-none" />
-                  
-                  {/* Subtle Glow & Ambient Badge */}
-                  <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-[#f3a310]/20 border border-[#f3a310]/40 text-[#f3a310] text-[11px] font-semibold tracking-wider uppercase">
-                    EYGN Board
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  {/* Portrait Monogram Tile */}
+                  <div className="w-16 h-16 rounded-2xl bg-[#1a2805] text-[#f3a310] flex items-center justify-center font-bold text-2xl border border-[#f3a310]/40 shadow-xs shrink-0">
+                    {getInitials(member.fullName)}
                   </div>
 
-                  {/* Ethiopian Flag Tri-color Mini Accent */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-[#f3a310] to-red-500" />
-
-                  {/* Monogram / Big Picture Center Holder */}
-                  <div className="relative z-10 flex flex-col items-center justify-center space-y-2">
-                    <div className="w-20 h-20 rounded-full bg-[#f3a310]/15 border-2 border-[#f3a310]/50 flex items-center justify-center text-[#f3a310] shadow-md group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-3xl font-bold font-serif">{member.imageFallbackSeed || getInitials(member.fullName)}</span>
-                    </div>
-                    <span className="text-xs text-stone-300/80 tracking-wider font-mono uppercase">
-                      Official Portrait
-                    </span>
-                  </div>
-                </div>
-
-                {/* Medium-Sized Balanced Typography Content */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[13px] font-bold text-[#06592b] uppercase tracking-wider block">
+                  <div>
+                    <span className="text-xs font-semibold text-[#06592b] uppercase tracking-wider block">
                       {member.role}
                     </span>
+                    <h3 className="text-[22px] font-bold text-[#1a2805]">
+                      {member.fullName}
+                    </h3>
                     {member.roleAm && (
-                      <span className="text-[12px] text-stone-500 font-medium">
+                      <span className="text-xs text-stone-500 block">
                         {member.roleAm}
                       </span>
                     )}
                   </div>
-                  <h3 className="text-[21px] font-bold text-[#1a2805] leading-tight">
-                    {member.fullName}
-                  </h3>
                 </div>
 
-                <p className="text-[15px] text-[#1a2805] leading-relaxed font-normal">
+                <p className="text-[15px] text-[#1a2805] leading-relaxed pt-2">
                   {member.bio}
                 </p>
 
                 {/* Highlights List */}
                 <div className="pt-3 border-t border-stone-100">
-                  <span className="text-[12px] font-semibold text-stone-600 uppercase tracking-wider block mb-2">
+                  <span className="text-[11px] font-semibold text-stone-600 uppercase tracking-wider block mb-2">
                     Key distinctions & credentials:
                   </span>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {member.highlights.map((h, i) => (
                       <span
                         key={i}
-                        className="text-[12.5px] px-3 py-1 bg-stone-100 text-[#1a2805] rounded-lg font-medium border border-stone-200"
+                        className="text-[13px] px-3 py-1 bg-stone-100 text-[#1a2805] rounded-md font-medium border border-stone-200"
                       >
                         {h}
                       </span>
@@ -167,32 +146,32 @@ export const TeamPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-5 mt-6 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
+              <div className="pt-6 mt-6 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
                 <div className="flex items-center gap-2">
                   {member.email && (
                     <a
                       href={`mailto:${member.email}`}
-                      className="text-stone-700 hover:text-[#06592b] transition-colors flex items-center gap-1.5 text-[13px] font-medium"
+                      className="text-stone-700 hover:text-[#06592b] transition-colors flex items-center gap-1.5 text-xs font-medium"
                     >
-                      <Mail className="w-4 h-4 text-[#06592b]" />
-                      <span className="truncate max-w-[180px]">{member.email}</span>
+                      <Mail className="w-3.5 h-3.5 text-[#06592b]" />
+                      <span className="truncate max-w-[220px]">{member.email}</span>
                     </a>
                   )}
                 </div>
 
-                <span className="text-[11px] font-semibold text-[#06592b]">Executive Board</span>
+                <span className="text-[12px] font-semibold text-[#06592b]">Official EYGN Council</span>
               </div>
             </motion.div>
           ))}
         </div>
       </motion.section>
 
-      {/* 3. Department Heads with Big Picture Frames & Medium Text */}
-      <motion.section 
+      {/* 3. Department Heads */}
+      <motion.section
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={viewportStandard}
         transition={transitionSmooth}
       >
         <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-stone-200 pb-3 gap-4">
@@ -207,7 +186,7 @@ export const TeamPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-1.5 p-1 bg-stone-100 rounded-lg overflow-x-auto max-w-full">
-            {['All', 'External Relations', 'Operations', 'Research & Policy', 'Mobilization', 'Programs & Events'].map(dept => (
+            {['All', 'Media', 'Partnerships', 'Operations', 'Research', 'Mobilization', 'Events'].map(dept => (
               <button
                 key={dept}
                 type="button"
@@ -224,10 +203,7 @@ export const TeamPage: React.FC = () => {
           </div>
         </div>
 
-        <motion.div 
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence>
             {filteredHeads.map((member) => (
               <motion.div
@@ -238,59 +214,53 @@ export const TeamPage: React.FC = () => {
                 exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.3 }}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between group overflow-hidden"
+                className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between"
               >
-                <div className="space-y-4">
-                  {/* Big Picture Container for Directorate */}
-                  <div className="relative w-full h-44 rounded-xl bg-gradient-to-br from-[#1a2805] to-[#06592b]/80 flex flex-col items-center justify-center overflow-hidden border border-[#06592b]/30 shadow-inner">
-                    <div className="absolute inset-0 bg-dark-pattern opacity-30 pointer-events-none" />
-                    <div className="w-16 h-16 rounded-full bg-white/10 text-[#f3a310] border border-white/20 flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-105 transition-transform duration-300">
-                      {member.imageFallbackSeed || getInitials(member.fullName)}
-                    </div>
-                    <span className="text-[10px] text-white/70 font-mono tracking-wider uppercase mt-1">
-                      {member.department}
-                    </span>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-[#06592b]/10 text-[#06592b] font-bold text-lg flex items-center justify-center shrink-0">
+                    {getInitials(member.fullName)}
                   </div>
-
                   <div>
-                    <span className="text-[12px] text-[#06592b] font-bold uppercase tracking-wider block">
-                      {member.role}
-                    </span>
-                    <h3 className="text-[18px] font-bold text-[#1a2805] leading-tight mt-0.5">
+                    <h3 className="text-[17px] font-bold text-[#1a2805] leading-tight">
                       {member.fullName}
                     </h3>
+                    <span className="text-xs text-[#06592b] font-medium block">
+                      {member.role}
+                    </span>
                   </div>
-
-                  <p className="text-[14.5px] text-stone-700 leading-relaxed line-clamp-4 font-normal">
-                    {member.bio}
-                  </p>
-
-                  {member.highlights.length > 0 && (
-                    <div className="pt-2">
-                      <ul className="space-y-1">
-                        {member.highlights.map((h, idx) => (
-                          <li key={idx} className="text-[12.5px] text-stone-600 flex items-center gap-1.5 font-medium">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#f3a310]" />
-                            <span>{h}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
-                  <span className="text-[11px] text-stone-500 font-medium">{member.department}</span>
-                  {member.email && (
-                    <a
-                      href={`mailto:${member.email}`}
-                      className="p-1.5 text-stone-600 hover:text-[#06592b] hover:bg-stone-100 rounded transition-colors"
-                      title={`Email ${member.fullName}`}
-                    >
-                      <Mail className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
+                <p className="text-[14px] text-stone-700 leading-relaxed pt-2 line-clamp-4">
+                  {member.bio}
+                </p>
+
+                {member.highlights.length > 0 && (
+                  <div className="pt-2">
+                    <ul className="space-y-1">
+                      {member.highlights.map((h, idx) => (
+                        <li key={idx} className="text-[12px] text-stone-600 flex items-center gap-1.5">
+                          <span className="w-1 h-1 rounded-full bg-[#f3a310]" />
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-4 mt-4 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
+                <span className="text-[11px] text-stone-500">{member.department}</span>
+                {member.email && (
+                  <a
+                    href={`mailto:${member.email}`}
+                    className="p-1.5 text-stone-600 hover:text-[#06592b] hover:bg-stone-100 rounded transition-colors"
+                    title={`Email ${member.fullName}`}
+                  >
+                    <Mail className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
               </motion.div>
             ))}
           </AnimatePresence>
@@ -298,7 +268,7 @@ export const TeamPage: React.FC = () => {
       </motion.section>
 
       {/* 4. Join the Directorate / Chapter Leads Callout */}
-      <motion.section 
+      <motion.section
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center pt-8"
         initial={{ opacity: 0, scale: 0.98, y: 20 }}
         whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -318,16 +288,14 @@ export const TeamPage: React.FC = () => {
           </p>
           <div className="pt-2">
             {/* Buttons: 16px, Medium, sentence case */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="button"
-              onClick={() => navigate(ROUTES.contact)}
-              className="px-6 py-3.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors inline-flex items-center gap-2 cursor-pointer"
+            <MotionLink
+              to={ROUTES.contact}
+              {...buttonHoverProps}
+              className="px-6 py-3.5 bg-[#1a2805] hover:bg-[#06592b] text-[#f3a310] font-medium text-[16px] rounded-xl shadow-xs transition-colors inline-flex items-center gap-2"
             >
               <span>Submit chapter leadership application</span>
               <ArrowRight className="w-4 h-4" />
-            </motion.button>
+            </MotionLink>
           </div>
         </div>
       </motion.section>

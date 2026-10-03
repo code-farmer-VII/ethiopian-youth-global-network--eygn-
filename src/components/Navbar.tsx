@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Language, PageType } from '../types';
-import { TRANSLATIONS } from '../data/eygnData';
-import { Search, Globe, Menu, X, ChevronDown, ShieldCheck } from 'lucide-react';
+import { Link, NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { buttonHoverProps } from '../utils/motion';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { MotionLink } from './MotionLink';
+import { Language, PageType } from '../types';
+import { TRANSLATIONS } from '../data/eygnData';
 import { ROUTES } from '../lib/routes';
+import { Search, Globe, Menu, X, ChevronDown } from 'lucide-react';
 
 interface NavbarProps {
   language: Language;
@@ -21,17 +22,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // Deduce current page identifier from the route path
-  const currentPageEntry = Object.entries(ROUTES).find(([, path]) => path === location.pathname);
-  const currentPage = (currentPageEntry ? currentPageEntry[0] : 'home') as PageType;
-
-  const handleNavClick = (page: PageType) => {
-    navigate(ROUTES[page]);
-    setMobileMenuOpen(false);
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,12 +44,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   const navLinkClass = (isActive: boolean) =>
-    `relative text-[15px] font-medium py-2 transition-colors whitespace-nowrap ${
+    `relative text-[15px] font-medium py-2 transition-colors whitespace-nowrap cursor-pointer ${
       isActive ? 'text-[#06592b] font-semibold' : 'text-stone-700 hover:text-[#1a2805]'
     }`;
 
   const mobileNavLinkClass = (isActive: boolean) =>
-    `w-full text-left px-3 py-2.5 text-sm font-medium rounded-lg transition-colors flex items-center justify-between ${
+    `w-full text-left px-3 py-2.5 text-sm font-medium rounded-lg transition-colors flex items-center justify-between cursor-pointer ${
       isActive ? 'bg-[#1a2805] text-[#f3a310]' : 'text-stone-700 hover:bg-stone-100'
     }`;
 
@@ -86,60 +76,57 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Main One-Row, Three-Zone Top Navigation Bar with Dynamic Scroll State */}
-      <header className={`sticky top-0 z-40 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/95 backdrop-blur-md border-b border-stone-200/90 shadow-sm' 
-          : 'bg-[#ffffff] border-b border-stone-200 shadow-xs'
-      }`}>
-
+      <header
+        className={`sticky top-0 z-40 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-white/95 backdrop-blur-md border-b border-stone-200/90 shadow-sm'
+            : 'bg-[#ffffff] border-b border-stone-200 shadow-xs'
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
 
           {/* Zone 1: Single text element wordmark */}
-          <button
-            type="button"
-            onClick={() => handleNavClick('home')}
-            className="flex items-center gap-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06592b] rounded-lg py-1 cursor-pointer group"
+          <Link
+            to={ROUTES.home}
+            className="flex items-center gap-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06592b] rounded-lg py-1 cursor-pointer group min-w-0"
           >
             {/* National emblem badge */}
             <div className="w-10 h-10 rounded-lg bg-[#1a2805] text-[#f3a310] flex items-center justify-center font-bold text-sm tracking-tight border border-[#f3a310]/30 shadow-sm shrink-0 transition-transform group-hover:scale-105">
               EYGN
             </div>
-            <div className="flex flex-col">
-              <span className="text-lg sm:text-xl font-bold tracking-tight text-[#1a2805] leading-tight group-hover:text-[#06592b] transition-colors whitespace-nowrap">
+            <div className="flex flex-col min-w-0">
+              <span className="text-lg sm:text-xl font-bold tracking-tight text-[#1a2805] leading-tight group-hover:text-[#06592b] transition-colors truncate">
                 Ethiopian Youth Global Network
               </span>
               <span className="text-[11px] text-[#06592b] font-medium hidden sm:block">
                 Connecting and Empowering
               </span>
             </div>
-          </button>
+          </Link>
 
           {/* Zone 2: 4-6 Clean text navigation links */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-7">
-            {navItems.map((item) => {
-              const isActive = currentPage === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => handleNavClick(item.id)}
-                  className={`relative text-[15px] font-medium py-2 transition-colors whitespace-nowrap cursor-pointer ${
-                    isActive
-                      ? 'text-[#06592b] font-semibold'
-                      : 'text-stone-700 hover:text-[#1a2805]'
-                  }`}
-                >
-                  {item.label}
-                  {isActive && (
-                    <motion.span 
-                      layoutId="activeNavIndicator"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#f3a310] rounded-full" 
-                    />
-                  )}
-                </button>
-              );
-            })}
+          <nav className="hidden xl:flex items-center gap-6 xl:gap-7">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.id}
+                to={ROUTES[item.id]}
+                end={item.id === 'home'}
+                className={({ isActive }) => navLinkClass(isActive)}
+              >
+                {({ isActive }) => (
+                  <>
+                    {item.label}
+                    {isActive && (
+                      <motion.span
+                        layoutId="activeNavIndicator"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#f3a310] rounded-full"
+                      />
+                    )}
+                  </>
+                )}
+              </NavLink>
+            ))}
           </nav>
 
           {/* Zone 3: 1-2 Primary actions + Utilities */}
@@ -156,7 +143,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {/* Language Switcher Selector */}
-            <div className="relative">
+            <div className="relative hidden sm:block">
               <button
                 type="button"
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
@@ -222,21 +209,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             {/* Primary CTA Button: Buttons: 16px, Medium, sentence case */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="button"
-              onClick={() => handleNavClick('membership')}
-              className="px-4.5 py-2.5 text-[16px] font-medium text-[#1a2805] bg-[#f3a310] hover:bg-[#e09407] rounded-xl shadow-xs transition-colors whitespace-nowrap cursor-pointer"
+            <MotionLink
+              to={ROUTES.membership}
+              {...buttonHoverProps}
+              className="hidden sm:inline-flex px-4.5 py-2.5 text-[16px] font-medium text-[#1a2805] bg-[#f3a310] hover:bg-[#e09407] rounded-xl shadow-xs transition-colors whitespace-nowrap cursor-pointer"
             >
               {t.joinNetwork}
-            </motion.button>
+            </MotionLink>
 
             {/* Mobile menu hamburger toggle */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 text-stone-700 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition-colors cursor-pointer"
+              className="xl:hidden p-2.5 text-stone-700 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition-colors cursor-pointer"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -247,29 +232,28 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Mobile Navigation Drawer with AnimatePresence */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:hidden border-t border-stone-200 bg-white/98 px-4 py-4 space-y-2 shadow-xl overflow-hidden"
+              className="xl:hidden border-t border-stone-200 bg-white/98 px-4 py-4 space-y-2 shadow-xl overflow-hidden"
             >
               {navItems.map((item) => (
-                <button
+                <NavLink
                   key={item.id}
-                  type="button"
-                  onClick={() => handleNavClick(item.id)}
-                  className={`w-full text-left px-3 py-2.5 text-sm font-medium rounded-lg transition-colors flex items-center justify-between cursor-pointer ${
-                    currentPage === item.id
-                      ? 'bg-[#1a2805] text-[#f3a310]'
-                      : 'text-stone-700 hover:bg-stone-100'
-                  }`}
+                  to={ROUTES[item.id]}
+                  end={item.id === 'home'}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) => mobileNavLinkClass(isActive)}
                 >
-                  <span>{item.label}</span>
-                  {currentPage === item.id && (
-                    <span className="w-2 h-2 rounded-full bg-[#f3a310]" />
+                  {({ isActive }) => (
+                    <>
+                      <span>{item.label}</span>
+                      {isActive && <span className="w-2 h-2 rounded-full bg-[#f3a310]" />}
+                    </>
                   )}
-                </button>
+                </NavLink>
               ))}
 
               <div className="pt-3 border-t border-stone-200 flex items-center justify-between text-xs text-stone-500">

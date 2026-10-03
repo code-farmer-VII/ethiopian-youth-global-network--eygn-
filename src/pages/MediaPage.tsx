@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { GALLERY_ITEMS } from '../data/eygnData';
-import { MediaItem } from '../types';
-import { listCategories, listPosts, PostSummary, listMediaItems, listPressItems, MediaItemDto, PressItemDto } from '../lib/api';
+import { motion, AnimatePresence } from 'motion/react';
+import { listCategories, listMediaItems, listPosts, listPressItems, MediaItemDto, PostSummary, PressItemDto } from '../lib/api';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
 import { Image as ImageIcon, Download, Play, Search, Eye, ArrowRight, Check, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { fadeInUp, fadeInScale, staggerContainer, transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard, modalBackdropVariants, modalDialogVariants } from '../utils/motion';
+import { transitionSmooth, modalBackdropVariants, modalDialogVariants } from '../utils/motion';
 
 interface MediaPageProps {
   onSelectPost: (slug: string) => void;
@@ -77,13 +75,13 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
         path={ROUTES.media}
       />
       {/* 1. Header */}
-      <motion.section 
+      <motion.section
         className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={transitionSmooth}
       >
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.1 }}
@@ -93,7 +91,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
           <span>Press, dispatches & visual archives</span>
         </motion.div>
         {/* H1: 32-40px, Bold, Primary Green (#1a2805) */}
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.15 }}
@@ -102,7 +100,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
           EYGN Media Center & Official Communiqués
         </motion.h1>
         {/* Body: 16px, Regular, Dark color */}
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.25 }}
@@ -149,232 +147,217 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
         </div>
       </motion.section>
 
-      {/* 2. TAB CONTENT WRAPPER */}
+      {/* Tab Content Wrapper */}
       <AnimatePresence mode="wait">
-        {/* TAB: BLOG POSTS / DISPATCHES */}
-        {activeTab === 'posts' && (
-          <motion.section 
-            key="media-posts"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
-            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
-          >
-            {/* Filter and Search Bar */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-stone-200">
-              {/* Category pills */}
-              <div className="flex items-center gap-1.5 p-1 bg-stone-100 rounded-lg overflow-x-auto max-w-full self-start md:self-auto">
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-3.5 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors cursor-pointer ${
-                      selectedCategory === cat
-                        ? 'bg-white text-[#1a2805] shadow-xs font-semibold'
-                        : 'text-stone-600 hover:text-stone-900'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-
-              {/* Keyword search */}
-              <div className="relative w-full md:w-72">
-                <Search className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
-                <input
-                  type="text"
-                  placeholder="Search articles & communiqués..."
-                  value={searchFilter}
-                  onChange={(e) => setSearchFilter(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-[15px] rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b] bg-white"
-                />
-              </div>
-            </div>
-
-            {/* Posts Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post, idx) => (
-                <motion.article
-                  key={post.slug}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, delay: idx * 0.08 }}
-                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between group"
+      {/* 2. TAB: BLOG POSTS / DISPATCHES */}
+      {activeTab === 'posts' && (
+        <motion.section
+          key="media-posts"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+        >
+          {/* Filter and Search Bar */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-stone-200">
+            {/* Category pills */}
+            <div className="flex items-center gap-1.5 p-1 bg-stone-100 rounded-lg overflow-x-auto max-w-full self-start md:self-auto">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3.5 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors cursor-pointer ${
+                    selectedCategory === cat
+                      ? 'bg-white text-[#1a2805] shadow-xs font-semibold'
+                      : 'text-stone-600 hover:text-stone-900'
+                  }`}
                 >
-                  <div className="space-y-4">
-                    {/* Clean unboxed metadata row */}
-                    <div className="flex items-center gap-2 text-xs text-stone-500">
-                      <span className="font-semibold text-[#06592b]">{post.categories.join(', ')}</span>
-                      <span aria-hidden="true">·</span>
-                      <span>{formatDate(post.publishedAt)}</span>
-                      {post.readingTime && (
-                        <>
-                          <span aria-hidden="true">·</span>
-                          <span>{post.readingTime}</span>
-                        </>
-                      )}
-                    </div>
-
-                    <h3 className="text-[19px] font-bold text-[#1a2805] group-hover:text-[#06592b] transition-colors leading-snug">
-                      {post.title}
-                    </h3>
-
-                    <p className="text-[14px] text-stone-600 leading-relaxed line-clamp-4">
-                      {post.excerpt}
-                    </p>
-                  </div>
-
-                  <div className="pt-6 mt-6 border-t border-stone-100 flex items-center justify-between text-xs">
-                    <span className="text-stone-500 truncate max-w-[140px]">{post.author}</span>
-                    {/* Buttons: 16px, Medium, sentence case */}
-                    <button
-                      type="button"
-                      onClick={() => onSelectPost(post.slug)}
-                      className="font-medium text-[15px] text-[#06592b] group-hover:text-[#1a2805] flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <span>Read full dispatch</span>
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-                    </button>
-                  </div>
-                </motion.article>
+                  {cat}
+                </button>
               ))}
             </div>
-          </motion.section>
-        )}
 
-        {/* TAB: VISUAL ARCHIVES */}
-        {activeTab === 'photos' && (
-          <motion.section 
-            key="media-photos"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
-            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {GALLERY_ITEMS.map((item, idx) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, delay: idx * 0.08 }}
-                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  onClick={() => setLightboxItem(item)}
-                  className="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-xs hover:border-[#06592b] cursor-pointer group transition-all"
-                >
-                  {/* Visual Canvas */}
-                  <div className="aspect-[4/3] bg-[#1a2805] relative flex items-center justify-center p-6 text-center overflow-hidden">
-                    <div className="absolute inset-0 bg-dark-pattern opacity-40 group-hover:scale-105 transition-transform duration-300" />
-                    
-                    {/* Geometric emblem */}
-                    <div className="relative z-10 space-y-3">
-                      <div className="w-12 h-12 rounded-full bg-[#f3a310]/20 text-[#f3a310] border border-[#f3a310]/40 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
-                        {item.type === 'video' ? <Play className="w-5 h-5 ml-0.5" /> : <ImageIcon className="w-5 h-5" />}
-                      </div>
-                      <span className="text-xs font-semibold text-white/90 block max-w-xs truncate">
-                        {item.title}
-                      </span>
-                      <span className="text-[10px] text-white/60 block">
-                        {item.location}
-                      </span>
-                    </div>
-
-                    <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/60 text-white text-[10px] font-mono flex items-center gap-1">
-                      <Eye className="w-3 h-3 text-[#f3a310]" />
-                      <span>View</span>
-                    </div>
-                  </div>
-
-                  <div className="p-5 space-y-2">
-                    <div className="flex items-center justify-between text-xs text-stone-500">
-                      <span className="font-semibold text-[#06592b]">{item.category}</span>
-                      <span>{item.date}</span>
-                    </div>
-                    <h4 className="text-[16px] font-bold text-[#1a2805] group-hover:text-[#06592b] transition-colors line-clamp-1">
-                      {item.title}
-                    </h4>
-                    <p className="text-[13px] text-stone-600 line-clamp-2">
-                      {item.description}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
+            {/* Keyword search */}
+            <div className="relative w-full md:w-72">
+              <Search className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
+              <input
+                type="text"
+                aria-label="Search articles and communiqués"
+                placeholder="Search articles & communiqués..."
+                value={searchFilter}
+                onChange={(e) => setSearchFilter(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 text-[15px] rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#06592b] bg-white"
+              />
             </div>
-          </motion.section>
-        )}
+          </div>
 
-        {/* TAB: PRESS KIT & DOWNLOADS */}
-        {activeTab === 'press' && (
-          <motion.section 
-            key="media-press"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
-            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                {
-                  title: 'EYGN Official Website Development Brief',
-                  format: 'PDF · Technical Specifications',
-                  desc: 'Prepared by Mr. Amanuel Lemma, Head of Media & Communication. Core guidelines, brand specifications, and ready-to-use content.',
-                },
-                {
-                  title: 'EYGN Founding Charter & Constitution',
-                  format: 'PDF · Institutional Document',
-                  desc: 'Official governance framework, non-partisan declaration, diaspora engagement mechanisms, and strategic roadmap.',
-                },
-                {
-                  title: 'High-Resolution Brand Assets & Seal',
-                  format: 'ZIP · Vector Assets (SVG, EPS)',
-                  desc: 'Official wordmarks, emblem symbols, and color palette swatches (#1a2805, #06592b, #f3a310).',
-                },
-              ].map((kit, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, delay: i * 0.1 }}
-                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                  className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between space-y-4"
-                >
-                  <div>
-                    <span className="text-[11px] font-mono text-[#06592b] block mb-1">{kit.format}</span>
-                    <h3 className="text-[18px] font-bold text-[#1a2805]">{kit.title}</h3>
-                    <p className="text-[14px] text-stone-600 leading-relaxed mt-2">{kit.desc}</p>
-                  </div>
-
-                  {/* Buttons: 16px, Medium, sentence case */}
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="button"
-                    onClick={() => handleDownload(kit.title)}
-                    className="w-full py-3 px-4 bg-stone-100 hover:bg-[#1a2805] hover:text-[#f3a310] text-[#1a2805] text-[15px] font-medium rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    {downloadedItem === kit.title ? (
+          {/* Posts Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts.map((post, idx) => (
+              <motion.article
+                key={post.slug}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: idx * 0.08 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-xs hover:border-[#06592b] transition-all flex flex-col justify-between group"
+              >
+                <div className="space-y-4">
+                  {/* Clean unboxed metadata row */}
+                  <div className="flex items-center gap-2 text-xs text-stone-500">
+                    <span className="font-semibold text-[#06592b]">{post.categories.join(', ')}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{formatDate(post.publishedAt)}</span>
+                    {post.readingTime && (
                       <>
-                        <Check className="w-4 h-4 text-[#06592b]" />
-                        <span>Document downloaded</span>
-                      </>
-                    ) : (
-                      <>
-                        <Download className="w-4 h-4" />
-                        <span>Download document</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{post.readingTime}</span>
                       </>
                     )}
-                  </motion.button>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
-        )}
+                  </div>
+
+                  <h3 className="text-[19px] font-bold text-[#1a2805] group-hover:text-[#06592b] transition-colors leading-snug">
+                    {post.title}
+                  </h3>
+
+                  <p className="text-[14px] text-stone-600 leading-relaxed line-clamp-4">
+                    {post.excerpt}
+                  </p>
+                </div>
+
+                <div className="pt-6 mt-6 border-t border-stone-100 flex items-center justify-between text-xs">
+                  <span className="text-stone-500 truncate max-w-[140px]">{post.author}</span>
+                  {/* Buttons: 16px, Medium, sentence case */}
+                  <button
+                    type="button"
+                    onClick={() => onSelectPost(post.slug)}
+                    className="font-medium text-[15px] text-[#06592b] group-hover:text-[#1a2805] flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Read full dispatch</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {/* 3. TAB: VISUAL ARCHIVES */}
+      {activeTab === 'photos' && (
+        <motion.section
+          key="media-photos"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {galleryItems.map((item, idx) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: idx * 0.08 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                onClick={() => setLightboxItem(item)}
+                className="bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-xs hover:border-[#06592b] cursor-pointer group transition-all"
+              >
+                {/* Visual Canvas */}
+                <div className="aspect-[4/3] bg-[#1a2805] relative flex items-center justify-center p-6 text-center overflow-hidden">
+                  <div className="absolute inset-0 bg-dark-pattern opacity-40 group-hover:scale-105 transition-transform duration-300" />
+                  
+                  {/* Geometric emblem */}
+                  <div className="relative z-10 space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-[#f3a310]/20 text-[#f3a310] border border-[#f3a310]/40 flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+                      {item.type === 'video' ? <Play className="w-5 h-5 ml-0.5" /> : <ImageIcon className="w-5 h-5" />}
+                    </div>
+                    <span className="text-xs font-semibold text-white/90 block max-w-xs truncate">
+                      {item.title}
+                    </span>
+                    <span className="text-[10px] text-white/60 block">
+                      {item.location}
+                    </span>
+                  </div>
+
+                  <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/60 text-white text-[10px] font-mono flex items-center gap-1">
+                    <Eye className="w-3 h-3 text-[#f3a310]" />
+                    <span>View</span>
+                  </div>
+                </div>
+
+                <div className="p-5 space-y-2">
+                  <div className="flex items-center justify-between text-xs text-stone-500">
+                    <span className="font-semibold text-[#06592b]">{item.category}</span>
+                    <span>{formatDate(item.date)}</span>
+                  </div>
+                  <h4 className="text-[16px] font-bold text-[#1a2805] group-hover:text-[#06592b] transition-colors line-clamp-1">
+                    {item.title}
+                  </h4>
+                  <p className="text-[13px] text-stone-600 line-clamp-2">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {/* 4. TAB: PRESS KIT & DOWNLOADS */}
+      {activeTab === 'press' && (
+        <motion.section
+          key="media-press"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pressItems.map((kit, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: i * 0.1 }}
+                whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs flex flex-col justify-between space-y-4"
+              >
+                <div>
+                  <span className="text-[11px] font-mono text-[#06592b] block mb-1">{kit.format}</span>
+                  <h3 className="text-[18px] font-bold text-[#1a2805]">{kit.title}</h3>
+                  <p className="text-[14px] text-stone-600 leading-relaxed mt-2">{kit.description}</p>
+                </div>
+
+                {/* Buttons: 16px, Medium, sentence case */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={() => handleDownload(kit.title)}
+                  className="w-full py-3 px-4 bg-stone-100 hover:bg-[#1a2805] hover:text-[#f3a310] text-[#1a2805] text-[15px] font-medium rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {downloadedItem === kit.title ? (
+                    <>
+                      <Check className="w-4 h-4 text-[#06592b]" />
+                      <span>Document downloaded</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4" />
+                      <span>Download document</span>
+                    </>
+                  )}
+                </motion.button>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+      )}
       </AnimatePresence>
 
       {/* Lightbox Modal with AnimatePresence */}
@@ -399,7 +382,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({ onSelectPost }) => {
               <div className="flex justify-between items-start border-b border-white/10 pb-3">
                 <div>
                   <span className="text-xs text-[#f3a310] uppercase font-semibold block">
-                    {lightboxItem.category} archive · {lightboxItem.date}
+                    {lightboxItem.category} archive · {formatDate(lightboxItem.date)}
                   </span>
                   <h3 className="text-xl font-bold text-white">{lightboxItem.title}</h3>
                 </div>

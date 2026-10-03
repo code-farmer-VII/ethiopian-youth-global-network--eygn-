@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../lib/routes';
 import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
+import { buttonHoverProps, transitionSmooth, viewportStandard } from '../utils/motion';
 import { PageType } from '../types';
 import { EYGN_INFO } from '../data/eygnData';
 import { ApiRequestError, subscribeToNewsletter } from '../lib/api';
+import { ROUTES, PRIVACY_ROUTE } from '../lib/routes';
 import { SocialLinks } from './SocialLinks';
-import { Mail, MapPin, Send, CheckCircle2, Globe, Shield, ArrowUp } from 'lucide-react';
-import { motion } from 'motion/react';
-import { buttonHoverProps, transitionSmooth, viewportStandard } from '../utils/motion';
+import { Mail, MapPin, Send, CheckCircle2, Shield, ArrowUp } from 'lucide-react';
 
 const NAV_LINKS: { id: PageType; label: string }[] = [
   { id: 'home', label: 'Home' },
@@ -22,7 +21,6 @@ const NAV_LINKS: { id: PageType; label: string }[] = [
 
 export const Footer: React.FC = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
-  const navigate = useNavigate();
   const [subscribed, setSubscribed] = useState(false);
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<string | null>(null);
@@ -56,7 +54,7 @@ export const Footer: React.FC = () => {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#06592b]/15 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main footer columns */}
-      <motion.div 
+      <motion.div
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 relative z-10"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -107,69 +105,13 @@ export const Footer: React.FC = () => {
               Navigation
             </h4>
             <ul className="space-y-2 text-sm text-stone-300">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => navigate(ROUTES.home)}
-                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
-                >
-                  Home
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => navigate(ROUTES.about)}
-                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
-                >
-                  About EYGN
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => navigate(ROUTES.programs)}
-                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
-                >
-                  Flagship programs
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => navigate(ROUTES.team)}
-                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
-                >
-                  Leadership & directorate
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => navigate(ROUTES.media)}
-                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
-                >
-                  Media center
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => navigate(ROUTES.membership)}
-                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
-                >
-                  Join the network
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => navigate(ROUTES.contact)}
-                  className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 cursor-pointer"
-                >
-                  Contact secretariat
-                </button>
-              </li>
+              {NAV_LINKS.map((item) => (
+                <li key={item.id}>
+                  <Link to={ROUTES[item.id]} className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 inline-block">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -241,13 +183,6 @@ export const Footer: React.FC = () => {
                 </div>
               )}
             </form>
-
-            <div className="pt-2">
-              <span className="text-[11px] text-stone-400 block mb-1">Prepared by:</span>
-              <p className="text-xs font-medium text-white">
-                Mr. Amanuel Lemma · Head of Media & Communication
-              </p>
-            </div>
           </div>
         </div>
 
@@ -259,6 +194,9 @@ export const Footer: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            <Link to={PRIVACY_ROUTE} className="hover:text-[#f3a310] hover:translate-x-0.5 transition-all duration-200 inline-block">
+              Privacy policy
+            </Link>
             <motion.button
               {...buttonHoverProps}
               type="button"
@@ -274,4 +212,3 @@ export const Footer: React.FC = () => {
     </footer>
   );
 };
-
