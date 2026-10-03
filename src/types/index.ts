@@ -9,13 +9,6 @@ export type PageType =
 
 export type Language = 'en' | 'am' | 'fr';
 
-export interface CoreValue {
-  name: string;
-  nameAm: string;
-  description: string;
-  iconName: string;
-}
-
 export interface TeamMember {
   id: string;
   name: string;

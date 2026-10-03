@@ -309,6 +309,17 @@ export function listCategories(): Promise<string[]> {
   return get('/categories');
 }
 
+export interface CoreValueDto {
+  name: string;
+  nameAm: string | null;
+  description: string;
+  iconName: string;
+}
+
+export function listCoreValues(): Promise<CoreValueDto[]> {
+  return get('/core-values');
+}
+
 export function listPrograms(): Promise<ProgramDto[]> {
   return get('/programs');
 }
