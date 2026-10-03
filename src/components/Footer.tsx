@@ -66,9 +66,7 @@ export const Footer: React.FC = () => {
           {/* Col 1: Brand & Tagline (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-lg bg-[#f3a310] text-[#1a2805] flex items-center justify-center font-bold text-sm shadow">
-                EYGN
-              </div>
+              <img src="/logo.png" alt="EYGN emblem" className="w-9 h-9 rounded-lg shadow" />
               <h3 className="text-xl font-bold font-serif text-white tracking-tight">
                 Ethiopian Youth Global Network
               </h3>
