@@ -92,9 +92,11 @@ export const DigitalMembershipCard: React.FC<DigitalMembershipCardProps> = ({
           <div className="relative z-10 flex items-start justify-between border-b border-white/15 pb-3">
             <div className="flex items-center gap-2.5">
               {/* Tricolor geometric emblem */}
-              <div className="w-8 h-8 rounded-lg bg-white/10 border border-[#f3a310]/50 flex items-center justify-center shadow-inner">
-                <span className="text-xs font-bold text-[#f3a310] tracking-tighter">EYGN</span>
-              </div>
+              <img
+                src="/logo.png"
+                alt="EYGN emblem"
+                className="w-8 h-8 rounded-lg border border-[#f3a310]/50 shadow-inner"
+              />
               <div>
                 <span className="text-[10px] tracking-widest text-[#f3a310] uppercase font-semibold block">
                   Official Credential

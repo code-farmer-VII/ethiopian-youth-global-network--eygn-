@@ -104,10 +104,18 @@ export const TeamPage: React.FC = () => {
             >
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
-                  {/* Portrait Monogram Tile */}
-                  <div className="w-16 h-16 rounded-2xl bg-[#1a2805] text-[#f3a310] flex items-center justify-center font-bold text-2xl border border-[#f3a310]/40 shadow-xs shrink-0">
-                    {getInitials(member.fullName)}
-                  </div>
+                  {/* Portrait photo if uploaded, else a monogram tile */}
+                  {member.photoUrl ? (
+                    <img
+                      src={member.photoUrl}
+                      alt={member.fullName}
+                      className="w-16 h-16 rounded-2xl object-cover border border-[#f3a310]/40 shadow-xs shrink-0"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-2xl bg-[#1a2805] text-[#f3a310] flex items-center justify-center font-bold text-2xl border border-[#f3a310]/40 shadow-xs shrink-0">
+                      {getInitials(member.fullName)}
+                    </div>
+                  )}
 
                   <div>
                     <span className="text-xs font-semibold text-[#06592b] uppercase tracking-wider block">
@@ -218,9 +226,17 @@ export const TeamPage: React.FC = () => {
               >
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-[#06592b]/10 text-[#06592b] font-bold text-lg flex items-center justify-center shrink-0">
-                    {getInitials(member.fullName)}
-                  </div>
+                  {member.photoUrl ? (
+                    <img
+                      src={member.photoUrl}
+                      alt={member.fullName}
+                      className="w-12 h-12 rounded-xl object-cover shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-xl bg-[#06592b]/10 text-[#06592b] font-bold text-lg flex items-center justify-center shrink-0">
+                      {getInitials(member.fullName)}
+                    </div>
+                  )}
                   <div>
                     <h3 className="text-[17px] font-bold text-[#1a2805] leading-tight">
                       {member.fullName}

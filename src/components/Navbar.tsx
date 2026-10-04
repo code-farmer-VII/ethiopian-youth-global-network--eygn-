@@ -91,9 +91,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="flex items-center gap-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06592b] rounded-lg py-1 cursor-pointer group min-w-0"
           >
             {/* National emblem badge */}
-            <div className="w-10 h-10 rounded-lg bg-[#1a2805] text-[#f3a310] flex items-center justify-center font-bold text-sm tracking-tight border border-[#f3a310]/30 shadow-sm shrink-0 transition-transform group-hover:scale-105">
-              EYGN
-            </div>
+            <img
+              src="/logo.png"
+              alt="EYGN emblem"
+              className="w-10 h-10 rounded-lg shadow-sm shrink-0 transition-transform group-hover:scale-105"
+            />
             <div className="flex flex-col min-w-0">
               <span className="text-lg sm:text-xl font-bold tracking-tight text-[#1a2805] leading-tight group-hover:text-[#06592b] transition-colors truncate">
                 Ethiopian Youth Global Network

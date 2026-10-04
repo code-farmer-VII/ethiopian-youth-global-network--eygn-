@@ -1,4 +1,4 @@
-import { BlogPost, Chapter, CoreValue, EventItem, MediaItem, Program, TeamMember } from '../types';
+import { BlogPost, Chapter, EventItem, MediaItem, Program, TeamMember } from '../types';
 
 export const EYGN_INFO = {
   name: 'Ethiopian Youth Global Network',
@@ -36,45 +36,6 @@ export const STATISTICS = [
   { label: 'Countries Represented', value: 15, suffix: '+', quarterlyNote: 'Across 4 Continents' },
   { label: 'Flagship Programs', value: 6, suffix: '', quarterlyNote: 'In Active Deployment' },
   { label: 'Events Organized', value: 20, suffix: '+', quarterlyNote: 'Summits & Workshops' },
-];
-
-export const CORE_VALUES: CoreValue[] = [
-  {
-    name: 'Unity',
-    nameAm: 'አንድነት',
-    description: 'We believe in the power of togetherness. United Ethiopian youth can achieve what individuals cannot accomplish alone.',
-    iconName: 'Users',
-  },
-  {
-    name: 'Integrity',
-    nameAm: 'ታማኝነት',
-    description: 'We uphold the highest standards of honesty, transparency, and ethical conduct in all our endeavors.',
-    iconName: 'ShieldCheck',
-  },
-  {
-    name: 'Excellence',
-    nameAm: 'ብቃትና ጥራት',
-    description: "We strive for exceptional quality in our programs, partnerships, and contributions to Ethiopia's development.",
-    iconName: 'Award',
-  },
-  {
-    name: 'Collaboration',
-    nameAm: 'ትብብር',
-    description: 'We build partnerships across sectors, institutions, and borders to maximize our collective impact.',
-    iconName: 'Share2',
-  },
-  {
-    name: 'Youth Empowerment',
-    nameAm: 'የወጣቶች አቅም ግንባታ',
-    description: 'We prioritize the growth, development, and leadership capacity of young Ethiopians worldwide.',
-    iconName: 'Sparkles',
-  },
-  {
-    name: 'National Service',
-    nameAm: 'ሀገራዊ አገልግሎት',
-    description: "We are committed to serving Ethiopia's development priorities with dedication and patriotism.",
-    iconName: 'Flag',
-  },
 ];
 
 export const LEADERSHIP_TEAM: TeamMember[] = [

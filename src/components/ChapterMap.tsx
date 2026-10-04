@@ -255,6 +255,14 @@ export const ChapterMap: React.FC<ChapterMapProps> = ({ onSelectChapter }) => {
                   )}
                 </div>
 
+                {activeChapter.imageUrl && (
+                  <img
+                    src={activeChapter.imageUrl}
+                    alt={activeChapter.city}
+                    className="w-full h-28 object-cover rounded-lg mt-4 border border-white/10"
+                  />
+                )}
+
                 <div className="mt-4">
                   <h4 className="text-2xl font-bold text-white tracking-tight">
                     {activeChapter.city}

@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { MotionLink } from '../components/MotionLink';
 import { transitionSmooth, buttonHoverProps, cardHoverProps, viewportStandard } from '../utils/motion';
-import { CORE_VALUES, EYGN_INFO } from '../data/eygnData';
+import { EYGN_INFO } from '../data/eygnData';
+import { listCoreValues, CoreValueDto } from '../lib/api';
 import { ROUTES } from '../lib/routes';
 import { SEO } from '../components/SEO';
 import { Users, ShieldCheck, Award, Share2, Sparkles, Flag, ArrowRight, CheckCircle2, Globe, HeartHandshake, BookOpen } from 'lucide-react';
 
 export const AboutPage: React.FC = () => {
+  const [coreValues, setCoreValues] = useState<CoreValueDto[]>([]);
+
+  useEffect(() => {
+    listCoreValues()
+      .then(setCoreValues)
+      .catch(() => setCoreValues([]));
+  }, []);
+
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'Users': return <Users className="w-5 h-5" />;
@@ -231,7 +240,7 @@ export const AboutPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {CORE_VALUES.map((value, idx) => (
+            {coreValues.map((value, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 16 }}
@@ -251,7 +260,9 @@ export const AboutPage: React.FC = () => {
                 <div>
                   <div className="flex items-baseline gap-2">
                     <h3 className="text-[18px] font-bold text-[#1a2805]">{value.name}</h3>
-                    <span className="text-xs font-medium text-[#06592b]">({value.nameAm})</span>
+                    {value.nameAm && (
+                      <span className="text-xs font-medium text-[#06592b]">({value.nameAm})</span>
+                    )}
                   </div>
                   <p className="text-[14px] text-stone-600 leading-relaxed mt-2">
                     {value.description}

@@ -6,9 +6,17 @@ import { ApiRequestError, type ApiErrorBody } from './api-error';
  * on request/response shapes — keep this file in sync with it when the API changes.
  */
 
-const DEFAULT_BASE_URL = 'http://localhost:8080/api/v1';
+// "localhost" only ever means "this device" -- fine when you're on the same machine as the
+// backend, but it silently breaks when a phone or another computer on the LAN opens the dev
+// server at e.g. http://192.168.1.23:3000, since that device's own localhost:8080 has nothing
+// running. Default to whatever host the page itself was loaded from instead, so it keeps working
+// unmodified across localhost, 127.0.0.1, and any LAN IP. VITE_API_BASE_URL still wins when set
+// (needed for a real deployment where the API lives on a different host than the frontend).
+const DEFAULT_BASE_URL = `http://${window.location.hostname}:8080/api/v1`;
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? DEFAULT_BASE_URL).replace(/\/+$/, '');
+// `||`, not `??` -- an empty string (e.g. from a literally-copied but unfilled .env.example
+// line) must also fall through to the dynamic default, not be used as-is.
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || DEFAULT_BASE_URL).replace(/\/+$/, '');
 
 // ---------------------------------------------------------------------------
 // Enums shared with the backend (eygn-api prisma/schema.prisma)
@@ -101,6 +109,7 @@ export interface EventDto {
   category: string | null;
   featuredSpeakers: string[];
   capacity: number | null;
+  imageUrl: string | null;
   registeredCount: number;
   status: EventStatus;
 }
@@ -133,6 +142,7 @@ export interface PostSummary {
   excerpt: string;
   author: string | null;
   readingTime: string | null;
+  imageUrl: string | null;
 }
 
 export interface PostList {
@@ -152,6 +162,7 @@ export interface PostDetail {
   location: string | null;
   featuredQuote: string | null;
   readingTime: string | null;
+  imageUrl: string | null;
 }
 
 export interface ProgramStat {
@@ -173,6 +184,7 @@ export interface ProgramDto {
   stats: ProgramStat[] | null;
   status: ProgramStatus;
   pillar: string | null;
+  imageUrl: string | null;
   isActive: boolean;
 }
 
@@ -272,6 +284,15 @@ export function unsubscribeFromNewsletter(email: string, unsubscribeToken: strin
   return del(`/newsletter/subscribers/${encodeURIComponent(email)}?token=${encodeURIComponent(unsubscribeToken)}`);
 }
 
+export interface NewsletterConfirmResult {
+  email: string;
+  confirmedAt: string;
+}
+
+export function confirmNewsletterSubscription(email: string, token: string): Promise<NewsletterConfirmResult> {
+  return get(`/newsletter/confirm?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
+}
+
 // ---------------------------------------------------------------------------
 // Contact
 // ---------------------------------------------------------------------------
@@ -305,6 +326,17 @@ export function listCategories(): Promise<string[]> {
   return get('/categories');
 }
 
+export interface CoreValueDto {
+  name: string;
+  nameAm: string | null;
+  description: string;
+  iconName: string;
+}
+
+export function listCoreValues(): Promise<CoreValueDto[]> {
+  return get('/core-values');
+}
+
 export function listPrograms(): Promise<ProgramDto[]> {
   return get('/programs');
 }
@@ -327,6 +359,7 @@ export interface ChapterDto {
   membersCount: number;
   established: string;
   focus: string;
+  imageUrl: string | null;
   coordinates: { x: number; y: number };
 }
 

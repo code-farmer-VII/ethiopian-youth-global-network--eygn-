@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { cubicEase } from './utils/motion';
 import { EventItem, Language } from './types';
-import { ROUTES, PRIVACY_ROUTE } from './lib/routes';
+import { ROUTES, PRIVACY_ROUTE, NEWSLETTER_CONFIRM_ROUTE } from './lib/routes';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { HomePage } from './pages/HomePage';
@@ -14,6 +14,7 @@ import { MediaPage } from './pages/MediaPage';
 import { MembershipPage } from './pages/MembershipPage';
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { NewsletterConfirmPage } from './pages/NewsletterConfirmPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ArticleReaderModal } from './components/ArticleReaderModal';
 import { EventRegistrationModal } from './components/EventRegistrationModal';
@@ -112,6 +113,7 @@ export default function App() {
               <Route path={ROUTES.membership} element={<MembershipPage />} />
               <Route path={ROUTES.contact} element={<ContactPage />} />
               <Route path={PRIVACY_ROUTE} element={<PrivacyPolicyPage />} />
+              <Route path={NEWSLETTER_CONFIRM_ROUTE} element={<NewsletterConfirmPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </motion.div>
