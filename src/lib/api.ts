@@ -337,6 +337,18 @@ export function listCoreValues(): Promise<CoreValueDto[]> {
   return get('/core-values');
 }
 
+export interface AnnouncementBannerDto {
+  enabled: boolean;
+  text: string;
+  type: 'info' | 'alert' | 'success';
+  linkText: string | null;
+  linkUrl: string | null;
+}
+
+export function getAnnouncementBanner(): Promise<AnnouncementBannerDto> {
+  return get('/settings/announcement-banner');
+}
+
 export function listPrograms(): Promise<ProgramDto[]> {
   return get('/programs');
 }

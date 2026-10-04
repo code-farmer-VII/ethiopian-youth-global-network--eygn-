@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cubicEase } from './utils/motion';
 import { EventItem, Language } from './types';
 import { ROUTES, PRIVACY_ROUTE, NEWSLETTER_CONFIRM_ROUTE } from './lib/routes';
+import { AnnouncementBar } from './components/AnnouncementBar';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { HomePage } from './pages/HomePage';
@@ -74,6 +75,8 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-[#fcfdfa] text-[#1a2805] font-sans antialiased selection:bg-[#f3a310]/30">
       <ScrollToTop />
       <Analytics />
+
+      <AnnouncementBar />
 
       {/* Strict Top Bar Navigation */}
       <Navbar
