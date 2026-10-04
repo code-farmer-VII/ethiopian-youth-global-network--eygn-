@@ -23,3 +23,16 @@ Talks to `eygn-api` (Express + Prisma, separate repo) — see `.env.example` for
 
     npm run lint          # tsc --noEmit
     npm run build
+
+## Deployment (free tier)
+
+`vercel.json` adds the SPA rewrite `react-router` needs on static hosting (every path falls back
+to `index.html` — without it, a direct visit or refresh on e.g. `/programs` 404s, since there's no
+server-side route for it on Vercel's static host).
+
+1. Vercel dashboard → **Add New → Project** → import this repo.
+2. Set `VITE_API_BASE_URL` to the deployed `eygn-api` URL with `/api/v1` appended (e.g.
+   `https://eygn-api.onrender.com/api/v1`), and `VITE_SITE_URL` to this deployment's own URL once
+   you know it (used for canonical/OG URLs — see `.env.example` for the rest, all optional).
+3. Once deployed, add this site's real URL to `eygn-api`'s `CORS_ORIGIN` env var (comma-separated
+   with the admin dashboard's URL), or every request will be rejected by CORS.
