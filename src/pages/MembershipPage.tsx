@@ -9,6 +9,9 @@ import { SEO } from '../components/SEO';
 import { CheckCircle2, ShieldCheck, Award, Sparkles, Send, HelpCircle, ChevronDown, ChevronUp, UserCheck } from 'lucide-react';
 import { transitionSmooth } from '../utils/motion';
 
+// Feature flag: set to true to show the Institutional & University Partner tab
+const SHOW_PARTNER_TAB = false;
+
 // Frontend display labels -> eygn-api's InterestArea enum slugs (see api.ts). The two lists don't
 // read identically, so submissions map through this table rather than sending the label as-is.
 const INTEREST_AREA_TO_API: Record<string, InterestArea> = {
@@ -203,8 +206,8 @@ export const MembershipPage: React.FC = () => {
           Become a registered member of the premier non-partisan network uniting diaspora and homeland youth to lead global change and serve Ethiopia.
         </motion.p>
 
-        {/* Tab switcher: Buttons: 16px, Medium, sentence case */}
-        <div className="inline-flex items-center gap-1 p-1 bg-stone-100 rounded-xl border border-stone-200 mt-2">
+        {/* Tab switcher: Hidden for now - only individual tab is active */}
+        {/* <div className="inline-flex items-center gap-1 p-1 bg-stone-100 rounded-xl border border-stone-200 mt-2">
           <button
             type="button"
             onClick={() => setActiveTab('individual')}
@@ -227,7 +230,7 @@ export const MembershipPage: React.FC = () => {
           >
             Institutional & university partner
           </button>
-        </div>
+        </div> */}
       </motion.section>
 
       {/* 2. MEMBERSHIP BENEFITS OVERVIEW */}
@@ -585,8 +588,8 @@ export const MembershipPage: React.FC = () => {
         </motion.section>
       )}
 
-      {/* 4. INSTITUTIONAL PARTNER TAB */}
-      {activeTab === 'partner' && (
+      {/* 4. INSTITUTIONAL PARTNER TAB - Hidden for now */}
+      {SHOW_PARTNER_TAB && activeTab === 'partner' && (
         <motion.section
           key="tab-partner-form"
           initial={{ opacity: 0, y: 12 }}
